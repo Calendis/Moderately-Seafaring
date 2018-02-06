@@ -101,11 +101,11 @@ def main():
 							elif menus[-1].get_selected_name() == "Quit":
 								done = True
 						elif menus[-1].__class__ == Menu.LoadMenu:
-							if menus[-1].get_selected_name() == 0:
+							if menus[-1].get_selected_element_position()["x"] == 0:
 								gamefile = "0"
-							elif menus[-1].get_selected_name() == 1:
+							elif menus[-1].get_selected_element_position()["x"] == 1:
 								gamefile = "1"
-							elif menus[-1].get_selected_name() == 2:
+							elif menus[-1].get_selected_element_position()["x"] == 2:
 								gamefile = "2"
 							try:
 								print("\nLoading shelf...")
@@ -121,6 +121,11 @@ def main():
 								loaded_party = loaded_game["party"]
 								print("Party loaded.\n")
 
+								print("Reloading party images...")
+								for party_member in party:
+									party_member.reload_images()
+								print("Images reloaded.")
+
 								print("Loading map...")
 								loaded_map = loaded_game["map"]
 								print("Map loaded.\n")
@@ -133,7 +138,7 @@ def main():
 								party = loaded_party
 
 								current_map = loaded_map
-								current_map = load_pygame("lib/maps/"+loaded_map+".tmx")
+								current_map = load_pygame("resources/maps/"+loaded_map+".tmx")
 								print("Variables assigned.\n")
 
 								print("Generating map objects...")
@@ -265,11 +270,11 @@ def main():
 								else:
 									print("No item was selected. This is a bug.")
 							elif menus[-1].__class__ == Menu.SaveMenu:
-								if menus[-1].get_position() == 0:
+								if menus[-1].get_selected_element_position()["x"] == 0: #Notice the x position is needed on a vertical list
 									gamefile = "0"
-								elif menus[-1].get_position() == 1:
+								elif menus[-1].get_selected_element_position()["x"] == 1:
 									gamefile = "1"
-								elif menus[-1].get_position() == 2:
+								elif menus[-1].get_selected_element_position()["x"] == 2:
 									gamefile = "2"
 								else:
 									print("Unknown option. Gamefile will not be set. Aborting")
@@ -285,7 +290,13 @@ def main():
 									pyscroll_group_data.remove(party_member)
 								print("Party cleared from group data.\n")
 
+								print("Clearing party images...")
+								for member in party:
+									member.clear_images()
+								print("Images cleared.")
+
 								print("Saving party...")
+								print(party)
 								loaded_game["party"] = party
 								print("Party saved.\n")
 
@@ -301,6 +312,10 @@ def main():
 								print("Closing shelf...")
 								loaded_game.close()
 								print("Shelf closed.\n")
+
+								print("Reloading character images.")
+								for party_member in party:
+									party_member.reload_images()
 
 							elif menus[-1].__class__ == Menu.ItemMenu:
 								#Prints out item description of selected item. The 'x' position is needed, and not y, even though the list is vertical!

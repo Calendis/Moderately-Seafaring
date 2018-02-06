@@ -69,6 +69,10 @@ class Character(pygame.sprite.Sprite):
 		self.rect = pygame.Rect(self.pos[0], self.pos[1], 16, 32)
 		self.feetrect = pygame.Rect(self.pos[0], self.pos[1]+16, 16, 32-16)
 
+	def clear_images(self):
+		self.image = None
+		self.images = []
+
 	def get_items(self):
 		return(self.items)
 
@@ -102,6 +106,7 @@ class CaptainRizzko(Character):
 
 	def reload_images(self):
 		self.images = [CharacterImage.rizzko_left, CharacterImage.rizzko_right]
+		self.image = self.images[self.frame]
 
 class Zirkak(object):
 	"""docstring for Zurkak"""

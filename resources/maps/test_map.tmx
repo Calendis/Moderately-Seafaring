@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" tiledversion="1.1.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" infinite="0" nextobjectid="1">
- <tileset firstgid="1" source="../../resources/tilesets/outdoor_0.tsx"/>
+ <properties>
+  <property name="name" value="test_map"/>
+ </properties>
+ <tileset firstgid="1" source="../tilesets/outdoor_0.tsx"/>
  <layer name="Tile Layer 1" width="50" height="50">
   <data encoding="csv">
 106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,
