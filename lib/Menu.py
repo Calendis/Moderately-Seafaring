@@ -15,7 +15,7 @@ class Menu(object):
 		Getting the current menu selection is easy! get_selected will return the element, and get_selected_name will return its text!
 
 	"""
-	def __init__(self, x, y, width, height, elements, xspacing=100):
+	def __init__(self, x, y, width, height, elements, font_size=12):
 		#Error handling to make sure valid arguments are used.
 		if elements.__class__ != list:
 			raise TypeError("Elements must be passed in in a list!")
@@ -33,9 +33,16 @@ class Menu(object):
 		self.width = width
 		self.height = height
 		self.elements = elements
-		self.xspacing = xspacing
 		self.x_selected_element = 0
 		self.y_selected_element = 0
+		self.font_size = font_size
+
+		strlen_elements = []
+		for element in elements:
+			strlen_elements.append(len(element.get_text()))
+
+		self.xspacing = self.font_size*max(strlen_elements)
+		#print(str(self)+"'s xspacing is "+str(self.xspacing))
 
 		self.background_colour = (255, 0, 0)
 
@@ -56,18 +63,21 @@ class Menu(object):
 		self.menu_list[self.x_selected_element][self.y_selected_element].set_colour(self.menu_list[self.x_selected_element][self.y_selected_element].get_selected_colour())
 		self.menu_list[self.x_selected_element][self.y_selected_element].selected = True
 
-	def draw(self):
+	def draw(self): #This draws the menu and menu elements. It's hard to explain.
+				
 		menu_list_counter = 0
-		menu_element_counter = 0
+		menu_element_counter = -1
 		for menu_element_list in self.get_menu_list():
 			menu_list_counter += 1
-			menu_element_counter = 0
+			menu_element_counter = -1
 			for menu_element in menu_element_list:
 				menu_element_counter += 1
-				menu_element_text = Text.oxygen_font.render(menu_element.get_text(), 1, menu_element.get_colour())
-				screen.blit(menu_element_text, (self.get_position()["x"]+(self.get_xspacing()*menu_element_counter),
-					self.get_position()["y"]+(menu_list_counter*12))) #12 is font size. TODO: Make this non-constant!
-
+				menu_element_text = Text.sized_oxygen_font(self.font_size).render(menu_element.get_text(), 1, menu_element.get_colour())
+				
+				#The important bit
+				screen.blit(menu_element_text, (self.get_position()["x"]+(self.get_xspacing()*menu_element_counter)-(0),
+					self.get_position()["y"]+(menu_list_counter*self.font_size)))
+				
 	def move_selection_right(self):
 		if self.y_selected_element < self.width-1:
 			self.y_selected_element += 1
@@ -161,21 +171,21 @@ main_elements = [
 class MainMenu(Menu):
 	"""docstring for MainMenu"""
 	def __init__(self):
-		super(MainMenu, self).__init__(SCREEN_SIZE[0]/2, SCREEN_SIZE[1]/2, 1, len(main_elements), main_elements)
+		super(MainMenu, self).__init__(SCREEN_SIZE[0]/2, SCREEN_SIZE[1]/2, 1, len(main_elements), main_elements, 20)
 
 start_elements = [
 	BasicMenuItem("Items"),
 	BasicMenuItem("Party"),
 	BasicMenuItem("Spells"),
 	BasicMenuItem("Skills"),
-	BasicMenuItem("Save Game"),
+	BasicMenuItem("Save"),
 	BasicMenuItem("Pause")
 ]
 
 class StartMenu(Menu):
 	"""docstring for StartMenu"""
 	def __init__(self):
-		super(StartMenu, self).__init__(SCREEN_SIZE[0]/2-(3*12), SCREEN_SIZE[1]-64, 3, 2, start_elements)
+		super(StartMenu, self).__init__(SCREEN_SIZE[0]/2, SCREEN_SIZE[1]-64, 3, 2, start_elements, 15)
 		
 file_elements = [
 	BasicMenuItem("File 1"),
@@ -186,12 +196,12 @@ file_elements = [
 class SaveMenu(Menu):
 	"""docstring for SaveMenu"""
 	def __init__(self):
-		super(SaveMenu, self).__init__(SCREEN_SIZE[0]/2, SCREEN_SIZE[1]/2, 1, len(file_elements), file_elements)
+		super(SaveMenu, self).__init__(SCREEN_SIZE[0]/2, SCREEN_SIZE[1]/2, 1, len(file_elements), file_elements, 15)
 
 class LoadMenu(Menu):
 	"""docstring for LoadMenu"""
 	def __init__(self):
-		super(LoadMenu, self).__init__(SCREEN_SIZE[0]/2, SCREEN_SIZE[1]/2+100, 1, len(file_elements), file_elements)
+		super(LoadMenu, self).__init__(SCREEN_SIZE[0]/2, SCREEN_SIZE[1]/2+100, 1, len(file_elements), file_elements, 15)
 
 class ItemMenu(Menu):
 	"""docstring for ItemMenu"""
@@ -199,11 +209,13 @@ class ItemMenu(Menu):
 		item_elements = []
 		for item in items:
 			item_elements.append(BasicMenuItem(item.get_name()))
-		super(ItemMenu, self).__init__(0, SCREEN_SIZE[1]-100, 1, len(item_elements), item_elements)
+		super(ItemMenu, self).__init__(16, SCREEN_SIZE[1]-64, 1, len(item_elements), item_elements, 15)
 
 class PartyMenu(Menu):
 	"""docstring for PartyMenu"""
 	def __init__(self, party):
-		super(PartyMenu, self).__init__()
-		self.arg = arg
+		party_elements = []
+		for member in party:
+			party_elements.append(BasicMenuItem(member.get_name()))
+		super(PartyMenu, self).__init__(16, 64, len(party_elements), 1, party_elements, 20)
 		
