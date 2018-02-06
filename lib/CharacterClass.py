@@ -15,6 +15,9 @@ class CharacterClass():
 		self.spd_bonus = 0
 		self.ele_modifier = False
 
+	def get_name(self):
+		return self.name
+
 class TestClass(CharacterClass):
 	"""docstring for TestClass"""
 	def __init__(self, arg):

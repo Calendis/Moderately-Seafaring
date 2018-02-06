@@ -72,6 +72,12 @@ class Character(pygame.sprite.Sprite):
 	def get_items(self):
 		return(self.items)
 
+	def get_name(self):
+		return self.name
+
+	def get_full_name(self):
+		return self.title+" "+self.name+", "+self.character_class.get_name()
+
 class CaptainRizzko(Character):
 	"""docstring for CaptainRizzko"""
 	def __init__(self, pos):

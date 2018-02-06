@@ -252,14 +252,16 @@ def main():
 						if event.key == K_x:
 							if menus[-1].__class__ == Menu.StartMenu:
 								if menus[-1].get_selected_name() == "Party":
-									print("Party")
+									menus.append(Menu.PartyMenu(party))
 								elif menus[-1].get_selected_name() == "Items":
 									print("Items")
 									menus.append(Menu.ItemMenu(party[0].get_items()))
-								elif menus[-1].get_selected_name() == "Save Game":
+								elif menus[-1].get_selected_name() == "Save":
 									menus.append(Menu.SaveMenu())
 								elif menus[-1].get_selected_name() == "Pause":
 									paused = True
+								elif menus[-1].get_selected_name() == "Spells":
+									print("Spells")
 								else:
 									print("No item was selected. This is a bug.")
 							elif menus[-1].__class__ == Menu.SaveMenu:
