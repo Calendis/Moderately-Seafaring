@@ -30,7 +30,6 @@ def main():
 	menus = []
 	party = []
 	
-	#main_menu = Menu.MainMenu()
 	main_menu = Menu.MainMenu()
 	menus.append(main_menu)
 
@@ -259,14 +258,17 @@ def main():
 								if menus[-1].get_selected_name() == "Party":
 									menus.append(Menu.PartyMenu(party))
 								elif menus[-1].get_selected_name() == "Items":
-									print("Items")
 									menus.append(Menu.ItemMenu(party[0].get_items()))
 								elif menus[-1].get_selected_name() == "Save":
 									menus.append(Menu.SaveMenu())
 								elif menus[-1].get_selected_name() == "Pause":
 									paused = True
 								elif menus[-1].get_selected_name() == "Spells":
-									print("Spells")
+									print("TODO: Spells.")
+								elif menus[-1].get_selected_name() == "Quit":
+									done = True
+								elif menus[-1].get_selected_name() == "Skills":
+									print("TODO: Skills.")
 								else:
 									print("No item was selected. This is a bug.")
 							elif menus[-1].__class__ == Menu.SaveMenu:
@@ -316,6 +318,8 @@ def main():
 								print("Reloading character images.")
 								for party_member in party:
 									party_member.reload_images()
+
+								menus.remove(menus[-1])
 
 							elif menus[-1].__class__ == Menu.ItemMenu:
 								#Prints out item description of selected item. The 'x' position is needed, and not y, even though the list is vertical!
