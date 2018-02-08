@@ -350,7 +350,7 @@ def main():
 						party_member.move_back()
 				for warp in warps:
 					if pygame.Rect.colliderect(party_member.feetrect, pygame.Rect(warp.x, warp.y, warp.width, warp.height)):
-						current_map = load_pygame("lib/maps/"+warp.destination+".tmx")
+						current_map = load_pygame("resources/maps/"+warp.destination+".tmx")
 						party_member.pos = [int(warp.xwarp), int(warp.ywarp)]
 
 						for party_member in party:
