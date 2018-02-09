@@ -393,6 +393,7 @@ def main():
 								if menus[-1].get_item().__class__.__bases__[0] == Item.Medicine:
 									party[menus[-1].get_selected_element_position()["x"]].heal(menus[-1].get_item().get_value(), menus[-1].get_item().get_stat())
 									party[0].items.remove(menus[-1].get_item())
+									menus[1] = Menu.ItemMenu(party[0].items)
 
 				if event.type == pygame.KEYUP:
 					if event.key == K_q:
