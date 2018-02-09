@@ -347,7 +347,7 @@ def main():
 								menus.append(Menu.ItemUseMenu(party[0].get_items()[menus[-1].get_selected_element_position()["x"]]))
 
 							elif menus[-1].__class__ == Menu.ItemUseMenu:
-								if menus[-1].get_selected_element_position()["x"] == 0: #Use
+								if menus[-1].get_selected_name() == "Use":
 									if party[0].get_items()[menus[1].get_selected_element_position()["x"]].get_useable():
 										#Adds the "use on whom?" menu to the menu list.
 										menus.append(Menu.WhomUseMenu(menus[-1].get_item(), party))
@@ -355,12 +355,12 @@ def main():
 										fragile_textboxes.append(Text.TextBox([party[0].get_items()[menus[1].get_selected_element_position()["x"]].get_name()+" isn't useable!"],
 											menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
 
-								elif menus[-1].get_selected_element_position()["x"] == 1: #Examine
+								elif menus[-1].get_selected_name() == "Examine":
 									fragile_textboxes.append(Text.TextBox([party[0].get_items()[menus[1].get_selected_element_position()["x"]].get_description(),
 										"","Type: "+party[0].get_items()[menus[1].get_selected_element_position()["x"]].get_item_type()],
 									 menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
 								
-								elif menus[-1].get_selected_element_position()["x"] == 2: #Equip
+								elif menus[-1].get_selected_name() == "Equip": #Equip
 									if party[0].get_items()[menus[1].get_selected_element_position()["x"]].get_equippable():
 										print("Equip to whom?")
 										menus.append(Menu.WhomEquipMenu(menus[-1].get_item(), party))
@@ -373,7 +373,7 @@ def main():
 								menus.append(Menu.PartyUseMenu(party[menus[-1].get_selected_element_position()["x"]]))
 
 							elif menus[-1].__class__ == Menu.PartyUseMenu:
-								if menus[-1].get_selected_element_position()["x"] == 0: #Status
+								if menus[-1].get_selected_name() == "Status":
 									selected_party_member = party[menus[1].get_selected_element_position()["x"]]
 									fragile_textboxes.append(Text.TextBox(
 										
