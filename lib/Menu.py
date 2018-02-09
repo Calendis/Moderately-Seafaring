@@ -294,7 +294,18 @@ class WhomUseMenu(Menu):
 
 	def get_item(self):
 		return self.item
-		
+
+class WhomEquipMenu(Menu):
+	"""docstring for WhomEquipMenu"""
+	def __init__(self, item, party):
+		self.item = item
+		whomequip_elements = []
+		for party_member in party:
+			whomequip_elements.append(BasicMenuItem(party_member.get_name()))
+		super(WhomEquipMenu, self).__init__(272+16+(7*15), 16, 1, len(whomequip_elements), whomequip_elements)
+
+	def get_item(self):
+		return self.item
 
 partyuse_elements = [
 	BasicMenuItem("Status"),

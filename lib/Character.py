@@ -103,6 +103,12 @@ class Character(pygame.sprite.Sprite):
 		else:
 			print("ERROR: The stat affected was unrecognized.")
 
+	def equip(self, equipment):
+		if equipment.get_item_type() == "Weapon":
+			self.weapon = equipment
+		elif equipment.get_item_type == "Armour":
+			self.armour = equipment
+
 	def get_items(self):
 		return(self.items)
 
