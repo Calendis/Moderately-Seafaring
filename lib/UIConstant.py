@@ -1,0 +1,4 @@
+#Some constants to do with UI
+
+BACKGROUND_COLOUR = (16, 25, 60)
+FOREGROUND_COLOUR = (155, 213, 225)

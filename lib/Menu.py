@@ -3,8 +3,10 @@ import pygame
 screen = pygame.display.set_mode()
 
 from lib import Text
+from lib import UIConstant
 
-DEFAULT_COLOUR = (155, 213, 225)
+DEFAULT_COLOUR = UIConstant.FOREGROUND_COLOUR
+BACKGROUND_COLOUR = UIConstant.BACKGROUND_COLOUR
 SCREEN_SIZE = (900, 700)
 
 def limit_colour_255(c):
@@ -28,7 +30,7 @@ class Menu(object):
 		Getting the current menu selection is easy! get_selected will return the element, and get_selected_name will return its text!
 
 	"""
-	def __init__(self, x, y, width, height, elements, box_width=False, box_height=False, y_spacing_multiplier=1, additional_top_buffer=0, background_colour=(16,25,60)):
+	def __init__(self, x, y, width, height, elements, box_width=False, box_height=False, y_spacing_multiplier=1, additional_top_buffer=0, background_colour=BACKGROUND_COLOUR):
 		#Error handling to make sure valid arguments are used.
 		if elements.__class__ != list:
 			raise TypeError("Elements must be passed in in a list!")
@@ -152,6 +154,9 @@ class Menu(object):
 	def get_selected_element_position(self):
 		return({"x":self.x_selected_element, "y": self.y_selected_element})
 
+	def get_box_width(self):
+		return self.box_width
+
 class MenuItem(object):
 	"""docstring for MenuItem"""
 	def __init__(self, text, image, colour=DEFAULT_COLOUR):
@@ -188,6 +193,9 @@ class MenuItem(object):
 
 	def set_colour(self, new_colour):
 		self.colour = new_colour
+
+	def set_text(self, new_text):
+		self.text = new_text
 
 class BasicMenuItem(MenuItem):
 	"""docstring for BasicMenuItem"""
@@ -256,4 +264,20 @@ class PartyMenu(Menu):
 		for member in party:
 			party_elements.append(BasicMenuItem(member.get_name()))
 		super(PartyMenu, self).__init__(16, 16, len(party_elements), 1, party_elements, SCREEN_SIZE[0]-(16+16))
+
+itemuse_elements = [
+	BasicMenuItem("Use"),
+	BasicMenuItem("Examine"),
+	BasicMenuItem("Equip"),
+	BasicMenuItem("Give"),
+	BasicMenuItem("Discard"),
+]
+
+class ItemUseMenu(Menu):
+	"""docstring for ItemUseMenu"""
+	def __init__(self, item):
+		super(ItemUseMenu, self).__init__(272, 16, 1, len(itemuse_elements), itemuse_elements)
+
+	def get_item(self):
+		return self.item
 		

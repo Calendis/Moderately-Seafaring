@@ -1,6 +1,9 @@
 #Useful stuff related to pygame text rendering
 import pygame
 
+from lib import UIConstant
+from lib import Menu
+
 pygame.font.init()
 
 crux_font_path = "resources/fonts/coders_crux.ttf"
@@ -11,8 +14,28 @@ screen = pygame.display.set_mode()
 #Helper function for rendering and blitting pygame text in one.
 
 def draw_text(x, y, text, antialiased=1, colour=(0, 0, 0)):
-	rendered_text = oxygen_font.render(text, antialiased, colour)
+	rendered_text = sized_oxygen_font(15).render(text, antialiased, colour)
 	screen.blit(rendered_text, (x, y))
 
 def sized_oxygen_font(x):
 	return pygame.font.Font(crux_font_path, x)
+
+class TextBox():
+	"""docstring for TextBox"""
+	def __init__(self, text, x, y, width=False, height=False, text_colour=UIConstant.FOREGROUND_COLOUR, box_colour=UIConstant.BACKGROUND_COLOUR):
+		super(TextBox, self).__init__()
+		self.text = text
+		self.position = {"x": x, "y": y}
+		self.width = width
+		self.height = height
+		self.text_colour = text_colour
+		self.box_colour = box_colour
+
+		if not self.width:
+			self.width = len(self.text)*8
+		if not self.height:
+			self.height = 100
+
+	def draw(self):
+		pygame.draw.rect(screen, self.box_colour, (self.position["x"], self.position["y"], self.width, self.height))
+		draw_text(self.position["x"]+8, self.position["y"]+8, self.text, 1, self.text_colour)

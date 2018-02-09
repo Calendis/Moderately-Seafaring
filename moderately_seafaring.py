@@ -29,6 +29,7 @@ def main():
 
 	menus = []
 	party = []
+	fragile_textboxes = []
 	
 	main_menu = Menu.MainMenu()
 	menus.append(main_menu)
@@ -220,7 +221,7 @@ def main():
 				if event.type == pygame.QUIT:
 					done = True
 				if event.type == pygame.KEYDOWN:
-					if len(menus) < 1:
+					if len(menus) < 1 and len(fragile_textboxes) < 1:
 						if event.key == K_q:
 							map_layer.zoom = 1.2
 						if event.key == K_UP:
@@ -244,6 +245,13 @@ def main():
 								for party_member in party:
 									party_member.velocity = [0,0]
 					else:
+						
+						try:
+							fragile_textboxes.remove(fragile_textboxes[-1]) #Remove a textbox if it exists, and do not interact with the menu system
+							break
+						except:
+							pass
+
 						if event.key == K_UP:
 							menus[-1].move_selection_up()
 						if event.key == K_DOWN:
@@ -331,8 +339,18 @@ def main():
 								menus.remove(menus[-1])
 
 							elif menus[-1].__class__ == Menu.ItemMenu:
-								#Prints out item description of selected item. The 'x' position is needed, and not y, even though the list is vertical!
-								print(party[0].get_items()[menus[-1].get_selected_element_position()["x"]].get_description())
+								#Opens the item use menu for the item you've selected
+								menus.append(Menu.ItemUseMenu(party[0].get_items()[menus[-1].get_selected_element_position()["x"]]))
+
+							elif menus[-1].__class__ == Menu.ItemUseMenu:
+								if menus[-1].get_selected_element_position()["x"] == 0: #Use
+									print("Use")
+								elif menus[-1].get_selected_element_position()["x"] == 1: #Examine
+									print("Examine")
+									fragile_textboxes.append(Text.TextBox(party[0].get_items()[menus[1].get_selected_element_position()["x"]].get_description(),
+									 menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
+								elif menus[-1].get_selected_element_position()["x"] == 2: #Equip
+									print("Equip")
 
 				if event.type == pygame.KEYUP:
 					if event.key == K_q:
@@ -397,6 +415,9 @@ def main():
 			#Draws menus
 			for menu in menus:
 				menu.draw()
+
+			for textbox in fragile_textboxes:
+				textbox.draw()
 
 			pygame.display.flip()
 			clock.tick(60)
