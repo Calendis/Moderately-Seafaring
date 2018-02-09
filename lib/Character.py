@@ -105,9 +105,15 @@ class Character(pygame.sprite.Sprite):
 
 	def equip(self, equipment):
 		if equipment.get_item_type() == "Weapon":
-			self.weapon = equipment
+			self.set_weapon(equipment)
 		elif equipment.get_item_type == "Armour":
-			self.armour = equipment
+			self.set_armour(equipment)
+
+	def unequip(self, equipment):
+		if equipment.get_item_type() == "Weapon":
+			self.set_weapon(None)
+		elif equipment.get_item_type == "Armour":
+			self.set_armour(None)
 
 	def get_items(self):
 		return(self.items)
@@ -176,6 +182,18 @@ class Character(pygame.sprite.Sprite):
 		if self.armour == None:
 			return(0)
 		return self.armour.get_defence()
+
+	def get_weapon(self):
+		return self.weapon
+
+	def get_armour(self):
+		return self.armour
+
+	def set_weapon(self, new_weapon):
+		self.weapon = new_weapon
+
+	def set_armour(self, new_armour):
+		self.armour = new_armour
 
 class CaptainRizzko(Character):
 	"""docstring for CaptainRizzko"""

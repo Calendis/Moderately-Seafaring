@@ -392,6 +392,22 @@ def main():
 
 										menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
 
+								elif menus[-1].get_selected_name() == "Select":
+									print("TODO: Set current party member to "+party[menus[1].get_selected_element_position()["x"]])
+
+								elif menus[-1].get_selected_name() == "Unequip":
+									equipped_items = []
+									if party[menus[1].get_selected_element_position()["x"]].get_weapon() != None:
+										equipped_items.append(party[menus[1].get_selected_element_position()["x"]].get_weapon())
+									if party[menus[1].get_selected_element_position()["x"]].get_armour() != None:
+										equipped_items.append(party[menus[1].get_selected_element_position()["x"]].get_armour())
+									
+									if len(equipped_items) > 0:
+										menus.append(Menu.UnequipMenu(equipped_items))
+									else:
+										fragile_textboxes.append(Text.TextBox([party[menus[1].get_selected_element_position()["x"]].get_name()+" has nothing equipped."],
+											menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
+
 							elif menus[-1].__class__ == Menu.WhomUseMenu:
 								if menus[-1].get_item().__class__.__bases__[0] == Item.Medicine:
 									party[menus[-1].get_selected_element_position()["x"]].heal(menus[-1].get_item().get_value(), menus[-1].get_item().get_stat())
@@ -405,6 +421,11 @@ def main():
 								party[0].items.remove(menus[-1].get_item())
 								menus[1] = Menu.ItemMenu(party[0].items)
 								menus.remove(menus[-1])
+								menus.remove(menus[-1])
+
+							elif menus[-1].__class__ == Menu.UnequipMenu:
+								party[menus[1].get_selected_element_position()["x"]].items.append(equipped_items[menus[-1].get_selected_element_position()["x"]])
+								party[menus[1].get_selected_element_position()["x"]].unequip(equipped_items[menus[-1].get_selected_element_position()["x"]])
 								menus.remove(menus[-1])
 
 				if event.type == pygame.KEYUP:

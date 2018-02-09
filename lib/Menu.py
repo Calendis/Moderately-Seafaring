@@ -309,7 +309,8 @@ class WhomEquipMenu(Menu):
 
 partyuse_elements = [
 	BasicMenuItem("Status"),
-	BasicMenuItem("Select")
+	BasicMenuItem("Select"),
+	BasicMenuItem("Unequip")
 ]		
 
 class PartyUseMenu(Menu):
@@ -319,4 +320,14 @@ class PartyUseMenu(Menu):
 	
 	def get_party_member(self):
 		return party_member
+
+class UnequipMenu(Menu):
+	"""docstring for UnequipMenu"""
+	def __init__(self, items):
+		unequip_elements = []
+		for item in items:
+			unequip_elements.append(BasicMenuItem(item.get_name()))
+		super(UnequipMenu, self).__init__(111+240+32+16, 16, 1, len(unequip_elements), unequip_elements)
+		
+		
 		
