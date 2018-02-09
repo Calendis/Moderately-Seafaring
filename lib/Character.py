@@ -151,7 +151,7 @@ class CaptainRizzko(Character):
 
 		self.name = "Rizzko"
 		self.race = "Kobold"
-		self.title = "\"Captain\""
+		self.title = "\"Cap'n\""
 		self.hometown = "Rohlberg"
 		self.character_class = CharacterClass.Deckhand()
 		self.lvl = 0
