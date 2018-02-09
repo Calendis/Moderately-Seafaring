@@ -94,6 +94,10 @@ class Character(pygame.sprite.Sprite):
 	def clear_images(self):
 		self.image = None
 		self.images = []
+		if self.weapon:
+			self.weapon.image = None
+		if self.armour:
+			self.armour.image = None
 
 	def heal(self, value, stat):
 		if stat == "HP":
@@ -222,6 +226,10 @@ class CaptainRizzko(Character):
 	def reload_images(self):
 		self.images = [CharacterImage.rizzko_left, CharacterImage.rizzko_right]
 		self.image = self.images[self.frame]
+		if self.weapon:
+			self.weapon.reload_image()
+		if self.armour:
+			self.armour.reload_image()
 
 class Zirkak(object):
 	"""docstring for Zurkak"""
