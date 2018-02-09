@@ -34,7 +34,7 @@ class TextBox():
 		if not self.width:
 			self.width = len(self.text[0])*8
 		if not self.height:
-			self.height = 100
+			self.height = len(self.text)*(16)+16
 
 	def draw(self):
 		pygame.draw.rect(screen, self.box_colour, (self.position["x"], self.position["y"], self.width, self.height))

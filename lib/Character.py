@@ -38,6 +38,7 @@ class Character(pygame.sprite.Sprite):
 		self.mag = 0
 		self.res = 0
 		self.spd = 0
+		self.luk = 0
 		self.ele = []
 		self.ele_weak = []
 		self.ele_strong = []
@@ -50,6 +51,8 @@ class Character(pygame.sprite.Sprite):
 		self.a = 0
 
 		self.statuses = []
+		self.current_hp = self.hp
+		self.current_mp = self.mp
 
 	def draw(self):
 		pass
@@ -62,6 +65,23 @@ class Character(pygame.sprite.Sprite):
 		self.pos[1] += self.velocity[1]
 		self.rect = pygame.Rect(self.pos[0], self.pos[1], 16, 32)
 		self.feetrect = pygame.Rect(self.pos[0], self.pos[1]+16, 16, 32-16)
+
+	def level_up(self):
+		self.hp += self.character_class.get_hp_bonus()
+		self.mp += self.character_class.get_mp_bonus()
+		self.atk += self.character_class.get_atk_bonus()
+		self.dfn += self.character_class.get_dfn_bonus()
+		self.mag += self.character_class.get_mag_bonus()
+		self.res += self.character_class.get_res_bonus()
+		self.spd += self.character_class.get_spd_bonus()
+		self.luk += self.character_class.get_luk_bonus()
+		
+		if self.get_lvl() == 0:
+			self.current_hp = self.hp
+			self.current_mp = self.mp
+
+		self.lvl += 1
+		self.exp = 0
 
 	def move_back(self):
 		self.pos[0] -= self.velocity[0]
@@ -79,8 +99,41 @@ class Character(pygame.sprite.Sprite):
 	def get_name(self):
 		return self.name
 
+	def get_lvl(self):
+		return self.lvl
+
 	def get_full_name(self):
-		return self.title+" "+self.name+", "+self.character_class.get_name()
+		return self.title+" "+self.name+", level "+str(self.get_lvl())+" "+self.character_class.get_name()
+
+	def get_hp(self):
+		return self.hp
+
+	def get_current_hp(self):
+		return self.current_hp
+
+	def get_mp(self):
+		return self.mp
+
+	def get_current_mp(self):
+		return self.current_mp
+
+	def get_atk(self):
+		return self.atk
+
+	def get_dfn(self):
+		return self.dfn
+
+	def get_mag(self):
+		return self.mag
+
+	def get_res(self):
+		return self.res
+
+	def get_spd(self):
+		return self.spd
+
+	def get_luk(self):
+		return self.luk
 
 class CaptainRizzko(Character):
 	"""docstring for CaptainRizzko"""
@@ -93,7 +146,7 @@ class CaptainRizzko(Character):
 		self.title = "\"Captain\""
 		self.hometown = "Rohlberg"
 		self.character_class = CharacterClass.Deckhand()
-		self.lvl = 1
+		self.lvl = 0
 		self.hp = 10
 		self.mp = 0
 		self.atk = 3
@@ -103,6 +156,7 @@ class CaptainRizzko(Character):
 		self.spd = 4
 
 		self.maxspeed = round(1 + self.spd/100)
+		self.level_up()
 
 	def reload_images(self):
 		self.images = [CharacterImage.rizzko_left, CharacterImage.rizzko_right]

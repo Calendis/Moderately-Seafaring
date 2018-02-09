@@ -29,7 +29,8 @@ def main():
 
 	menus = []
 	party = []
-	fragile_textboxes = []
+	fragile_textboxes = [] #Fragile textboxes disappear at a button press
+	resiliant_textboxes = [] #Resiliant textboxes don't disappear until some condition is met
 	
 	main_menu = Menu.MainMenu()
 	menus.append(main_menu)
@@ -264,6 +265,8 @@ def main():
 							menus.remove(menus[-1])
 							if len(menus) > 0:
 								menus[-1].update()
+							if len(resiliant_textboxes) > 0:
+								resiliant_textboxes.remove(resiliant_textboxes[-1])
 
 						if event.key == K_x:
 							if menus[-1].__class__ == Menu.StartMenu:
@@ -362,6 +365,27 @@ def main():
 										fragile_textboxes.append(Text.TextBox([party[0].get_items()[menus[1].get_selected_element_position()["x"]].get_name()+" isn't equippable!"],
 											menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
 
+							elif menus[-1].__class__ == Menu.PartyMenu:
+								#Opens the party use menu for the party member you've selected
+								menus.append(Menu.PartyUseMenu(party[menus[-1].get_selected_element_position()["x"]]))
+
+							elif menus[-1].__class__ == Menu.PartyUseMenu:
+								if menus[-1].get_selected_element_position()["x"] == 0: #Status
+									selected_party_member = party[menus[1].get_selected_element_position()["x"]]
+									fragile_textboxes.append(Text.TextBox(
+										
+										[selected_party_member.get_full_name(),
+										"HP: "+str(selected_party_member.get_current_hp())+"/"+str(selected_party_member.get_hp()),
+										"MP: "+str(selected_party_member.get_current_mp())+"/"+str(selected_party_member.get_mp()),
+										"ATK: "+str(selected_party_member.get_atk()),
+										"DEF: "+str(selected_party_member.get_dfn()),
+										"MAG: "+str(selected_party_member.get_mag()),
+										"RES: "+str(selected_party_member.get_res()),
+										"SPD: "+str(selected_party_member.get_spd()),
+										"LUCK: "+str(selected_party_member.get_luk())],
+
+										menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
+
 				if event.type == pygame.KEYUP:
 					if event.key == K_q:
 						map_layer.zoom = 2
@@ -427,6 +451,9 @@ def main():
 				menu.draw()
 
 			for textbox in fragile_textboxes:
+				textbox.draw()
+
+			for textbox in resiliant_textboxes:
 				textbox.draw()
 
 			pygame.display.flip()
