@@ -43,6 +43,12 @@ class Item(object):
 	def get_value(self):
 		return self.value
 
+	def get_power(self):
+		return self.w
+
+	def get_defence(self):
+		return self.a
+
 	def clear_image(self):
 		self.image = None
 

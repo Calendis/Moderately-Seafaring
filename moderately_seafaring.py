@@ -384,7 +384,10 @@ def main():
 										"MAG: "+str(selected_party_member.get_mag()),
 										"RES: "+str(selected_party_member.get_res()),
 										"SPD: "+str(selected_party_member.get_spd()),
-										"LUCK: "+str(selected_party_member.get_luk())],
+										"LUCK: "+str(selected_party_member.get_luk()),
+										"Weapon: "+selected_party_member.get_weapon_name()+" (+"+str(selected_party_member.get_weapon_power())+")",
+										"Armour: "+selected_party_member.get_armour_name()+" (+"+str(selected_party_member.get_armour_power())+")",
+										"EXP: "+str(selected_party_member.get_exp())+"/"+str(selected_party_member.get_exp_to_next())],
 
 										menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
 

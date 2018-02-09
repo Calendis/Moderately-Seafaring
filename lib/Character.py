@@ -30,6 +30,7 @@ class Character(pygame.sprite.Sprite):
 		
 		self.lvl = 0
 		self.exp = 0
+		self.exp_to_next = 0
 		
 		self.hp = 0
 		self.mp = 0
@@ -43,9 +44,9 @@ class Character(pygame.sprite.Sprite):
 		self.ele_weak = []
 		self.ele_strong = []
 
-		self.weapon = []
-		self.armour= []
-		self.shield = []
+		self.weapon = None
+		self.armour= None
+		self.shield = None
 		self.rings = []
 		self.w = 0
 		self.a = 0
@@ -82,6 +83,7 @@ class Character(pygame.sprite.Sprite):
 
 		self.lvl += 1
 		self.exp = 0
+		self.exp_to_next = (self.lvl**2)*(100)
 
 	def move_back(self):
 		self.pos[0] -= self.velocity[0]
@@ -143,6 +145,32 @@ class Character(pygame.sprite.Sprite):
 	def get_luk(self):
 		return self.luk
 
+	def get_exp(self):
+		return self.exp
+
+	def get_exp_to_next(self):
+		return self.exp_to_next
+
+	def get_weapon_name(self):
+		if self.weapon == None:
+			return("None")
+		return self.weapon.get_name()
+
+	def get_weapon_power(self):
+		if self.weapon == None:
+			return(0)
+		return self.weapon.get_power()
+
+	def get_armour_name(self):
+		if self.armour == None:
+			return("None")
+		return self.armour.get_name()
+
+	def get_armour_power(self):
+		if self.armour == None:
+			return(0)
+		return self.armour.get_defence()
+
 class CaptainRizzko(Character):
 	"""docstring for CaptainRizzko"""
 	def __init__(self, pos):
@@ -162,6 +190,7 @@ class CaptainRizzko(Character):
 		self.mag = 0
 		self.res = 1
 		self.spd = 4
+		self.luk = 3
 
 		self.maxspeed = round(1 + self.spd/100)
 		self.level_up()

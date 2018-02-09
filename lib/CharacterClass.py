@@ -63,4 +63,5 @@ class Deckhand(CharacterClass):
 		self.name = "Deckhand"
 		self.hp_bonus = 1
 		self.dfn_bonus = 1
+		self.luk_bonus = 1
 		
