@@ -32,10 +32,12 @@ class TextBox():
 		self.box_colour = box_colour
 
 		if not self.width:
-			self.width = len(self.text)*8
+			self.width = len(self.text[0])*8
 		if not self.height:
 			self.height = 100
 
 	def draw(self):
 		pygame.draw.rect(screen, self.box_colour, (self.position["x"], self.position["y"], self.width, self.height))
-		draw_text(self.position["x"]+8, self.position["y"]+8, self.text, 1, self.text_colour)
+		
+		for line in self.text:
+			draw_text(self.position["x"]+8, self.position["y"]*(self.text.index(line)+1)+8, line, 1, self.text_colour)

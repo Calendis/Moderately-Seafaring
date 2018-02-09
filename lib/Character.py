@@ -26,7 +26,7 @@ class Character(pygame.sprite.Sprite):
 		self.hometown = "???"
 		self.description = "Couldn't get a read on "+self.name+"!"
 		
-		self.items = [Item.GreenHerb(), Item.BrownHerb()]
+		self.items = [Item.GreenHerb(), Item.BrownHerb(), Item.Healing_Potion_I(), Item.Dagger()]
 		
 		self.lvl = 0
 		self.exp = 0

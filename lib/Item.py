@@ -28,8 +28,20 @@ class Item(object):
 	def get_image(self):
 		return self.image
 
+	def get_useable(self):
+		return self.useable
+
+	def get_equippable(self):
+		return self.equippable
+
+	def get_item_type(self):
+		return self.item_type
+
 	def clear_image(self):
 		self.image = None
+
+	def reload_image(self):
+		self.image = ItemImage.default
 
 class Equippable(Item):
 	"""docstring for Equippable"""
@@ -40,9 +52,12 @@ class Equippable(Item):
 
 class Weapon(Equippable):
 	"""docstring for Weapon"""
-	def __init__(self):
+	def __init__(self, w):
 		super(Weapon, self).__init__()
 		self.item_type = "Weapon"
+		self.w = w
+		self.description_ending = "Weapon power: "+str(self.w)+"."
+		self.description = "A weapon."
 
 class Ingredient(Item):
 	"""docstring for Ingredient"""
@@ -64,7 +79,7 @@ class Medicine(Consumable):
 		super(Medicine, self).__init__()
 		self.value = value
 		self.stat = stat
-		self.description_ending = "Restores "+str(self.value)+" "+self.stat
+		self.description_ending = "Restores "+str(self.value)+" "+self.stat+"."
 		self.description = "A medicine. "+self.description_ending
 
 class GreenHerb(Medicine):
@@ -103,6 +118,9 @@ class Healing_Potion_I(Medicine):
 		self.description = "A concentrated healing essence of low quality. "+self.description_ending
 		self.image = ItemImage.healing_potion_I
 
+	def reload_image(self):
+		self.image = ItemImage.healing_potion_I
+
 class RedHerb(Ingredient):
 	"""docstring for RedHerb"""
 	def __init__(self):
@@ -114,4 +132,17 @@ class RedHerb(Ingredient):
 
 	def reload_image(self):
 		self.image = ItemImage.red_herb
+
+class Dagger(Weapon):
+	"""docstring for Dagger"""
+	def __init__(self):
+		self.w = 10
+		super(Dagger, self).__init__(self.w)
+		self.name = "Dagger"
+		self.description = "A cheap iron dagger. "+self.description_ending
+		self.image = ItemImage.dagger
+
+	def reload_image(self):
+		self.image = ItemImage.dagger
+
 		

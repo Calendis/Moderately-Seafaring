@@ -344,13 +344,23 @@ def main():
 
 							elif menus[-1].__class__ == Menu.ItemUseMenu:
 								if menus[-1].get_selected_element_position()["x"] == 0: #Use
-									print("Use")
+									if party[0].get_items()[menus[1].get_selected_element_position()["x"]].get_useable():
+										print("Use on whom?")
+									else:
+										fragile_textboxes.append(Text.TextBox([party[0].get_items()[menus[1].get_selected_element_position()["x"]].get_name()+" isn't useable!"],
+											menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
+
 								elif menus[-1].get_selected_element_position()["x"] == 1: #Examine
-									print("Examine")
-									fragile_textboxes.append(Text.TextBox(party[0].get_items()[menus[1].get_selected_element_position()["x"]].get_description(),
+									fragile_textboxes.append(Text.TextBox([party[0].get_items()[menus[1].get_selected_element_position()["x"]].get_description(),
+										"","Type: "+party[0].get_items()[menus[1].get_selected_element_position()["x"]].get_item_type()],
 									 menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
+								
 								elif menus[-1].get_selected_element_position()["x"] == 2: #Equip
-									print("Equip")
+									if party[0].get_items()[menus[1].get_selected_element_position()["x"]].get_equippable():
+										print("Equip to whom?")
+									else:
+										fragile_textboxes.append(Text.TextBox([party[0].get_items()[menus[1].get_selected_element_position()["x"]].get_name()+" isn't equippable!"],
+											menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
 
 				if event.type == pygame.KEYUP:
 					if event.key == K_q:
