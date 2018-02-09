@@ -37,6 +37,12 @@ class Item(object):
 	def get_item_type(self):
 		return self.item_type
 
+	def get_stat(self):
+		return self.stat
+
+	def get_value(self):
+		return self.value
+
 	def clear_image(self):
 		self.image = None
 

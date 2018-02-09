@@ -18,6 +18,7 @@ import sys
 from lib import Character
 from lib import Menu
 from lib import Text
+from lib import Item
 
 def main():
 	done = False
@@ -348,7 +349,8 @@ def main():
 							elif menus[-1].__class__ == Menu.ItemUseMenu:
 								if menus[-1].get_selected_element_position()["x"] == 0: #Use
 									if party[0].get_items()[menus[1].get_selected_element_position()["x"]].get_useable():
-										print("Use on whom?")
+										#Adds the "use on whom?" menu to the menu list.
+										menus.append(Menu.WhomUseMenu(menus[-1].get_item(), party))
 									else:
 										fragile_textboxes.append(Text.TextBox([party[0].get_items()[menus[1].get_selected_element_position()["x"]].get_name()+" isn't useable!"],
 											menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
@@ -385,6 +387,12 @@ def main():
 										"LUCK: "+str(selected_party_member.get_luk())],
 
 										menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
+
+							elif menus[-1].__class__ == Menu.WhomUseMenu:
+								print("Use "+menus[-1].get_item().get_name()+" on "+party[menus[-1].get_selected_element_position()["x"]].get_name())
+								if menus[-1].get_item().__class__.__bases__[0] == Item.Medicine:
+									party[menus[-1].get_selected_element_position()["x"]].heal(menus[-1].get_item().get_value(), menus[-1].get_item().get_stat())
+									party[0].items.remove(menus[-1].get_item())
 
 				if event.type == pygame.KEYUP:
 					if event.key == K_q:

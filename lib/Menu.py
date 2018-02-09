@@ -4,6 +4,7 @@ screen = pygame.display.set_mode()
 
 from lib import Text
 from lib import UIConstant
+from lib import Character
 
 DEFAULT_COLOUR = UIConstant.FOREGROUND_COLOUR
 BACKGROUND_COLOUR = UIConstant.BACKGROUND_COLOUR
@@ -263,7 +264,7 @@ class PartyMenu(Menu):
 		party_elements = []
 		for member in party:
 			party_elements.append(BasicMenuItem(member.get_name()))
-		super(PartyMenu, self).__init__(16, 16, len(party_elements), 1, party_elements, SCREEN_SIZE[0]-(16+16))
+		super(PartyMenu, self).__init__(16, 16, 1, len(party_elements), party_elements, 240, 256, 1, 4)
 
 itemuse_elements = [
 	BasicMenuItem("Use"),
@@ -276,8 +277,35 @@ itemuse_elements = [
 class ItemUseMenu(Menu):
 	"""docstring for ItemUseMenu"""
 	def __init__(self, item):
+		self.item = item
 		super(ItemUseMenu, self).__init__(272, 16, 1, len(itemuse_elements), itemuse_elements)
 
 	def get_item(self):
 		return self.item
+
+class WhomUseMenu(Menu):
+	"""docstring for WhomUseMenu"""
+	def __init__(self, item, party):
+		self.item = item
+		whomuse_elements = []
+		for party_member in party:
+			whomuse_elements.append(BasicMenuItem(party_member.get_name()))
+		super(WhomUseMenu, self).__init__(272+16+(7*15), 16, 1, len(whomuse_elements), whomuse_elements)
+
+	def get_item(self):
+		return self.item
+		
+
+partyuse_elements = [
+	BasicMenuItem("Status"),
+	BasicMenuItem("Select")
+]		
+
+class PartyUseMenu(Menu):
+	"""docstring for PartyUseMenu"""
+	def __init__(self, party_member):
+		super(PartyUseMenu, self).__init__(272, 16, 1, len(partyuse_elements), partyuse_elements)
+	
+	def get_party_member(self):
+		return party_member
 		

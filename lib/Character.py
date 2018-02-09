@@ -93,6 +93,14 @@ class Character(pygame.sprite.Sprite):
 		self.image = None
 		self.images = []
 
+	def heal(self, value, stat):
+		if stat == "HP":
+			self.current_hp += value
+		elif stat == "MP":
+			self.current_mp += value
+		else:
+			print("ERROR: The stat affected was unrecognized.")
+
 	def get_items(self):
 		return(self.items)
 
