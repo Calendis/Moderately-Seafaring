@@ -103,6 +103,11 @@ class Menu(object):
 				#The important bit
 				screen.blit(menu_element_text, (self.get_position()["x"]+(self.get_xspacing()*menu_element_counter)+(8),
 					self.get_position()["y"]+(menu_list_counter*self.font_size*self.y_spacing_multiplier)+(8+self.additional_top_buffer)))
+
+				if menu_element.get_image():
+					screen.blit(menu_element.get_image(), (self.get_position()["x"]+(216),
+						self.get_position()["y"]+(menu_list_counter*self.font_size*self.y_spacing_multiplier)+(4+self.additional_top_buffer)))
+
 				
 	def move_selection_right(self):
 		if self.y_selected_element < self.width-1:
@@ -149,7 +154,7 @@ class Menu(object):
 
 class MenuItem(object):
 	"""docstring for MenuItem"""
-	def __init__(self, text, colour, image):
+	def __init__(self, text, image, colour=DEFAULT_COLOUR):
 		super(MenuItem, self).__init__()
 
 		self.text = str(text)
@@ -176,7 +181,10 @@ class MenuItem(object):
 		return self.original_colour
 
 	def get_image(self):
-		return self.image
+		if self.image:
+			return self.image
+		else:
+			return False
 
 	def set_colour(self, new_colour):
 		self.colour = new_colour
@@ -185,11 +193,10 @@ class BasicMenuItem(MenuItem):
 	"""docstring for BasicMenuItem"""
 	def __init__(self, text, colour=DEFAULT_COLOUR):
 		self.colour = colour
-		self.image = None
+		self.image = False
 		self.text = text
-		super(BasicMenuItem, self).__init__(self.text, self.colour, self.image)
-		self.__class__ = MenuItem
-		
+		super(BasicMenuItem, self).__init__(self.text, self.image, self.colour)
+		self.__class__ = MenuItem		
 
 main_elements = [
 	BasicMenuItem("New Game"),
@@ -239,7 +246,7 @@ class ItemMenu(Menu):
 	def __init__(self, items):
 		item_elements = []
 		for item in items:
-			item_elements.append(BasicMenuItem(item.get_name()))
+			item_elements.append(MenuItem(item.get_name(), item.get_image()))
 		super(ItemMenu, self).__init__(16, 16, 1, len(item_elements), item_elements, 240, SCREEN_SIZE[1]-(32+16+(2*16)), 1.4, 4)
 
 class PartyMenu(Menu):

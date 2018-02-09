@@ -120,10 +120,10 @@ def main():
 								loaded_party = loaded_game["party"]
 								print("Party loaded.\n")
 
-								print("Reloading party images...")
+								'''print("Reloading party images...")
 								for party_member in party:
 									party_member.reload_images()
-								print("Images reloaded.")
+								print("Images reloaded.")'''
 
 								print("Loading map...")
 								loaded_map = loaded_game["map"]
@@ -168,8 +168,12 @@ def main():
 								pyscroll_group_data = PyscrollGroup(map_layer=map_layer, default_layer=2)
 								print("Group data created.\n")
 								
+								print("Reloading party and item images...")
 								for party_member in party:
 									party_member.reload_images()
+									for item in party_member.items:
+										item.reload_image()
+								print("Images reloaded.")
 
 								print("Adding party to group data...")
 								for party_member in party:
@@ -292,9 +296,11 @@ def main():
 									pyscroll_group_data.remove(party_member)
 								print("Party cleared from group data.\n")
 
-								print("Clearing party images...")
+								print("Clearing party and item images...")
 								for member in party:
 									member.clear_images()
+									for item in member.items:
+										item.clear_image()
 								print("Images cleared.")
 
 								print("Saving party...")
@@ -315,9 +321,12 @@ def main():
 								loaded_game.close()
 								print("Shelf closed.\n")
 
-								print("Reloading character images.")
+								print("Reloading party and item images...")
 								for party_member in party:
 									party_member.reload_images()
+									for item in party_member.items:
+										item.reload_image()
+								print("Images reloaded.")
 
 								menus.remove(menus[-1])
 
