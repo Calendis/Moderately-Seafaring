@@ -2,6 +2,7 @@
 from lib import CharacterImage
 from lib import Item
 from lib import CharacterClass
+from lib import Stat
 
 import pygame
 screen = pygame.display.set_mode()
@@ -32,14 +33,14 @@ class Character(pygame.sprite.Sprite):
 		self.exp = 0
 		self.exp_to_next = 0
 		
-		self.hp = 0
-		self.mp = 0
-		self.atk = 0
-		self.dfn = 0
-		self.mag = 0
-		self.res = 0
-		self.spd = 0
-		self.luk = 0
+		self.hp = Stat.HitPoints(0)
+		self.mp = Stat.ManaPoints(0)
+		self.atk = Stat.Attack(0)
+		self.dfn = Stat.Defence(0)
+		self.mag = Stat.MagicalAttack(0)
+		self.res = Stat.MagicalResistance(0)
+		self.spd = Stat.Speed(0)
+		self.luk = Stat.Luck(0)
 		self.ele = []
 		self.ele_weak = []
 		self.ele_strong = []
@@ -68,18 +69,18 @@ class Character(pygame.sprite.Sprite):
 		self.feetrect = pygame.Rect(self.pos[0], self.pos[1]+16, 16, 32-16)
 
 	def level_up(self):
-		self.hp += self.character_class.get_hp_bonus()
-		self.mp += self.character_class.get_mp_bonus()
-		self.atk += self.character_class.get_atk_bonus()
-		self.dfn += self.character_class.get_dfn_bonus()
-		self.mag += self.character_class.get_mag_bonus()
-		self.res += self.character_class.get_res_bonus()
-		self.spd += self.character_class.get_spd_bonus()
-		self.luk += self.character_class.get_luk_bonus()
+		self.hp.shift_value(self.character_class.get_hp_bonus())
+		self.mp.shift_value(self.character_class.get_mp_bonus())
+		self.atk.shift_value(self.character_class.get_atk_bonus())
+		self.dfn.shift_value(self.character_class.get_dfn_bonus())
+		self.mag.shift_value(self.character_class.get_mag_bonus())
+		self.res.shift_value(self.character_class.get_res_bonus())
+		self.spd.shift_value(self.character_class.get_spd_bonus())
+		self.luk.shift_value(self.character_class.get_luk_bonus())
 		
 		if self.get_lvl() == 0:
-			self.current_hp = self.hp
-			self.current_mp = self.mp
+			self.current_hp = self.hp.get_value()
+			self.current_mp = self.mp.get_value()
 
 		self.lvl += 1
 		self.exp = 0
@@ -100,9 +101,9 @@ class Character(pygame.sprite.Sprite):
 			self.armour.image = None
 
 	def heal(self, value, stat):
-		if stat == "HP":
+		if stat.get_name() == "HP":
 			self.current_hp += value
-		elif stat == "MP":
+		elif stat.get_name() == "MP":
 			self.current_mp += value
 		else:
 			print("ERROR: The stat affected was unrecognized.")
@@ -132,34 +133,34 @@ class Character(pygame.sprite.Sprite):
 		return self.title+" "+self.name+", level "+str(self.get_lvl())+" "+self.character_class.get_name()
 
 	def get_hp(self):
-		return self.hp
+		return self.hp.get_value()
 
 	def get_current_hp(self):
 		return self.current_hp
 
 	def get_mp(self):
-		return self.mp
+		return self.mp.get_value()
 
 	def get_current_mp(self):
 		return self.current_mp
 
 	def get_atk(self):
-		return self.atk
+		return self.atk.get_value()
 
 	def get_dfn(self):
-		return self.dfn
+		return self.dfn.get_value()
 
 	def get_mag(self):
-		return self.mag
+		return self.mag.get_value()
 
 	def get_res(self):
-		return self.res
+		return self.res.get_value()
 
 	def get_spd(self):
-		return self.spd
+		return self.spd.get_value()
 
 	def get_luk(self):
-		return self.luk
+		return self.luk.get_value()
 
 	def get_exp(self):
 		return self.exp
@@ -211,16 +212,16 @@ class CaptainRizzko(Character):
 		self.hometown = "Rohlberg"
 		self.character_class = CharacterClass.Deckhand()
 		self.lvl = 0
-		self.hp = 10
-		self.mp = 0
-		self.atk = 3
-		self.dfn = 1
-		self.mag = 0
-		self.res = 1
-		self.spd = 4
-		self.luk = 3
+		self.hp = Stat.HitPoints(10)
+		self.mp = Stat.ManaPoints(0)
+		self.atk = Stat.Attack(3)
+		self.dfn = Stat.Defence(1)
+		self.mag = Stat.MagicalAttack(0)
+		self.res = Stat.MagicalResistance(1)
+		self.spd = Stat.Speed(4)
+		self.luk = Stat.Luck(3)
 
-		self.maxspeed = round(1 + self.spd/100)
+		self.maxspeed = round(1 + self.spd.get_value()/100)
 		self.level_up()
 
 	def reload_images(self):

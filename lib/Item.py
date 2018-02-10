@@ -1,5 +1,6 @@
 #Classes for items in Moderately Seafaring
 from lib import ItemImage
+from lib import Stat
 
 class Item(object):
 	"""docstring for Item"""
@@ -71,6 +72,15 @@ class Weapon(Equippable):
 		self.description_ending = "Weapon power: "+str(self.w)+"."
 		self.description = "A weapon."
 
+class Armour(Equippable):
+	"""docstring for Armour"""
+	def __init__(self, a):
+		super(Armour, self).__init__()
+		self.item_type = "Armour"
+		self.a = a
+		self.description_ending = "Defence power: "+str(self.a)+"."
+		self.description = "A piece of armour."
+		
 class Ingredient(Item):
 	"""docstring for Ingredient"""
 	def __init__(self):
@@ -91,14 +101,14 @@ class Medicine(Consumable):
 		super(Medicine, self).__init__()
 		self.value = value
 		self.stat = stat
-		self.description_ending = "Restores "+str(self.value)+" "+self.stat+"."
+		self.description_ending = "Restores "+str(self.value)+" "+self.stat.get_name()+"."
 		self.description = "A medicine. "+self.description_ending
 
 class GreenHerb(Medicine):
 	"""docstring for GreenHerb"""
 	def __init__(self):
 		self.value = 20
-		self.stat = "HP"
+		self.stat = Stat.HitPoints(self.value)
 		super(GreenHerb, self).__init__(self.value, self.stat)
 		self.name = "Green Herb"
 		self.price = 20
@@ -124,7 +134,7 @@ class Healing_Potion_I(Medicine):
 	"""docstring for Healing_Potion_I"""
 	def __init__(self):
 		self.value = 50
-		self.stat = "HP"
+		self.stat = Stat.HitPoints(self.value)
 		super(Healing_Potion_I, self).__init__(self.value, self.stat)
 		self.name = "Healing Potion I"
 		self.description = "A concentrated healing essence of low quality. "+self.description_ending
