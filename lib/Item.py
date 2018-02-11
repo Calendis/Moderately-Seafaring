@@ -11,12 +11,9 @@ class Item(object):
 		self.item_type = "Default Item Type"
 		self.equippable = False
 		self.useable = False
-		self.stat = "Stats unaffected. This message should not appear"
+		self.stat = None
 		self.value = 0
 		self.price = 0
-		self.power = 0
-		self.w = 0
-		self.a = 0
 		self.ele = []
 		self.image = ItemImage.default
 
@@ -44,11 +41,14 @@ class Item(object):
 	def get_value(self):
 		return self.value
 
-	def get_power(self):
-		return self.w
+	def get_stats(self):
+		return self.stats
 
-	def get_defence(self):
-		return self.a
+	def get_attack_stat(self):
+		return self.stats["atk"]
+
+	def get_defence_stat(self):
+		return self.stats["dfn"]
 
 	def clear_image(self):
 		self.image = None
@@ -62,24 +62,63 @@ class Equippable(Item):
 		super(Equippable, self).__init__()
 		self.item_type = "Equippable"
 		self.equippable = True
+		self.stats = {"hp": Stat.HitPoints(0), "mp": Stat.ManaPoints(0),
+		"atk": Stat.Attack(0), "dfn": Stat.Defence(0),
+		"mag": Stat.MagicalAttack(0), "res": Stat.MagicalResistance(0),
+		"spd": Stat.Speed(0), "luk": Stat.Luck(0)}
 
 class Weapon(Equippable):
 	"""docstring for Weapon"""
-	def __init__(self, w):
+	def __init__(self, atk_bonus):
 		super(Weapon, self).__init__()
 		self.item_type = "Weapon"
-		self.w = w
-		self.description_ending = "Weapon power: "+str(self.w)+"."
+		self.atk_bonus = atk_bonus
+		self.stats["atk"].set_value(self.atk_bonus)
+		self.description_ending = "Weapon power: "+str(self.atk_bonus)+"."
 		self.description = "A weapon."
 
 class Armour(Equippable):
 	"""docstring for Armour"""
-	def __init__(self, a):
+	def __init__(self, dfn_bonus):
 		super(Armour, self).__init__()
 		self.item_type = "Armour"
-		self.a = a
-		self.description_ending = "Defence power: "+str(self.a)+"."
+		self.dfn_bonus = dfn_bonus
+		self.stats["dfn"].set_value(self.dfn_bonus)
+		self.description_ending = "Defence power: "+str(self.dfn_bonus)+"."
 		self.description = "A piece of armour."
+
+class Accessory(Equippable):
+	"""docstring for Accessory"""
+	def __init__(self, hp_val, mp_val, atk_val, dfn_val, mag_val, res_val, spd_val, luk_val, ele=[], char_class=None):
+		super(Accessory, self).__init__()
+		self.item_type = "Accessory"
+
+		self.ele = ele
+		self.char_class = char_class
+
+		self.stats["hp"].set_value(hp_val)
+		self.stats["mp"].set_value(mp_val)
+		self.stats["atk"].set_value(atk_val)
+		self.stats["dfn"].set_value(dfn_val)
+		self.stats["mag"].set_value(mag_val)
+		self.stats["res"].set_value(res_val)
+		self.stats["spd"].set_value(spd_val)
+		self.stats["luk"].set_value(luk_val)
+		
+		self.description_ending = ""
+		for stat in self.stats.values():
+			if stat.get_value():
+				self.description_ending += "+"+str(stat.get_value())+" "+stat.get_name()
+
+		self.description = "An accessory. "
+
+	def get_accessory_values(self):
+		values = ""
+		for stat in self.stats.values():
+			if stat.get_value():
+				values += "+"+str(stat.get_value())+" "+stat.get_name()
+
+		return values
 		
 class Ingredient(Item):
 	"""docstring for Ingredient"""
@@ -87,7 +126,6 @@ class Ingredient(Item):
 		super(Ingredient, self).__init__()
 		self.item_type = "Ingredient"
 		
-
 class Consumable(Item):
 	"""docstring for Consumable"""
 	def __init__(self):
@@ -158,13 +196,25 @@ class RedHerb(Ingredient):
 class Dagger(Weapon):
 	"""docstring for Dagger"""
 	def __init__(self):
-		self.w = 10
-		super(Dagger, self).__init__(self.w)
+		self.atk_bonus = 10
+		super(Dagger, self).__init__(self.atk_bonus)
 		self.name = "Dagger"
 		self.description = "A cheap iron dagger. "+self.description_ending
 		self.image = ItemImage.dagger
+		self.price = 25
 
 	def reload_image(self):
 		self.image = ItemImage.dagger
 
+class CrossRing(Accessory):
+	"""docstring for CrossRing"""
+	def __init__(self):
+		super(CrossRing, self).__init__(0, 0, 60, 100, 0, 0, 0, 0)
+		self.name = "Cross Ring"
+		self.description = "A grey metal ring, awkwardly shaped like a cross."+self.description_ending
+		self.image = ItemImage.cross_ring
+		self.price = 8000
+
+	def reload_image(self):
+		self.image = ItemImage.cross_ring
 		

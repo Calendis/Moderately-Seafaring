@@ -26,6 +26,9 @@ class Stat(object):
 		else:
 			self.temp_modifier = new_temp_modifier
 
+	def set_value(self, new_value):
+		self.value = new_value
+
 class HitPoints(Stat):
 	"""docstring for HitPoints"""
 	def __init__(self, value):

@@ -388,19 +388,25 @@ def main():
 										"LUCK: "+str(selected_party_member.get_luk()),
 										"Weapon: "+selected_party_member.get_weapon_name()+" (+"+str(selected_party_member.get_weapon_power())+")",
 										"Armour: "+selected_party_member.get_armour_name()+" (+"+str(selected_party_member.get_armour_power())+")",
+										"Shield: "+selected_party_member.get_shield_name()+" (+"+str(selected_party_member.get_shield_power())+")",
+										"Accessory: "+selected_party_member.get_accessory_name()+" (+"+str(selected_party_member.get_accessory_power())+")",
 										"EXP: "+str(selected_party_member.get_exp())+"/"+str(selected_party_member.get_exp_to_next())],
 
 										menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
 
 								elif menus[-1].get_selected_name() == "Select":
-									print("TODO: Set current party member to "+party[menus[1].get_selected_element_position()["x"]])
+									print("TODO: Set current party member to "+party[menus[1].get_selected_element_position()["x"]].get_name())
 
 								elif menus[-1].get_selected_name() == "Unequip":
 									equipped_items = []
-									if party[menus[1].get_selected_element_position()["x"]].get_weapon() != None:
+									if party[menus[1].get_selected_element_position()["x"]].get_weapon():
 										equipped_items.append(party[menus[1].get_selected_element_position()["x"]].get_weapon())
-									if party[menus[1].get_selected_element_position()["x"]].get_armour() != None:
+									if party[menus[1].get_selected_element_position()["x"]].get_armour():
 										equipped_items.append(party[menus[1].get_selected_element_position()["x"]].get_armour())
+									if party[menus[1].get_selected_element_position()["x"]].get_shield():
+										equipped_items.append(party[menus[1].get_selected_element_position()["x"]].get_shield())
+									if party[menus[1].get_selected_element_position()["x"]].get_accessory():
+										equipped_items.append(party[menus[1].get_selected_element_position()["x"]].get_accessory())
 									
 									if len(equipped_items) > 0:
 										menus.append(Menu.UnequipMenu(equipped_items))
