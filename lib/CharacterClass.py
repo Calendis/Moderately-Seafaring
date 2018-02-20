@@ -44,6 +44,9 @@ class CharacterClass():
 	def get_luk_bonus(self):
 		return self.luk_bonus+randint(0, 3)
 
+	def get_spell_lines(self):
+		return self.spell_lines
+
 
 class TestClass(CharacterClass):
 	"""docstring for TestClass"""
@@ -64,4 +67,4 @@ class Deckhand(CharacterClass):
 		self.hp_bonus = 1
 		self.dfn_bonus = 1
 		self.luk_bonus = 1
-		
+		self.spell_lines = [Spell.neptune_line, Spell.wrath_o_the_sea_line]

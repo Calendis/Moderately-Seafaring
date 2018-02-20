@@ -70,6 +70,7 @@ class Character(pygame.sprite.Sprite):
 		self.feetrect = pygame.Rect(self.pos[0], self.pos[1]+16, 16, 32-16)
 
 	def level_up(self):
+		#Adjust stats
 		self.stats["hp"].shift_value(self.character_class.get_hp_bonus())
 		self.stats["mp"].shift_value(self.character_class.get_mp_bonus())
 		self.stats["atk"].shift_value(self.character_class.get_atk_bonus())
@@ -83,9 +84,16 @@ class Character(pygame.sprite.Sprite):
 			self.current_hp = self.stats["hp"].get_value()
 			self.current_mp = self.stats["mp"].get_value()
 
+		#Adjust level and experience points
 		self.lvl += 1
 		self.exp = 0
 		self.exp_to_next = (self.lvl**2)*(100)
+
+		#Adjust spells
+		for spell_line in self.get_spell_lines():
+			for spell_master_level in spell_line.keys():
+				if self.get_lvl() >= spell_master_level:
+					self.spells.append(spell_line[spell_master_level])
 
 	def move_back(self):
 		self.pos[0] -= self.velocity[0]
@@ -104,6 +112,12 @@ class Character(pygame.sprite.Sprite):
 			self.shield.image = None
 		if self.accessory:
 			self.accessory.image = None
+
+	def clear_spell_lines(self):
+		for spell_line in self.get_spell_lines():
+			for spell in spell_line.values():
+				print(spell)
+				spell.clear_image()
 
 	def heal(self, value, stat):
 		if stat.get_name() == "HP":
@@ -138,7 +152,13 @@ class Character(pygame.sprite.Sprite):
 		self.shift_stats(equipment, -1)
 
 	def get_items(self):
-		return(self.items)
+		return self.items
+
+	def get_spells(self):
+		return self.spells
+
+	def get_spell_lines(self):
+		return self.character_class.get_spell_lines()
 
 	def get_name(self):
 		return self.name
@@ -284,6 +304,8 @@ class CaptainRizzko(Character):
 		self.title = "\"Cap'n\""
 		self.hometown = "Rohlberg"
 		self.character_class = CharacterClass.Deckhand()
+		self.spells = []
+		self.spell_lines = self.character_class.get_spell_lines()
 		self.lvl = 0
 		self.stats["hp"] = Stat.HitPoints(10)
 		self.stats["mp"] = Stat.ManaPoints(0)
@@ -309,14 +331,18 @@ class CaptainRizzko(Character):
 		if self.accessory:
 			self.accessory.reload_image()
 
+	def reload_spell_lines(self):
+		for spell_line in self.get_spell_lines():
+			for spell in spell_line.values():
+				spell.reload_image()
+
 class Zirkak(object):
 	"""docstring for Zurkak"""
 	def __init__(self, arg):
 		super(Zurkak, self).__init__()
 		self.images = []
 		self.race = "Sahuagin"
+		self.title = ""
 		self.name = "Zurkak"
-		self.title = "Ranger"
-		
-		
-						
+		self.hometown = "Ieekauoreg"
+		#self.character_class = CharacterClass.

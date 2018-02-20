@@ -1,6 +1,7 @@
 #Spells and spell lines
-
 #Possible spell targets: 'friendly', 'enemy', 'self'
+from lib import SpellImage
+from lib import EleImage
 
 class Spell():
 	"""docstring for Spell"""
@@ -8,6 +9,7 @@ class Spell():
 		super(Spell, self).__init__()
 		self.targeting = "self"
 		self.radius = 0
+		self.radial_decay = False
 		self.name = "Unknown spell"
 		self.description = "Default spell description."
 		self.mp_cost = 999999
@@ -16,6 +18,41 @@ class Spell():
 		self.stat_power = 0 #This should be positive for buffing spells!
 
 		self.ele = False
+		#self.ele_image = self.set_ele_image()
+
+		self.image = SpellImage.default
+
+	def clear_image(self):
+		self.image = None
+
+	def reload_image(self):
+		self.image = SpellImage.default
+
+	def set_ele_image(self):
+		if self.ele == "Mercury":
+			return EleImage.mercury
+		elif self.ele == "Venus":
+			return EleImage.venus
+		elif self.ele == "Earth":
+			return EleImage.earth
+		elif self.ele == "Mars":
+			return EleImage.mars
+		elif self.ele == "Jupiter":
+			return EleImage.jupiter
+		elif self.ele == "Saturn":
+			return EleImage.saturn
+		elif self.ele == "Uranus":
+			return EleImage.uranus
+		elif self.ele == "Neptune":
+			return EleImage.neptune
+		else:
+			return EleImage.none
+
+	def get_name(self):
+		return self.name
+
+	def get_image(self):
+		return self.image
 
 class HealingSpell(Spell):
 	"""docstring for HealingSpell"""
@@ -46,16 +83,26 @@ class BuffSpell(Spell):
 		self.name = "Unknown buff spell"
 		self.description = "Default buff spell description."
 		self.stat_target = True
+		self.targeting = "friendly"
 
 class NerfSpell(Spell):
-			"""docstring for NerfSpell"""
-			def __init__(self):
-				super(NerfSpell, self).__init__()
-				self.targeting = "enemy"
-				self.name = "Unknown nerf spell"
-				self.description = "Default nerf spell description"
-				self.stat_target = True
-						
+	"""docstring for NerfSpell"""
+	def __init__(self):
+		super(NerfSpell, self).__init__()
+		self.targeting = "enemy"
+		self.name = "Unknown nerf spell"
+		self.description = "Default nerf spell description."
+		self.stat_target = True
+
+class StatusSpell(Spell):
+	"""docstring for StatusSpell"""
+	def __init__(self):
+		super(StatusSpell, self).__init__()
+		self.afflict_status = None
+		self.cure_status = None
+		self.name = "Unknown status spell"
+		self.description = "Default status spell description."
+		
 		
 class Mend(HealingSpell):
 	"""docstring for Mend"""
@@ -88,8 +135,7 @@ class Cure(HealingSpell):
 		self.description = "Stronger spell capable of quickly healing major lacerations and broken bones"
 		self.mp_cost = 9
 		self.targeting = "friendly"
-		self.radius = 1
-		
+		self.radius = 1		
 
 class Icicle(DamageSpell):
 	"""docstring for Icicle"""
@@ -100,6 +146,7 @@ class Icicle(DamageSpell):
 		self.power = 10
 		self.mp_cost = 2
 		self.ele = "Neptune"
+		#self.set_ele_image()
 		self.radius = 1
 
 class IceSpire(DamageSpell):
@@ -111,9 +158,9 @@ class IceSpire(DamageSpell):
 		self.power = 30
 		self.mp_cost = 6
 		self.ele = "Neptune"
+		#self.set_ele_image()
 		self.radius = 1
 		
-
 class Mire(NerfSpell):
 	"""docstring for Mire"""
 	def __init__(self):
@@ -122,8 +169,250 @@ class Mire(NerfSpell):
 		self.mp_cost = 5
 		self.stat_target = "Speed"
 		self.radius = 3
+
+class Swell(DamageSpell):
+	"""docstring for Swell"""
+	def __init__(self):
+		super(Swell, self).__init__()
+		self.name = "Swell"
+		self.description = "Summon a wave from beneath to strike your foe."
+		self.power = 12
+		self.mp_cost = 3
+		self.ele = "Neptune"
+		self.radius = 1
+
+class LargeSwell(DamageSpell):
+	"""docstring for LargeSwell"""
+	def __init__(self):
+		super(LargeSwell, self).__init__()
+		self.name = "Large Swell"
+		self.description = "Summon a large wave from beneath to strike your foes."
+		self.power = 24
+		self.mp = 7
+		self.ele = "Neptune"
+		self.radius = 3
+		self.radial_decay = True
+
+class RogueWave(DamageSpell):
+	"""docstring for RogueWave"""
+	def __init__(self):
+		super(RogueWave, self).__init__()
+		self.name = "Rogue Wave"
+		self.description = "Summon a towering wave to smother your foe!"
+		self.power = 75
+		self.mp_cost = 14
+		self.ele = "Neptune"
+		self.radius = 1
+		self.radial_decay = True
+
+class Tsunami(DamageSpell):
+	"""docstring for Tsunami"""
+	def __init__(self):
+		super(Tsunami, self).__init__()
+		self.name = "Tsunami"
+		self.description = "Summon an encompassing tsunami to drown your foes!!"
+		self.power = 150
+		self.mp_cost = 55
+		self.ele = "Neptune"
+		self.radius = 5
+		self.radial_decay = True
+
+class Mist(HealingSpell):
+	"""docstring for Mist"""
+	def __init__(self):
+		self.power = -10
+		super(Mist, self).__init__(self.power)
+		self.name = "Mist"
+		self.description = "Summon a soothing mist."+self.description_ending
+		self.mp_cost = 6
+		self.ele = "Neptune"
+		self.radius = 7
+
+class Aquablast(DamageSpell):
+	"""docstring for Aquablast"""
+	def __init__(self):
+		super(Aquablast, self).__init__()
+		self.name = "AquaBlast"
+		self.description = "Blast your foe with a magical jet of water."
+		self.power = 8
+		self.mp_cost = 2
+		self.ele = "Neptune"
+		self.radius = 1
+
+class Electrolyze(DamageSpell):
+	"""docstring for Electrolyze"""
+	def __init__(self):
+		super(Electrolyze, self).__init__()
+		self.name = "Electrolyze"
+		self.description = "Separate a small amount of water into its fundamental components."
+		self.power = 10
+		self.mp_cost = 4
+		self.ele = "Neptune"
+		self.radius = 1
+
+class Drizzle(DamageSpell):
+	"""docstring for Drizzle"""
+	def __init__(self):
+		super(Drizzle, self).__init__()
+		self.name = "Drizzle"
+		self.description = "Summon a magical rain to strike your foes."
+		self.power = 4
+		self.mp_cost = 3
+		self.ele = "Neptune"
+		self.radius = 3
+		self.radial_decay = True
+
+class Rainstorm(DamageSpell):
+	"""docstring for Rainstorm"""
+	def __init__(self):
+		super(Rainstorm, self).__init__()
+		self.name = "RainStorm"
+		self.description = "Summon a heavy magical rain to strike your foes."
+		self.power = 13
+		self.mp_cost = 5
+		self.ele = "Neptune"
+		self.radius = 3
+		self.radial_decay = True
+
+class Hail(DamageSpell):
+	"""docstring for Hail"""
+	def __init__(self):
+		super(Hail, self).__init__()
+		self.name = "HailStorm"
+		self.description = "Summon a magical hail to strike your foes!"
+		self.power = 33
+		self.mp_cost = 13
+		self.ele = "Neptune"
+		self.radius = 3
+		self.radial_decay = True
+
+class Deluge(DamageSpell):
+	"""docstring for Deluge"""
+	def __init__(self):
+		super(Deluge, self).__init__()
+		self.name = "Deluge"
+		self.description = "Summon a torrential rain to drench yout foes!"
+		self.power = 70
+		self.mp_cost = 25
+		self.ele = "Neptune"
+		self.radius = 3
+		self.radial_decay = True
 		
-		
-						
-basic_healer_line = [Mend(), Heal(), Cure()]
-test_line = [Mire(), Icicle(), IceSpire()]
+class SuperSleet(DamageSpell):
+	"""docstring for SuperSleet"""
+	def __init__(self):
+		super(SuperSleet, self).__init__()
+		self.name = "SuperSleet"
+		self.description = "Summon a wet torrential hail to drench your foes!"
+		self.power = 100
+		self.mp_cost = 40
+		self.ele = "Neptune"
+		self.radius = 3
+
+class Breeze(DamageSpell):
+	"""docstring for Breeze"""
+	def __init__(self):
+		super(Breeze, self).__init__()
+		self.name = "Breeze"
+		self.description = "Summon a magical breeze to tear at your foes."
+		self.power = 5
+		self.mp_cost = 4
+		self.ele = "Jupiter"
+		self.radius = 3
+		self.radial_decay = True
+
+class Squall(DamageSpell):
+	"""docstring for Squall"""
+	def __init__(self):
+		super(Squall, self).__init__()
+		self.name = "Squall"
+		self.description = "Summon a magical storm to barrage your foes."
+		self.power = 20
+		self.mp_cost = 6
+		self.ele = "Jupiter"
+		self.radius = 5
+		self.radial_decay = True
+
+class Gale(DamageSpell):
+	"""docstring for Gale"""
+	def __init__(self):
+		super(Gale, self).__init__()
+		self.name = "Gale"
+		self.description = "Summon an intense magical wind to tear at your foes!"
+		self.power = 50
+		self.mp_cost = 10
+		self.ele = "Jupiter"
+		self.radius = 5
+		self.radial_decay = True
+
+class Cyclone(DamageSpell):
+	"""docstring for Cyclone"""
+	def __init__(self):
+		super(Cyclone, self).__init__()
+		self.name = "Cyclone"
+		self.power = 100
+		self.mp_cost = 30
+		self.ele = "Jupiter"
+		self.radius = 7
+		self.radial_decay = True
+
+class Waterspout(DamageSpell):
+	"""docstring for Waterspout"""
+	def __init__(self):
+		super(Waterspout, self).__init__()
+		self.name = "Waterspout"
+		self.description = "Call forth a towering pillar of water from beneath!!"
+		self.power = 175
+		self.mp_cost = 75
+		self.ele = "Neptune"
+		self.radius = 1
+
+class Swab(BuffSpell):
+	"""docstring for Swab"""
+	def __init__(self):
+		self.stat_power = 6
+		super(Swab, self).__init__(self.stat_power)
+		self.name = "Swab"
+		self.description = "Swab the decks! Speed up an ally."
+		self.stat_target = "Speed"
+		self.mp_cost = 3
+		self.radius = 1
+
+class Batten(BuffSpell):
+	"""docstring for Batten"""
+	def __init__(self):
+		self.stat_power = 30
+		super(Batten, self).__init__(self.stat_power)
+		self.name = "Batten"
+		self.description = "Batten down the hatches! Boost an ally's defence."
+		self.stat_target = "Defence"
+		self.mp_cost = 5
+		self.radius = 1
+
+class Swig(BuffSpell):
+	"""docstring for Swig"""
+	def __init__(self):
+		self.stat_power = 50
+		super(Swig, self).__init__(self.stat_power)
+		self.name = "Swig"
+		self.description = "Down a tankard of magical rum."
+		self.stat_target = "Attack"
+		self.mp_cost = 15
+		self.radius = 1
+		self.targeting = "self"
+
+class Lime(StatusSpell):
+	"""docstring for Lime"""
+	def __init__(self):
+		super(Lime, self).__init__()
+		self.name = "Lime"
+		self.description = "Administer a magical lime to purge disease and poison."
+		self.cure_status = "Poison"
+		self.mp_cost = 3
+		self.radius = 1
+		self.targeting = "friendly"
+
+basic_healer_line = {1: Mend(), 5: Heal(), 10: Cure()}
+test_line = {1: Mire(), 1: Icicle(), 3: IceSpire()}
+neptune_line = {2: Aquablast(), 3: Drizzle(), 3: Mist(), 5: Swell(), 9: Rainstorm(), 14: LargeSwell(), 20: Hail(), 30: RogueWave(), 33: Deluge(), 42: Tsunami(), 58: SuperSleet()}
+wrath_o_the_sea_line = {1: Swab(), 3: Swell(), 6: Lime(), 11: Squall(), 15: Batten(), 21: Swig(), 60: Waterspout()}

@@ -123,11 +123,6 @@ def main():
 								loaded_party = loaded_game["party"]
 								print("Party loaded.\n")
 
-								'''print("Reloading party images...")
-								for party_member in party:
-									party_member.reload_images()
-								print("Images reloaded.")'''
-
 								print("Loading map...")
 								loaded_map = loaded_game["map"]
 								print("Map loaded.\n")
@@ -174,8 +169,11 @@ def main():
 								print("Reloading party and item images...")
 								for party_member in party:
 									party_member.reload_images()
+									party_member.reload_spell_lines()
 									for item in party_member.items:
 										item.reload_image()
+									for spell in party_member.spells:
+										spell.reload_image()
 								print("Images reloaded.")
 
 								print("Adding party to group data...")
@@ -280,7 +278,7 @@ def main():
 								elif menus[-1].get_selected_name() == "Pause":
 									paused = True
 								elif menus[-1].get_selected_name() == "Spells":
-									print("TODO: Spells.")
+									menus.append(Menu.SpellMenu(party[0].get_spells()))
 								elif menus[-1].get_selected_name() == "Quit":
 									done = True
 								elif menus[-1].get_selected_name() == "Skills":
@@ -311,12 +309,14 @@ def main():
 								print("Clearing party and item images...")
 								for member in party:
 									member.clear_images()
+									member.clear_spell_lines()
 									for item in member.items:
 										item.clear_image()
+									for spell in member.spells:
+										spell.clear_image()
 								print("Images cleared.")
 
 								print("Saving party...")
-								print(party)
 								loaded_game["party"] = party
 								print("Party saved.\n")
 
@@ -336,8 +336,11 @@ def main():
 								print("Reloading party and item images...")
 								for party_member in party:
 									party_member.reload_images()
+									party_member.reload_spell_lines()
 									for item in party_member.items:
 										item.reload_image()
+									for spell in party_member.spells:
+										spell.reload_image()
 								print("Images reloaded.")
 
 								menus.remove(menus[-1])

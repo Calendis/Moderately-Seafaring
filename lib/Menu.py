@@ -258,6 +258,14 @@ class ItemMenu(Menu):
 			item_elements.append(MenuItem(item.get_name(), item.get_image()))
 		super(ItemMenu, self).__init__(16, 16, 1, len(item_elements), item_elements, 240, SCREEN_SIZE[1]-(32+16+(2*16)), 1.4, 4)
 
+class SpellMenu(Menu):
+	"""docstring for SpellMenu"""
+	def __init__(self, spells):
+		spell_elements = []
+		for spell in spells:
+			spell_elements.append(MenuItem(spell.get_name(), spell.get_image()))
+		super(SpellMenu, self).__init__(16, 16, 1, len(spell_elements), spell_elements, 240, SCREEN_SIZE[1]-(32+16+(2*16)), 1.4, 4)
+
 class PartyMenu(Menu):
 	"""docstring for PartyMenu"""
 	def __init__(self, party):
