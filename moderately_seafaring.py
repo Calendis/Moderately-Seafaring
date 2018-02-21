@@ -375,6 +375,11 @@ def main():
 										fragile_textboxes.append(Text.TextBox([party[0].get_items()[menus[1].get_selected_element_position()["x"]].get_name()+" isn't equippable!"],
 											menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
 
+								elif menus[-1].get_selected_name() == "Discard":
+									party[0].items.remove(menus[-1].get_item())
+									menus[1] = Menu.ItemMenu(party[0].items)
+									menus.remove(menus[-1])
+
 							elif menus[-1].__class__ == Menu.SpellUseMenu:
 								if menus[-1].get_selected_name() == "Use":
 									if party[0].get_spells()[menus[1].get_selected_element_position()["x"]].get_useable_in_field():
