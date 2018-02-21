@@ -20,6 +20,8 @@ class Spell():
 		self.ele = False
 		#self.ele_image = self.set_ele_image()
 
+		self.useable_in_field = False
+
 		self.image = SpellImage.default
 
 	def clear_image(self):
@@ -51,8 +53,20 @@ class Spell():
 	def get_name(self):
 		return self.name
 
+	def get_description(self):
+		return self.description
+
 	def get_image(self):
 		return self.image
+
+	def get_restore_text(self):
+		if self.__class__ == HealingSpell:
+			return "Restores around "+self.power+" HP."
+		else:
+			return None
+
+	def get_useable_in_field(self):
+		return self.useable_in_field
 
 class HealingSpell(Spell):
 	"""docstring for HealingSpell"""

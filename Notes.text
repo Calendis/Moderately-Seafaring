@@ -1,0 +1,137 @@
+Equippable notes:
+    Armour:
+        Head slot [1] *DEFINE NO. OF SLOTS IN CHAR CLASS, SO EXCEPTIONS CAN BE MADE!
+        Torso slot [1]
+        Legs slot [1]
+        Feet slot [1]
+        Accessories slot [2]
+        
+    Weapons/Shields:
+        Slots [2]
+       
+       Double-wielding causes user attack to be divided by 2, unless the double-wielder trait is obtained.
+       
+       Wielding a shield in the off-hand causes attack to be divided by 1.2, unless the shield professional trait is obtained. Wielding a two-handed weapon and a shield is impossible
+       
+       Using both hands on a weapon grants full damage.
+
+Trait list: (A character can have at most 3 traits)
+    Double-wielder: No attack penalty when double-wielding
+    
+    Shield professional: No attack penalty for shields
+        Blocker: +50 shield stat
+        
+    
+    
+    Daily special: Once per rest, character can buff chosen stat during battle
+    Wrangler: 1.5 times damage with whips
+        Desperado: double crit rate with whips
+        
+    Bufferer: *2 mp. Can make one-to-one at will MP to HP exchange with self. Must not have any healing spells
+    
+    Wilderness Enthusiast: +10 axe damage, +10 fire damage
+        Survivalist: 1.3 times attack when wielding an axe
+            Stroud: *2 cold resistance, 1.5* fire damage
+            
+    Elemental specialization: Character chooses element, which is added to their ele list. *2 Damage with element, and immune to that damage. Half damage with all others, and receives 1.2* elemental damage.
+        Elemental lord: *3 damage with element. Elemental damage of this type heals at 1* efficiency. Cannot inflict damage of other element types. Receives 1.5* elemental damage.
+    
+    Crusader: +10 weapon effectiveness against enemies of other religion. (Monsters with no religion do not count)
+        Divine Avenger: +40 weapon effectiveness and *2 crit rateagainst enemies of other religion.
+                Ascendancy: Receive half damage against enemies of other religion, but drop to +10 weapon effectiveness. Effects of religious accessories are doubled.
+        OR
+        Holy Defender: + 10 armour effectiveness per armour piece against enemies of other religion.
+            
+    Amateur Mathmatician: +5 attack, +5 defence, +5 luck
+        Tide Watcher: +75 water elemental resistance
+        OR
+        Estimator:+1.3*level luck, 1% chance to survive fatal blow. Increase by 1 every five levels up to 10%
+        Stargazer: +1.4*level luck, *1.3l elemental damage/resistance
+        Geometrist: +10 per armour piece bonus effectiveness
+        
+Class list:
+
+    Delinquent: Rogue spell line, +1 luck*level
+        Bandit: 
+            Rogue
+                Lurker
+                    Shadowstepper
+    
+    Clergyman:
+        Nurse: Basic healer spell line
+        Medic: Basic healer spell line
+            Missionary
+                1. Paladin: Divine purge spell line
+                2. Cleric: Life-giver spell line
+                    1. Defender
+                    2. Cure-knight
+    
+    Insurgent: Knight spell line
+        Rebel
+            Insurgent Knight
+                Revolutionary Knight
+                    Vanguard Knight
+    Squire: Knight spell line
+        Knight
+            1. Grand Knight
+            2. Dragonslayer: Dragonslayer spell line
+                1. Knight King
+                2. Dragon Master
+                    1. Grand Knight King
+                    2. Dragonlord
+    
+    Guard: Guard spell line
+        Gallant
+            Soldier
+                General
+                    Great General
+    
+    Magic user: Basic magic spell line
+        : 
+            Magician:
+                1. Wizard: Wizard spell line
+                2. Druid: Druid spell line
+                3. Seer: Advanced magic spell line
+                    1. 100 points
+                    2. Sage
+                    3. Venus Seer
+                    3. Earth Seer
+                    3. Mars Seer
+                    3. Jupiter Seer
+                    3. Saturn Seer
+
+    Tradesman:
+        Specialist
+            Guildsman
+                Master
+                    Bonus trait points
+        Merchant
+            Master Merchant 
+                Mercantilist
+                    Master Mercantilist
+        
+    Runaway: Mystic spell line
+        Vagabond
+            Wanderer
+                1. Bard: Bard spell line
+                2. Ranger: Ranger spell line
+                    1. Loremaster
+                    2. Wilderness Master
+    
+    Deckhand: Wrath O' The Sea spell line, Neptune spell line
+        Fisherman
+            Swashbuckler
+                Buccaneer
+                    Dreadbeard
+                
+    Surfer: Surfer spell line, Neptune spell line
+        Wavemaster
+            Riptide
+                Oceanrider
+                    Mistmaster
+                
+    Janitor
+        Bonus trait points
+            Bonus trait points
+                Bonus trait points
+                    King/Queen of Clean

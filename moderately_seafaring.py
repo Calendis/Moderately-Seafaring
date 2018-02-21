@@ -349,6 +349,10 @@ def main():
 								#Opens the item use menu for the item you've selected
 								menus.append(Menu.ItemUseMenu(party[0].get_items()[menus[-1].get_selected_element_position()["x"]]))
 
+							elif menus[-1].__class__ == Menu.SpellMenu:
+								#Opens the spell use menu for the spell you've selected
+								menus.append(Menu.SpellUseMenu(party[0].get_spells()[menus[-1].get_selected_element_position()["x"]]))
+
 							elif menus[-1].__class__ == Menu.ItemUseMenu:
 								if menus[-1].get_selected_name() == "Use":
 									if party[0].get_items()[menus[1].get_selected_element_position()["x"]].get_useable():
@@ -370,6 +374,19 @@ def main():
 									else:
 										fragile_textboxes.append(Text.TextBox([party[0].get_items()[menus[1].get_selected_element_position()["x"]].get_name()+" isn't equippable!"],
 											menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
+
+							elif menus[-1].__class__ == Menu.SpellUseMenu:
+								if menus[-1].get_selected_name() == "Use":
+									if party[0].get_spells()[menus[1].get_selected_element_position()["x"]].get_useable_in_field():
+										print("TODO: Use spells in field.")
+									else:
+										fragile_textboxes.append(Text.TextBox([menus[-1].get_spell().get_name()+" isn't useable in the field."],
+											menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
+								elif menus[-1].get_selected_name() == "Description":
+									fragile_textboxes.append(Text.TextBox([party[0].get_spells()[menus[1].get_selected_element_position()["x"]].get_description(),
+										"",menus[-1].get_spell().get_restore_text()],
+										menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
+
 
 							elif menus[-1].__class__ == Menu.PartyMenu:
 								#Opens the party use menu for the party member you've selected

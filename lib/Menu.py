@@ -291,6 +291,21 @@ class ItemUseMenu(Menu):
 	def get_item(self):
 		return self.item
 
+spelluse_elements = [
+	BasicMenuItem("Use"),
+	BasicMenuItem("Description")
+]
+
+class SpellUseMenu(Menu):
+	"""docstring for SpellUseMenu"""
+	def __init__(self, spell):
+		self.spell = spell
+		super(SpellUseMenu, self).__init__(272, 16, 1, len(spelluse_elements), spelluse_elements)
+
+	def get_spell(self):
+		return self.spell
+		
+
 class WhomUseMenu(Menu):
 	"""docstring for WhomUseMenu"""
 	def __init__(self, item, party):

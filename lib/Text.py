@@ -36,6 +36,12 @@ class TextBox():
 		if not self.height:
 			self.height = len(self.text)*(16)+16
 
+		#Remove None type from the text lines.
+		#None will be passed as part of spell descriptions for spells that do not restore any hp
+		for item in self.text:
+			if item == None:
+				self.text.remove(item)
+
 	def draw(self):
 		pygame.draw.rect(screen, self.box_colour, (self.position["x"], self.position["y"], self.width, self.height))
 		
