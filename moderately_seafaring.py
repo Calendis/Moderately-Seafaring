@@ -19,6 +19,7 @@ from lib import Character
 from lib import Menu
 from lib import Text
 from lib import Item
+from lib import Party
 
 def main():
 	done = False
@@ -29,7 +30,7 @@ def main():
 	BACKGROUND_COLOUR = (74,104,200)
 
 	menus = []
-	party = []
+	party = Party.Party()
 	fragile_textboxes = [] #Fragile textboxes disappear at a button press
 	resiliant_textboxes = [] #Resiliant textboxes don't disappear until some condition is met
 	
@@ -39,16 +40,18 @@ def main():
 	large_font = pygame.font.Font("resources/fonts/coders_crux.ttf", 80)
 
 	current_map = load_pygame("resources/maps/test_map.tmx")
-	hero = Character.CaptainRizzko([1090,1450])
-	party.append(hero)
+	party.add_member(Character.CaptainRizzko([1090,1450]))
+	party.add_member(Character.Zirkak([0,0]))
 	#party.append(Character.CaptainRizzko([395,10]))
 	pyscroll_map_data = pyscroll.data.TiledMapData(current_map)
 	map_layer = pyscroll.BufferedRenderer(pyscroll_map_data, screen.get_size())
 	map_layer.zoom = 2
 	pyscroll_group_data = PyscrollGroup(map_layer=map_layer, default_layer=1)
 	
-	for party_member in party:
-		pyscroll_group_data.add(party_member)
+	'''for party_member in party.get_members():
+		pyscroll_group_data.add(party_member)'''
+
+	pyscroll_group_data.add(party.get_current_member())
 						
 
 	logo = pygame.image.load("resources/img/logo.png")
@@ -115,8 +118,9 @@ def main():
 								print("Shelf loaded.\n")
 								
 								print("Clearing party from group data...")
-								for party_member in party:
-									pyscroll_group_data.remove(party_member)
+								'''for party_member in party.get_members():
+									pyscroll_group_data.remove(party_member)'''
+								pyscroll_group_data.remove(party.get_current_member())
 								print("Party cleared from group data.\n")
 
 								print("Loading party...")
@@ -167,7 +171,7 @@ def main():
 								print("Group data created.\n")
 								
 								print("Reloading party and item images...")
-								for party_member in party:
+								for party_member in party.get_members():
 									party_member.reload_images()
 									party_member.reload_spell_lines()
 									for item in party_member.items:
@@ -177,8 +181,9 @@ def main():
 								print("Images reloaded.")
 
 								print("Adding party to group data...")
-								for party_member in party:
-									pyscroll_group_data.add(party_member)
+								'''for party_member in party.get_members():
+									pyscroll_group_data.add(party_member)'''
+								pyscroll_group_data.add(party.get_current_member())
 								print("Party added to group data.\n")
 
 								title_screen = False
@@ -225,24 +230,24 @@ def main():
 						if event.key == K_q:
 							map_layer.zoom = 1.2
 						if event.key == K_UP:
-							for party_member in party:
+							for party_member in party.get_members():
 								party_member.velocity[1] = -party_member.maxspeed
 						if event.key == K_DOWN:
-							for party_member in party:
+							for party_member in party.get_members():
 								party_member.velocity[1] = party_member.maxspeed
 						if event.key == K_LEFT:
-							for party_member in party:
+							for party_member in party.get_members():
 								party_member.velocity[0] = -party_member.maxspeed
 								party_member.frame = 0
 						if event.key == K_RIGHT:
-							for party_member in party:
+							for party_member in party.get_members():
 								party_member.velocity[0] = party_member.maxspeed
 								party_member.frame = 1
 
 						if event.key == K_RETURN:
 							if Menu.StartMenu() not in menus:
 								menus.append(Menu.StartMenu())
-								for party_member in party:
+								for party_member in party.get_members():
 									party_member.velocity = [0,0]
 					else:
 						
@@ -272,13 +277,13 @@ def main():
 								if menus[-1].get_selected_name() == "Party":
 									menus.append(Menu.PartyMenu(party))
 								elif menus[-1].get_selected_name() == "Items":
-									menus.append(Menu.ItemMenu(party[0].get_items()))
+									menus.append(Menu.ItemMenu(party.get_current_member().get_items()))
 								elif menus[-1].get_selected_name() == "Save":
 									menus.append(Menu.SaveMenu())
 								elif menus[-1].get_selected_name() == "Pause":
 									paused = True
 								elif menus[-1].get_selected_name() == "Spells":
-									menus.append(Menu.SpellMenu(party[0].get_spells()))
+									menus.append(Menu.SpellMenu(party.get_current_member().get_spells()))
 								elif menus[-1].get_selected_name() == "Quit":
 									done = True
 								elif menus[-1].get_selected_name() == "Skills":
@@ -302,12 +307,13 @@ def main():
 								loaded_game = shelve.open("savegames/savegame"+gamefile+".sav")
 								print("Shelf loaded.\n")
 								print("Clearing party from group data...")
-								for party_member in party:
-									pyscroll_group_data.remove(party_member)
+								'''for party_member in party.get_members():
+									pyscroll_group_data.remove(party_member)'''
+								pyscroll_group_data.remove(party.get_current_member())
 								print("Party cleared from group data.\n")
 
 								print("Clearing party and item images...")
-								for member in party:
+								for member in party.get_members():
 									member.clear_images()
 									member.clear_spell_lines()
 									for item in member.items:
@@ -321,8 +327,9 @@ def main():
 								print("Party saved.\n")
 
 								print("Adding party to group data...")
-								for party_member in party:
-									pyscroll_group_data.add(party_member)
+								'''for party_member in party.get_members():
+									pyscroll_group_data.add(party_member)'''
+								pyscroll_group_data.add(party.get_current_member())
 								print("Party added to group data.\n")
 
 								print("Saving map...")
@@ -334,7 +341,7 @@ def main():
 								print("Shelf closed.\n")
 
 								print("Reloading party and item images...")
-								for party_member in party:
+								for party_member in party.get_members():
 									party_member.reload_images()
 									party_member.reload_spell_lines()
 									for item in party_member.items:
@@ -347,48 +354,48 @@ def main():
 
 							elif menus[-1].__class__ == Menu.ItemMenu:
 								#Opens the item use menu for the item you've selected
-								menus.append(Menu.ItemUseMenu(party[0].get_items()[menus[-1].get_selected_element_position()["x"]]))
+								menus.append(Menu.ItemUseMenu(party.get_current_member().get_items()[menus[-1].get_selected_element_position()["x"]]))
 
 							elif menus[-1].__class__ == Menu.SpellMenu:
 								#Opens the spell use menu for the spell you've selected
-								menus.append(Menu.SpellUseMenu(party[0].get_spells()[menus[-1].get_selected_element_position()["x"]]))
+								menus.append(Menu.SpellUseMenu(party.get_current_member().get_spells()[menus[-1].get_selected_element_position()["x"]]))
 
 							elif menus[-1].__class__ == Menu.ItemUseMenu:
 								if menus[-1].get_selected_name() == "Use":
-									if party[0].get_items()[menus[1].get_selected_element_position()["x"]].get_useable():
+									if party.get_current_member().get_items()[menus[1].get_selected_element_position()["x"]].get_useable():
 										#Adds the "use on whom?" menu to the menu list.
 										menus.append(Menu.WhomUseMenu(menus[-1].get_item(), party))
 									else:
-										fragile_textboxes.append(Text.TextBox([party[0].get_items()[menus[1].get_selected_element_position()["x"]].get_name()+" isn't useable!"],
+										fragile_textboxes.append(Text.TextBox([party.get_current_member().get_items()[menus[1].get_selected_element_position()["x"]].get_name()+" isn't useable!"],
 											menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
 
 								elif menus[-1].get_selected_name() == "Examine":
-									fragile_textboxes.append(Text.TextBox([party[0].get_items()[menus[1].get_selected_element_position()["x"]].get_description(),
-										"","Type: "+party[0].get_items()[menus[1].get_selected_element_position()["x"]].get_item_type()],
+									fragile_textboxes.append(Text.TextBox([party.get_current_member().get_items()[menus[1].get_selected_element_position()["x"]].get_description(),
+										"","Type: "+party.get_current_member().get_items()[menus[1].get_selected_element_position()["x"]].get_item_type()],
 									 menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
 								
 								elif menus[-1].get_selected_name() == "Equip": #Equip
-									if party[0].get_items()[menus[1].get_selected_element_position()["x"]].get_equippable():
+									if party.get_current_member().get_items()[menus[1].get_selected_element_position()["x"]].get_equippable():
 										print("Equip to whom?")
 										menus.append(Menu.WhomEquipMenu(menus[-1].get_item(), party))
 									else:
-										fragile_textboxes.append(Text.TextBox([party[0].get_items()[menus[1].get_selected_element_position()["x"]].get_name()+" isn't equippable!"],
+										fragile_textboxes.append(Text.TextBox([party.get_current_member().get_items()[menus[1].get_selected_element_position()["x"]].get_name()+" isn't equippable!"],
 											menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
 
 								elif menus[-1].get_selected_name() == "Discard":
-									party[0].items.remove(menus[-1].get_item())
-									menus[1] = Menu.ItemMenu(party[0].items)
+									party.get_current_member().items.remove(menus[-1].get_item())
+									menus[1] = Menu.ItemMenu(party.get_current_member().items)
 									menus.remove(menus[-1])
 
 							elif menus[-1].__class__ == Menu.SpellUseMenu:
 								if menus[-1].get_selected_name() == "Use":
-									if party[0].get_spells()[menus[1].get_selected_element_position()["x"]].get_useable_in_field():
+									if party.get_current_member().get_spells()[menus[1].get_selected_element_position()["x"]].get_useable_in_field():
 										print("TODO: Use spells in field.")
 									else:
 										fragile_textboxes.append(Text.TextBox([menus[-1].get_spell().get_name()+" isn't useable in the field."],
 											menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
 								elif menus[-1].get_selected_name() == "Description":
-									fragile_textboxes.append(Text.TextBox([party[0].get_spells()[menus[1].get_selected_element_position()["x"]].get_description(),
+									fragile_textboxes.append(Text.TextBox([party.get_current_member().get_spells()[menus[1].get_selected_element_position()["x"]].get_description(),
 										"",menus[-1].get_spell().get_restore_text()],
 										menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
 
@@ -420,7 +427,12 @@ def main():
 										menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
 
 								elif menus[-1].get_selected_name() == "Select":
-									print("TODO: Set current party member to "+party[menus[1].get_selected_element_position()["x"]].get_name())
+									#print("TODO: Set current party member to "+party[menus[1].get_selected_element_position()["x"]].get_name())
+									pyscroll_group_data.remove(party.get_current_member())
+									party.set_stored_pos(party.get_current_member().get_pos())
+									party.set_current_member(party[menus[1].get_selected_element_position()["x"]])
+									party.get_current_member().set_pos(party.get_stored_pos())
+									pyscroll_group_data.add(party.get_current_member())
 
 								elif menus[-1].get_selected_name() == "Unequip":
 									equipped_items = []
@@ -442,15 +454,15 @@ def main():
 							elif menus[-1].__class__ == Menu.WhomUseMenu:
 								if menus[-1].get_item().__class__.__bases__[0] == Item.Medicine:
 									party[menus[-1].get_selected_element_position()["x"]].heal(menus[-1].get_item().get_value(), menus[-1].get_item().get_stat())
-									party[0].items.remove(menus[-1].get_item())
-									menus[1] = Menu.ItemMenu(party[0].items)
+									party.get_current_member().items.remove(menus[-1].get_item())
+									menus[1] = Menu.ItemMenu(party.get_current_member().items)
 									menus.remove(menus[-1])
 									menus.remove(menus[-1])
 
 							elif menus[-1].__class__ == Menu.WhomEquipMenu:
 								party[menus[-1].get_selected_element_position()["x"]].equip(menus[-1].get_item())
-								party[0].items.remove(menus[-1].get_item())
-								menus[1] = Menu.ItemMenu(party[0].items)
+								party.get_current_member().items.remove(menus[-1].get_item())
+								menus[1] = Menu.ItemMenu(party.get_current_member().items)
 								menus.remove(menus[-1])
 								menus.remove(menus[-1])
 
@@ -462,33 +474,34 @@ def main():
 				if event.type == pygame.KEYUP:
 					if event.key == K_q:
 						map_layer.zoom = 2
-					if event.key == K_UP and party[0].velocity[1] < 0:
-						for party_member in party:
+					if event.key == K_UP and party.get_current_member().velocity[1] < 0:
+						for party_member in party.get_members():
 							party_member.velocity[1] = 0
-					if event.key == K_DOWN and party[0].velocity[1] > 0:
-						for party_member in party:
+					if event.key == K_DOWN and party.get_current_member().velocity[1] > 0:
+						for party_member in party.get_members():
 							party_member.velocity[1] = 0
-					if event.key == K_LEFT and party[0].velocity[0] < 0:
-						for party_member in party:
+					if event.key == K_LEFT and party.get_current_member().velocity[0] < 0:
+						for party_member in party.get_members():
 							party_member.velocity[0] = 0
-					if event.key == K_RIGHT and party[0].velocity[0] > 0:
-						for party_member in party:
+					if event.key == K_RIGHT and party.get_current_member().velocity[0] > 0:
+						for party_member in party.get_members():
 							party_member.velocity[0] = 0
 
 			#Game Logic Below
 			pyscroll_group_data.update()
 
-			for party_member in party:
+			for party_member in party.get_members():
 				for wall in walls:
 					if pygame.Rect.colliderect(party_member.feetrect, wall):
 						party_member.move_back()
 				for warp in warps:
 					if pygame.Rect.colliderect(party_member.feetrect, pygame.Rect(warp.x, warp.y, warp.width, warp.height)):
 						current_map = load_pygame("resources/maps/"+warp.destination+".tmx")
-						party_member.pos = [int(warp.xwarp), int(warp.ywarp)]
+						party_member.set_pos([int(warp.xwarp), int(warp.ywarp)])
 
-						for party_member in party:
-							pyscroll_group_data.remove(party_member)
+						'''for party_member in party.get_members():
+							pyscroll_group_data.remove(party_member)'''
+						pyscroll_group_data.remove(party.get_current_member())
 
 						pyscroll_map_data = pyscroll.data.TiledMapData(current_map)
 
@@ -506,8 +519,9 @@ def main():
 							elif map_object.type == "warp":
 								warps.append(map_object)
 
-						for party_member in party:
-							pyscroll_group_data.add(party_member)
+						'''for party_member in party.get_members():
+							pyscroll_group_data.add(party_member)'''
+						pyscroll_group_data.add(party.get_current_member())
 
 			for menu in menus:
 				menu.update()
@@ -517,7 +531,7 @@ def main():
 			screen.fill((255, 0, 255))
 			
 			pyscroll_group_data.draw(screen)
-			pyscroll_group_data.center(party[0].rect.center)
+			pyscroll_group_data.center(party.get_current_member().rect.center)
 
 			#Draws menus
 			for menu in menus:

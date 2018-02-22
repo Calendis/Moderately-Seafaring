@@ -17,6 +17,9 @@ class CharacterClass():
 		self.luk_bonus = 0
 		self.ele_modifier = False
 
+		self.final_level = 999
+		self.level_to = None
+
 	def get_name(self):
 		return self.name
 
@@ -50,13 +53,13 @@ class CharacterClass():
 
 class TestClass(CharacterClass):
 	"""docstring for TestClass"""
-	def __init__(self, arg):
+	def __init__(self):
 		super(TestClass, self).__init__()
 		self.name = "Test Class"
 		self.hp_bonus = 5
 		self.spd_bonus = 20
 		self.ele_modifier = "Saturn"
-		self.spell_lines = [Spell.test_line, Spell.basic_healer_line]
+		self.spell_lines = [Spell.test_line, Spell.basic_healer_line, Spell.neptune_line]
 		
 
 class Deckhand(CharacterClass):

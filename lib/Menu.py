@@ -270,7 +270,7 @@ class PartyMenu(Menu):
 	"""docstring for PartyMenu"""
 	def __init__(self, party):
 		party_elements = []
-		for member in party:
+		for member in party.get_members():
 			party_elements.append(BasicMenuItem(member.get_name()))
 		super(PartyMenu, self).__init__(16, 16, 1, len(party_elements), party_elements, 240, 256, 1, 4)
 
@@ -311,7 +311,7 @@ class WhomUseMenu(Menu):
 	def __init__(self, item, party):
 		self.item = item
 		whomuse_elements = []
-		for party_member in party:
+		for party_member in party.get_members():
 			whomuse_elements.append(BasicMenuItem(party_member.get_name()))
 		super(WhomUseMenu, self).__init__(272+16+(7*15), 16, 1, len(whomuse_elements), whomuse_elements)
 
@@ -323,7 +323,7 @@ class WhomEquipMenu(Menu):
 	def __init__(self, item, party):
 		self.item = item
 		whomequip_elements = []
-		for party_member in party:
+		for party_member in party.get_members():
 			whomequip_elements.append(BasicMenuItem(party_member.get_name()))
 		super(WhomEquipMenu, self).__init__(272+16+(7*15), 16, 1, len(whomequip_elements), whomequip_elements)
 

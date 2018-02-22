@@ -16,7 +16,8 @@ class Character(pygame.sprite.Sprite):
 		self.rect = pygame.Rect(self.pos[0], self.pos[1], 16, 32)
 		self.feetrect = pygame.Rect(self.pos[0], self.pos[1]+16, 16, 32-16)
 		self.velocity = [0,0]
-		self.images = [0]
+		self.images = [CharacterImage.default_left, CharacterImage.default_right]
+		self.spells = []
 		self.frame = 0
 		self.image = self.images[self.frame]
 		
@@ -151,6 +152,9 @@ class Character(pygame.sprite.Sprite):
 		
 		self.shift_stats(equipment, -1)
 
+	def get_pos(self):
+		return self.pos
+
 	def get_items(self):
 		return self.items
 
@@ -263,6 +267,9 @@ class Character(pygame.sprite.Sprite):
 	def get_accessory(self):
 		return self.accessory
 
+	def set_pos(self, new_pos):
+		self.pos = new_pos
+
 	def set_weapon(self, new_weapon):
 		self.weapon = new_weapon
 
@@ -293,35 +300,7 @@ class Character(pygame.sprite.Sprite):
 			else:
 				self.ele.remove(el)
 
-class CaptainRizzko(Character):
-	"""docstring for CaptainRizzko"""
-	def __init__(self, pos):
-		super(CaptainRizzko, self).__init__(pos)
-		self.images = [CharacterImage.rizzko_left, CharacterImage.rizzko_right]
-
-		self.name = "Rizzko"
-		self.race = "Kobold"
-		self.title = "\"Cap'n\""
-		self.hometown = "Rohlberg"
-		self.character_class = CharacterClass.Deckhand()
-		self.spells = []
-		self.spell_lines = self.character_class.get_spell_lines()
-		self.lvl = 0
-		self.stats["hp"] = Stat.HitPoints(10)
-		self.stats["mp"] = Stat.ManaPoints(0)
-		self.stats["atk"] = Stat.Attack(3)
-		self.stats["dfn"] = Stat.Defence(1)
-		self.stats["mag"] = Stat.MagicalAttack(0)
-		self.stats["res"] = Stat.MagicalResistance(1)
-		self.stats["spd"] = Stat.Speed(4)
-		self.stats["luk"] = Stat.Luck(3)
-
-		self.maxspeed = round(1 + self.stats["spd"].get_value()/100)
-		self.level_up()
-
-	def reload_images(self):
-		self.images = [CharacterImage.rizzko_left, CharacterImage.rizzko_right]
-		self.image = self.images[self.frame]
+	def reload_gear_images(self):
 		if self.weapon:
 			self.weapon.reload_image()
 		if self.armour:
@@ -336,13 +315,63 @@ class CaptainRizzko(Character):
 			for spell in spell_line.values():
 				spell.reload_image()
 
-class Zirkak(object):
-	"""docstring for Zurkak"""
-	def __init__(self, arg):
-		super(Zurkak, self).__init__()
-		self.images = []
+class CaptainRizzko(Character):
+	"""docstring for CaptainRizzko"""
+	def __init__(self, pos):
+		super(CaptainRizzko, self).__init__(pos)
+		self.images = [CharacterImage.rizzko_left, CharacterImage.rizzko_right]
+
+		self.name = "Rizzko"
+		self.race = "Kobold"
+		self.title = "\"Cap'n\""
+		self.hometown = "Rohlberg"
+		self.character_class = CharacterClass.Deckhand()
+		self.lvl = 0
+		self.stats["hp"] = Stat.HitPoints(10)
+		self.stats["mp"] = Stat.ManaPoints(0)
+		self.stats["atk"] = Stat.Attack(4)
+		self.stats["dfn"] = Stat.Defence(1)
+		self.stats["mag"] = Stat.MagicalAttack(0)
+		self.stats["res"] = Stat.MagicalResistance(1)
+		self.stats["spd"] = Stat.Speed(4)
+		self.stats["luk"] = Stat.Luck(3)
+
+		self.maxspeed = round(1 + self.stats["spd"].get_value()/100)
+		self.level_up()
+
+	def reload_images(self):
+		self.images = [CharacterImage.rizzko_left, CharacterImage.rizzko_right]
+		self.image = self.images[self.frame]
+		self.reload_gear_images()
+
+class Zirkak(Character):
+	"""docstring for Zirkak"""
+	def __init__(self, pos):
+		super(Zirkak, self).__init__(pos)
+		self.images = [CharacterImage.default_left, CharacterImage.default_right]
 		self.race = "Sahuagin"
 		self.title = ""
-		self.name = "Zurkak"
+		self.name = "Zirkak"
 		self.hometown = "Ieekauoreg"
-		#self.character_class = CharacterClass.
+		self.character_class = CharacterClass.TestClass()
+		self.lvl = 0
+		self.stats["hp"] = Stat.HitPoints(15)
+		self.stats["mp"] = Stat.ManaPoints(0)
+		self.stats["atk"] = Stat.Attack(2)
+		self.stats["dfn"] = Stat.Defence(5)
+		self.stats["mag"] = Stat.MagicalAttack(0)
+		self.stats["res"] = Stat.MagicalResistance(3)
+		self.stats["spd"] = Stat.Speed(1)
+		self.stats["luk"] = Stat.Luck(1)
+
+		self.maxspeed = round(1 + self.stats["spd"].get_value()/100)
+
+		self.level_up()
+
+		for i in range(50):
+			self.level_up()
+
+	def reload_images(self):
+		self.images = [CharacterImage.default_left, CharacterImage.default_right]
+		self.image = self.images[self.frame]
+		self.reload_gear_images()
