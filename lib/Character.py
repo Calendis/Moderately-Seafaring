@@ -93,7 +93,7 @@ class Character(pygame.sprite.Sprite):
 		#Adjust spells
 		for spell_line in self.get_spell_lines():
 			for spell_master_level in spell_line.keys():
-				if self.get_lvl() >= spell_master_level:
+				if self.get_lvl() >= spell_master_level and spell_line[spell_master_level] not in self.spells:
 					self.spells.append(spell_line[spell_master_level])
 
 	def move_back(self):
