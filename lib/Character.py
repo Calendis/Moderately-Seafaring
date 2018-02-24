@@ -128,12 +128,16 @@ class Character(pygame.sprite.Sprite):
 		else:
 			print("ERROR: The stat affected was unrecognized.")
 
+	def full_heal(self):
+		self.current_mp = self.get_mp()
+		self.current_hp = self.get_hp()
+
 	def shift_current_mp(self, mp_offset):
 		self.current_mp += mp_offset
 		if self.current_mp < 0:
 			self.current_mp = 0
-		elif self.current_mp > self.mp:
-			self.current_mp = self.mp
+		elif self.current_mp > self.get_mp():
+			self.current_mp = self.get_mp()
 
 	def equip(self, equipment):
 		if equipment.get_item_type() == "Weapon":
@@ -345,6 +349,7 @@ class CaptainRizzko(Character):
 
 		self.maxspeed = round(1 + self.stats["spd"].get_value()/100)
 		self.level_up()
+		self.full_heal()
 
 	def reload_images(self):
 		self.images = [CharacterImage.rizzko_left, CharacterImage.rizzko_right]
@@ -374,9 +379,10 @@ class Zirkak(Character):
 		self.maxspeed = round(1 + self.stats["spd"].get_value()/100)
 
 		self.level_up()
-
-		for i in range(50):
+		for i in range(50): #This number of levels is just for testing purposes.
 			self.level_up()
+
+		self.full_heal()
 
 	def reload_images(self):
 		self.images = [CharacterImage.default_left, CharacterImage.default_right]
