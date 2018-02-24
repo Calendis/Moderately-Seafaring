@@ -318,6 +318,19 @@ class WhomUseMenu(Menu):
 	def get_item(self):
 		return self.item
 
+class WhomSpellMenu(Menu):
+	"""docstring for WhomSpellMenu"""
+	def __init__(self, spell, party):
+		self.spell = spell
+		whomspell_elements = []
+		for party_member in party.get_members():
+			whomspell_elements.append(BasicMenuItem(party_member.get_name()))
+		super(WhomSpellMenu, self).__init__(344+16+(7*15), 16, 1, len(whomspell_elements), whomspell_elements)
+
+	def get_spell(self):
+		return self.spell
+		
+
 class WhomEquipMenu(Menu):
 	"""docstring for WhomEquipMenu"""
 	def __init__(self, item, party):

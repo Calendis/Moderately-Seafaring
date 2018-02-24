@@ -21,6 +21,7 @@ class Spell():
 		#self.ele_image = self.set_ele_image()
 
 		self.useable_in_field = False
+		self.useable_outside_battle = False
 
 		self.image = SpellImage.default
 
@@ -59,6 +60,12 @@ class Spell():
 	def get_image(self):
 		return self.image
 
+	def get_power(self):
+		return self.power
+
+	def get_mp_cost(self):
+		return self.mp_cost
+
 	def get_restore_text(self):
 		if self.__class__ == HealingSpell:
 			return "Restores around "+self.power+" HP."
@@ -67,6 +74,9 @@ class Spell():
 
 	def get_useable_in_field(self):
 		return self.useable_in_field
+
+	def get_useable_outside_battle(self):
+		return self.useable_outside_battle
 
 class HealingSpell(Spell):
 	"""docstring for HealingSpell"""
@@ -78,6 +88,7 @@ class HealingSpell(Spell):
 		self.power = power
 		self.name = "Unknown healing spell"
 		self.description = "Default healing spell description."+self.description_ending
+		self.useable_outside_battle = True
 
 class DamageSpell(Spell):
 	"""docstring for DamageSpell"""
@@ -128,6 +139,10 @@ class Mend(HealingSpell):
 		self.mp_cost = 3
 		self.targeting = "friendly"
 		self.radius = 1
+		self.image = SpellImage.mend
+
+	def reload_image(self):
+		self.image = SpellImage.mend
 
 class Heal(HealingSpell):
 	"""docstring for Heal"""
@@ -139,6 +154,10 @@ class Heal(HealingSpell):
 		self.mp_cost = 5
 		self.targeting = "friendly"
 		self.radius = 1
+		self.image = SpellImage.heal
+
+	def reload_image(self):
+		self.image = SpellImage.heal
 
 class Cure(HealingSpell):
 	"""docstring for Cure"""
@@ -149,7 +168,11 @@ class Cure(HealingSpell):
 		self.description = "Stronger spell capable of quickly healing major lacerations and broken bones"
 		self.mp_cost = 9
 		self.targeting = "friendly"
-		self.radius = 1		
+		self.radius = 1
+		self.image = SpellImage.cure
+
+	def reload_image(self):
+		self.image = SpellImage.cure
 
 class Icicle(DamageSpell):
 	"""docstring for Icicle"""
@@ -162,6 +185,10 @@ class Icicle(DamageSpell):
 		self.ele = "Neptune"
 		#self.set_ele_image()
 		self.radius = 1
+		self.image = SpellImage.icicle
+
+	def reload_image(self):
+		self.image = SpellImage.icicle
 
 class IceSpire(DamageSpell):
 	"""docstring for IceSpire"""
@@ -174,6 +201,10 @@ class IceSpire(DamageSpell):
 		self.ele = "Neptune"
 		#self.set_ele_image()
 		self.radius = 1
+		self.image = SpellImage.ice_spire
+
+	def reload_image(self):
+		self.image = SpellImage.ice_spire
 		
 class Mire(NerfSpell):
 	"""docstring for Mire"""
@@ -183,6 +214,10 @@ class Mire(NerfSpell):
 		self.mp_cost = 5
 		self.stat_target = "Speed"
 		self.radius = 3
+		self.image = SpellImage.mire
+
+	def reload_image(self):
+		self.image = SpellImage.mire
 
 class Swell(DamageSpell):
 	"""docstring for Swell"""
@@ -194,6 +229,10 @@ class Swell(DamageSpell):
 		self.mp_cost = 3
 		self.ele = "Neptune"
 		self.radius = 1
+		self.image = SpellImage.swell
+
+	def reload_image(self):
+		self.image = SpellImage.swell
 
 class LargeSwell(DamageSpell):
 	"""docstring for LargeSwell"""
@@ -206,6 +245,10 @@ class LargeSwell(DamageSpell):
 		self.ele = "Neptune"
 		self.radius = 3
 		self.radial_decay = True
+		self.image = SpellImage.large_swell
+
+	def reload_image(self):
+		self.image = SpellImage.large_swell
 
 class RogueWave(DamageSpell):
 	"""docstring for RogueWave"""
@@ -218,6 +261,10 @@ class RogueWave(DamageSpell):
 		self.ele = "Neptune"
 		self.radius = 1
 		self.radial_decay = True
+		self.image = SpellImage.rogue_wave
+
+	def reload_image(self):
+		self.image = SpellImage.rogue_wave
 
 class Tsunami(DamageSpell):
 	"""docstring for Tsunami"""
@@ -230,6 +277,10 @@ class Tsunami(DamageSpell):
 		self.ele = "Neptune"
 		self.radius = 5
 		self.radial_decay = True
+		self.image = SpellImage.tsunami
+
+	def reload_image(self):
+		self.image = SpellImage.tsunami
 
 class Mist(HealingSpell):
 	"""docstring for Mist"""
@@ -241,6 +292,10 @@ class Mist(HealingSpell):
 		self.mp_cost = 6
 		self.ele = "Neptune"
 		self.radius = 7
+		self.image = SpellImage.mist
+
+	def reload_image(self):
+		self.image = SpellImage.mist
 
 class Aquablast(DamageSpell):
 	"""docstring for Aquablast"""
@@ -252,6 +307,10 @@ class Aquablast(DamageSpell):
 		self.mp_cost = 2
 		self.ele = "Neptune"
 		self.radius = 1
+		self.image = SpellImage.aquablast
+
+	def reload_image(self):
+		self.image = SpellImage.aquablast
 
 class Electrolyze(DamageSpell):
 	"""docstring for Electrolyze"""
@@ -263,6 +322,10 @@ class Electrolyze(DamageSpell):
 		self.mp_cost = 4
 		self.ele = "Neptune"
 		self.radius = 1
+		self.image = SpellImage.electrolyze
+
+	def reload_image(self):
+		SpellImage.electrolyze
 
 class Drizzle(DamageSpell):
 	"""docstring for Drizzle"""
@@ -275,6 +338,10 @@ class Drizzle(DamageSpell):
 		self.ele = "Neptune"
 		self.radius = 3
 		self.radial_decay = True
+		self.image = SpellImage.drizzle
+
+	def reload_image(self):
+		self.image = SpellImage.drizzle
 
 class Rainstorm(DamageSpell):
 	"""docstring for Rainstorm"""
@@ -287,6 +354,10 @@ class Rainstorm(DamageSpell):
 		self.ele = "Neptune"
 		self.radius = 3
 		self.radial_decay = True
+		self.image = SpellImage.rainstorm
+
+	def reload_image(self):
+		self.image = SpellImage.rainstorm
 
 class Hail(DamageSpell):
 	"""docstring for Hail"""
@@ -299,6 +370,10 @@ class Hail(DamageSpell):
 		self.ele = "Neptune"
 		self.radius = 3
 		self.radial_decay = True
+		self.image = SpellImage.hail
+
+	def reload_image(self):
+		self.image = SpellImage.hail
 
 class Deluge(DamageSpell):
 	"""docstring for Deluge"""
@@ -311,6 +386,10 @@ class Deluge(DamageSpell):
 		self.ele = "Neptune"
 		self.radius = 3
 		self.radial_decay = True
+		self.image = SpellImage.deluge
+
+	def reload_image(self):
+		self.image = SpellImage.deluge
 		
 class SuperSleet(DamageSpell):
 	"""docstring for SuperSleet"""
@@ -322,6 +401,11 @@ class SuperSleet(DamageSpell):
 		self.mp_cost = 40
 		self.ele = "Neptune"
 		self.radius = 3
+		self.image = SpellImage.supersleet
+
+	def reload_image(self):
+		self.image = SpellImage.supersleet
+
 
 class Breeze(DamageSpell):
 	"""docstring for Breeze"""
@@ -334,6 +418,10 @@ class Breeze(DamageSpell):
 		self.ele = "Jupiter"
 		self.radius = 3
 		self.radial_decay = True
+		self.image = SpellImage.breeze
+
+	def reload_image(self):
+		self.image = SpellImage.breeze
 
 class Squall(DamageSpell):
 	"""docstring for Squall"""
@@ -346,6 +434,10 @@ class Squall(DamageSpell):
 		self.ele = "Jupiter"
 		self.radius = 5
 		self.radial_decay = True
+		self.image = SpellImage.squall
+
+	def reload_image(self):
+		self.image = SpellImage.squall
 
 class Gale(DamageSpell):
 	"""docstring for Gale"""
@@ -358,6 +450,10 @@ class Gale(DamageSpell):
 		self.ele = "Jupiter"
 		self.radius = 5
 		self.radial_decay = True
+		self.image = SpellImage.gale
+
+	def reload_image(self):
+		self.image = SpellImage.gale
 
 class Cyclone(DamageSpell):
 	"""docstring for Cyclone"""
@@ -369,6 +465,10 @@ class Cyclone(DamageSpell):
 		self.ele = "Jupiter"
 		self.radius = 7
 		self.radial_decay = True
+		self.image = SpellImage.cyclone
+
+	def reload_image(self):
+		self.image = SpellImage.cyclone
 
 class Waterspout(DamageSpell):
 	"""docstring for Waterspout"""
@@ -380,6 +480,10 @@ class Waterspout(DamageSpell):
 		self.mp_cost = 75
 		self.ele = "Neptune"
 		self.radius = 1
+		self.image = SpellImage.waterspout
+
+	def reload_image(self):
+		self.image = SpellImage.waterspout
 
 class Swab(BuffSpell):
 	"""docstring for Swab"""
@@ -391,6 +495,10 @@ class Swab(BuffSpell):
 		self.stat_target = "Speed"
 		self.mp_cost = 3
 		self.radius = 1
+		self.image = SpellImage.swab
+
+	def reload_image(self):
+		self.image = SpellImage.swab
 
 class Batten(BuffSpell):
 	"""docstring for Batten"""
@@ -402,6 +510,10 @@ class Batten(BuffSpell):
 		self.stat_target = "Defence"
 		self.mp_cost = 5
 		self.radius = 1
+		self.image = SpellImage.batten
+
+	def reload_image(self):
+		self.image = SpellImage.batten
 
 class Swig(BuffSpell):
 	"""docstring for Swig"""
@@ -414,6 +526,10 @@ class Swig(BuffSpell):
 		self.mp_cost = 15
 		self.radius = 1
 		self.targeting = "self"
+		self.image = SpellImage.swig
+
+	def reload_image(self):
+		self.image = SpellImage.swig
 
 class Lime(StatusSpell):
 	"""docstring for Lime"""
@@ -425,6 +541,10 @@ class Lime(StatusSpell):
 		self.mp_cost = 3
 		self.radius = 1
 		self.targeting = "friendly"
+		self.image = SpellImage.lime
+
+	def reload_image(self):
+		self.image = SpellImage.lime
 
 basic_healer_line = {1: Mend(), 5: Heal(), 10: Cure()}
 test_line = {1: Mire(), 1: Icicle(), 3: IceSpire()}

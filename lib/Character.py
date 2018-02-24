@@ -128,6 +128,13 @@ class Character(pygame.sprite.Sprite):
 		else:
 			print("ERROR: The stat affected was unrecognized.")
 
+	def shift_current_mp(self, mp_offset):
+		self.current_mp += mp_offset
+		if self.current_mp < 0:
+			self.current_mp = 0
+		elif self.current_mp > self.mp:
+			self.current_mp = self.mp
+
 	def equip(self, equipment):
 		if equipment.get_item_type() == "Weapon":
 			self.set_weapon(equipment)

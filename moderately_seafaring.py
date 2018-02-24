@@ -20,6 +20,8 @@ from lib import Menu
 from lib import Text
 from lib import Item
 from lib import Party
+from lib import Spell
+from lib import Stat
 
 def main():
 	done = False
@@ -389,7 +391,10 @@ def main():
 
 							elif menus[-1].__class__ == Menu.SpellUseMenu:
 								if menus[-1].get_selected_name() == "Use":
-									if party.get_current_member().get_spells()[menus[1].get_selected_element_position()["x"]].get_useable_in_field():
+									selected_spell = party.get_current_member().get_spells()[menus[1].get_selected_element_position()["x"]]
+									if selected_spell.get_useable_outside_battle():
+										menus.append(Menu.WhomSpellMenu(selected_spell, party))
+									elif party.get_current_member().get_spells()[menus[1].get_selected_element_position()["x"]].get_useable_in_field():
 										print("TODO: Use spells in field.")
 									else:
 										fragile_textboxes.append(Text.TextBox([menus[-1].get_spell().get_name()+" isn't useable in the field."],
@@ -427,7 +432,6 @@ def main():
 										menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
 
 								elif menus[-1].get_selected_name() == "Select":
-									#print("TODO: Set current party member to "+party[menus[1].get_selected_element_position()["x"]].get_name())
 									pyscroll_group_data.remove(party.get_current_member())
 									party.set_stored_pos(party.get_current_member().get_pos())
 									party.set_current_member(party[menus[1].get_selected_element_position()["x"]])
@@ -458,6 +462,16 @@ def main():
 									menus[1] = Menu.ItemMenu(party.get_current_member().items)
 									menus.remove(menus[-1])
 									menus.remove(menus[-1])
+
+							elif menus[-1].__class__ == Menu.WhomSpellMenu:
+								if party.get_current_member().get_current_mp() < menus[-1].get_spell().get_mp_cost():
+									fragile_textboxes.append(Text.TextBox(["Not enough MP!"],
+										menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
+								else:
+									party.get_current_member().shift_current_mp(-(menus[-1].get_spell().get_mp_cost()))
+									
+									if menus[-1].get_spell().__class__.__bases__[0] == Spell.HealingSpell:
+										party.get_members()[menus[-1].get_selected_element_position()["x"]].heal(-(menus[-1].get_spell().get_power()), Stat.HitPoints(-(menus[-1].get_spell().get_power())))
 
 							elif menus[-1].__class__ == Menu.WhomEquipMenu:
 								party[menus[-1].get_selected_element_position()["x"]].equip(menus[-1].get_item())
