@@ -57,7 +57,7 @@ class TestClass(CharacterClass):
 		super(TestClass, self).__init__()
 		self.name = "Test Class"
 		self.hp_bonus = 5
-		self.spd_bonus = 20
+		self.spd_bonus = 7
 		self.ele_modifier = "Saturn"
 		self.spell_lines = [Spell.test_line, Spell.basic_healer_line, Spell.neptune_line]
 		
@@ -71,3 +71,58 @@ class Deckhand(CharacterClass):
 		self.dfn_bonus = 1
 		self.luk_bonus = 1
 		self.spell_lines = [Spell.neptune_line, Spell.wrath_o_the_sea_line]
+
+class Pirate(CharacterClass):
+	"""docstring for Pirate"""
+	def __init__(self):
+		super(Pirate, self).__init__()
+		self.name = "Pirate"
+		self.hp_bonus = 4
+		self.atk_bonus = 2
+		self.dfn_bonus = 2
+		self.luk_bonus = 4
+		self.spd_bonus = 1
+		self.spell_lines = [Spell.neptune_line, Spell.wrath_o_the_sea_line]
+
+class Captain(CharacterClass):
+	"""docstring for Captain"""
+	def __init__(self):
+		super(Captain, self).__init__()
+		self.name = "Captain"
+		self.hp_bonus = 7
+		self.mp_bonus = 2
+		self.atk_bonus = 6
+		self.dfn_bonus = 4
+		self.mag_bonus = 1
+		self.res_bonus = 2
+		self.spd_bonus = 4
+		self.luk_bonus = 6
+		self.spell_lines = [Spell.neptune_line, Spell.wrath_o_the_sea_line]
+		
+		
+class WeakSlime(CharacterClass):
+	"""docstring for WeakSlime"""
+	def __init__(self):
+		super(WeakSlime, self).__init__()
+		self.name = "Weak Slime"
+
+		self.spell_lines = [Spell.weak_slime_line]
+
+class WeakFlying(CharacterClass):
+	"""docstring for WeakFlying"""
+	def __init__(self):
+		super(WeakFlying, self).__init__()
+		self.name = "Weak Flying"
+		self.hp_bonus = 1
+
+		self.spell_lines = [Spell.weak_flying_line]
+
+class Servant(CharacterClass):
+	"""docstring for Servant"""
+	def __init__(self):
+		super(Servant, self).__init__()
+		self.name  = "Servant"
+		self.hp_bonus = 2
+		self.spd_bonus = 2
+		self.spell_lines = [Spell.servant_line]
+		

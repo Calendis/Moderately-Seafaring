@@ -5,6 +5,7 @@ screen = pygame.display.set_mode()
 from lib import Text
 from lib import UIConstant
 from lib import Character
+from lib import Sound
 
 DEFAULT_COLOUR = UIConstant.FOREGROUND_COLOUR
 BACKGROUND_COLOUR = UIConstant.BACKGROUND_COLOUR
@@ -113,6 +114,7 @@ class Menu(object):
 
 				
 	def move_selection_right(self):
+		Sound.menu.play()
 		if self.y_selected_element < self.width-1:
 			self.y_selected_element += 1
 
@@ -122,10 +124,12 @@ class Menu(object):
 			self.y_selected_element -= 1
 
 	def move_selection_left(self):
+		Sound.menu.play()
 		if self.y_selected_element > 0:
 			self.y_selected_element -= 1
 
 	def move_selection_down(self):
+		Sound.menu.play()
 		if self.x_selected_element < self.height-1:
 			self.x_selected_element += 1
 
@@ -135,6 +139,7 @@ class Menu(object):
 			self.x_selected_element -= 1
 
 	def move_selection_up(self):
+		Sound.menu.play()
 		if self.x_selected_element > 0:
 			self.x_selected_element -= 1
 
@@ -364,6 +369,40 @@ class UnequipMenu(Menu):
 		for item in items:
 			unequip_elements.append(BasicMenuItem(item.get_name()))
 		super(UnequipMenu, self).__init__(111+240+32+16, 16, 1, len(unequip_elements), unequip_elements)
-		
+
+battle_elements = [
+	BasicMenuItem("Attack"),
+	BasicMenuItem("Spells"),
+	BasicMenuItem("Defend"),
+	BasicMenuItem("Run")
+]
+
+class BattleMenu(Menu):
+	"""docstring for BattleMenu"""
+	def __init__(self, user):
+		super(BattleMenu, self).__init__(16, SCREEN_SIZE[1]-32, len(battle_elements), 1, battle_elements)
+		self.user = user
+
+	def get_user(self):
+		return self.user
+
+class BattleTargetMenu(Menu):
+	"""docstring for BattleTargetMenu"""
+	def __init__(self, targets, user, selected_option, spell=False, friendly=False):
+		self.targets_elements = []
+		for target in targets:
+			self.targets_elements.append(BasicMenuItem(target.get_name()))
+		super(BattleTargetMenu, self).__init__(272, 16, 1, len(targets), self.targets_elements)
+		self.targets = targets
+		self.user = user
+		self.selected_option = selected_option
+		self.spell = spell
+		self.friendly = friendly
+
+	def get_friendly(self):
+		return self.friendly
+
+	def get_spell(self):
+		return self.spell
 		
 		

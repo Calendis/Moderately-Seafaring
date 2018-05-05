@@ -11,9 +11,14 @@ import pyscroll.data
 from pyscroll.group import PyscrollGroup
 
 import shelve
+import time
 
 import os.path
 import sys
+
+from random import randint
+
+from math import floor
 
 from lib import Character
 from lib import Menu
@@ -22,19 +27,214 @@ from lib import Item
 from lib import Party
 from lib import Spell
 from lib import Stat
+from lib import Battle
+from lib import Sound
+from lib import UIConstant
+from lib import BackgroundImage
+
+def confirm_action(action, user, target=None, ability=None):
+	global party
+	global enemy_party
+	global current_battle_member_index
+	global menus
+	global battle_actions
+	global floating_texts
+	global main_screen
+	global battle_screen
+	global experience_pool
+	global fragile_textboxes
+	global battle_over
+
+	battle_actions.append( (action, user, user.get_spd(), target, ability) )
+	
+	current_battle_member_index += 1
+	if current_battle_member_index > len(party.get_members()) - 1:
+		#TODO: Let the AI add battle actions
+		for enemy_party_member in enemy_party.get_members():
+			if not randint(0, 9):
+				battle_actions.append( ("Defend", enemy_party_member, enemy_party_member.get_spd()) )
+			else:
+				battle_actions.append( ("Attack", enemy_party_member, enemy_party_member.get_spd(), party[randint(0,1)-1]) )
+		#TODO: Organise the battle actions by speed
+		
+		#Iterate over the battle actions
+		for battle_action in battle_actions:
+			crit = False
+			colour = (255, 0, 0)
+			
+			battle_action[1].set_defending(False) #
+			if battle_action[1].get_current_hp() > 0:
+
+				if battle_action[0] == "Nothing":
+					print(battle_action[1].get_name()+" is down and cannot act!")
+
+				elif battle_action[0] == "Attack":
+				
+					damage = randint(floor(battle_action[1].get_atk()*0.9), floor(battle_action[1].get_atk()*1.35))
+					if damage == floor(battle_action[1].get_atk()*1.35):
+						if randint(0, floor(battle_action[3].get_luk()*100/(battle_action[1].get_atk()*1.35 - battle_action[1].get_atk()*0.9))) < battle_action[1].get_luk():
+							crit = True
+							colour = (0, 255, 255)
+							damage *= 2
+
+					damage -= randint(floor(battle_action[3].get_dfn()/2), battle_action[3].get_dfn())
+
+					if battle_action[3].get_defending():
+						damage -= randint(floor(battle_action[3].get_dfn()/2), battle_action[3].get_dfn())
+
+					if damage < 1:
+						damage = 0
+
+					battle_action[3].heal(-damage, Stat.HitPoints(0))
+					floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, str(damage), 32, colour, UIConstant.FLOATING_TEXT_FRAMES))
+					battle_action[1].attack_sound.play()
+
+				elif battle_action[0] == "Defend":
+					colour = (50, 50, 255)
+					battle_action[1].set_defending(True)
+					floating_texts.append(Text.FloatingText(battle_action[1].get_battle_pos()[0], battle_action[1].get_battle_pos()[1]-16, "Defending.", 32, colour, UIConstant.FLOATING_TEXT_FRAMES))
+					Sound.buff.play()
+
+				elif battle_action[0] == "Spell":
+					battle_action[1].shift_current_mp(-battle_action[4].get_mp_cost())
+
+					if battle_action[4].__class__.__bases__[0] == Spell.HealingSpell:
+						colour = (0, 255, 0)
+						damage = randint(floor(battle_action[4].get_power()*0.9), floor(battle_action[4].get_power()*1.35))
+						battle_action[3].heal(damage, Stat.HitPoints(0))
+						floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, str(damage), 32, colour, UIConstant.FLOATING_TEXT_FRAMES))
+						Sound.health.play()
+
+					elif battle_action[4].__class__.__bases__[0] == Spell.BuffSpell:
+						colour = (100, 100, 255)
+						buff_level = randint(floor(battle_action[4].get_stat_power()*0.9), floor(battle_action[4].get_stat_power()*1.35))
+						battle_action[3].buff(buff_level, battle_action[4].get_stat_target())
+						floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, battle_action[4].get_stat_target().upper()+" up!", 32, colour, UIConstant.FLOATING_TEXT_FRAMES))
+						Sound.buff.play()
+
+					elif battle_action[4].__class__.__bases__[0] == Spell.DamageSpell:
+						colour = (255, 0, 0)
+						mag_and_pow = battle_action[1].get_mag() + battle_action[4].get_power()
+						damage = randint(floor(mag_and_pow*0.9), floor(mag_and_pow*1.35))
+						damage -= randint(floor(battle_action[3].get_res()/2), battle_action[3].get_res())
+						if battle_action[3].get_defending():
+							damage -= randint(floor(battle_action[3].get_res()/2), battle_action[3].get_res())
+
+						battle_action[3].heal(-damage, Stat.HitPoints(0))
+						floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, str(damage), 32, colour, UIConstant.FLOATING_TEXT_FRAMES))
+						battle_action[4].sound.play()
+
+					elif battle_action[4].__class__.__bases__[0] == Spell.NerfSpell:
+						colour = (255, 255, 0)
+						nerf_level = randint(floor(battle_action[4].get_stat_power()*0.9), floor(battle_action[4].get_stat_power()*1.35))
+						battle_action[3].buff(-nerf_level, battle_action[4].get_stat_target())
+						floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, battle_action[4].get_stat_target().upper()+" down.", 32, colour, UIConstant.FLOATING_TEXT_FRAMES))
+						Sound.nerf.play()
+
+				try:
+					battle_action[3].get_current_hp()
+				except:
+					pass
+				else:
+					if battle_action[3].get_current_hp() <= 0:
+						if battle_action[3] in enemy_party:
+							enemy_party.remove_member(battle_action[3])
+							experience_pool += battle_action[3].get_death_exp()
+						else:
+							battle_action[3].heal(-battle_action[3].get_current_hp(), Stat.HitPoints(0))
+
+
+			#Battle Drawing below (action loop)
+			screen.fill((0, 0 ,0))
+			screen.blit(BackgroundImage.grass, (0, 0))
+
+			for enemy_party_member in enemy_party:
+				screen.blit(enemy_party_member.get_battle_image(), enemy_party_member.get_battle_pos())
+
+			for party_member in party:
+				screen.blit(party_member.get_battle_image(), party_member.get_battle_pos())
+			
+			pygame.draw.rect(screen, UIConstant.BACKGROUND_COLOUR, (screen_size[0]-224, 0, 224, screen_size[1]))
+			
+			for i in range(len(party.get_members())):
+				party_text_colour = (255,255,255)
+
+				Text.draw_text(screen_size[0]-224+32, (i+1)*80 - 40, party[i].get_name(), 24, party_text_colour)
+				Text.draw_text(screen_size[0]-244+48, (i+1)*80 - 24, "HP: "+str(party[i].get_current_hp())+"/"+str(party[i].get_hp()), 20, (255,255,255))
+				Text.draw_text(screen_size[0]-244+48, (i+1)*80 - 14, "MP: "+str(party[i].get_current_mp())+"/"+str(party[i].get_mp()), 20, (255,255,255))
+
+			for floating_text in floating_texts:
+				floating_text.update()
+				floating_text.draw()
+
+			pygame.display.flip() #Now you can see the effects
+			clock.tick(60)
+			time.sleep(0.6)
+
+		'''j = 0
+		for i in range(len(enemy_party.get_members())):
+			if enemy_party.get_members()[i+j].get_current_hp() <= 0:
+				#Dead enemy
+				experience_pool += enemy_party.get_members()[i+j].get_death_exp()
+				enemy_party.remove_member(enemy_party.get_members()[i+j])
+				
+				i += 1 #This funny incrementor math allows you to kill multiple enemies at once.
+				j -= 1 #I had to do this because the list is shortened when an enemy is killed, which messes up the loop'''
+
+		current_battle_member_index = 0
+		battle_actions = []
+		menus = [Menu.BattleMenu(party[current_battle_member_index])]
+
+		if len(enemy_party.get_members()) < 1 and len(fragile_textboxes) < 1:
+			#Battle won!
+			experience_pool = floor(experience_pool/len(party.get_members()))
+			for party_member in party:
+				party_member.debuff()
+				party_member.shift_exp(experience_pool)
+
+			menus = []
+			fragile_textboxes.append(Text.TextBox(["Victory! Gained "+str(experience_pool)+" EXP!"], screen_size[0]/2, screen_size[1]/2))
+			battle_over = True
+			Sound.play_overworld_music("fanfare")
+
+	else:
+		menus = [Menu.BattleMenu(party[current_battle_member_index])]
 
 def main():
 	done = False
 	paused = False
+	
 	title_screen = True
+	
+	global main_screen
 	main_screen = False
+	
+	global battle_screen
+	battle_screen = False
+
+	global battle_actions
+	battle_actions = []
+
+	global battle_over
+	battle_over = True
 
 	BACKGROUND_COLOUR = (74,104,200)
 
+	global menus
 	menus = []
+
+	global party
 	party = Party.Party()
+	
+	global enemy_party
+	enemy_party = Party.Party()
+	
+	global fragile_textboxes
 	fragile_textboxes = [] #Fragile textboxes disappear at a button press
 	resiliant_textboxes = [] #Resiliant textboxes don't disappear until some condition is met
+	
+	global floating_texts
+	floating_texts = [] #Floating text ignores inputs and disappears after a certain time. (eg. damage numbers)
 	
 	main_menu = Menu.MainMenu()
 	menus.append(main_menu)
@@ -42,9 +242,9 @@ def main():
 	large_font = pygame.font.Font("resources/fonts/coders_crux.ttf", 80)
 
 	current_map = load_pygame("resources/maps/test_map.tmx")
-	party.add_member(Character.CaptainRizzko([1090,1450]))
-	party.add_member(Character.Zirkak([0,0]))
-	#party.append(Character.CaptainRizzko([395,10]))
+	party.add_member(Character.CaptainRizzko([750,1450], 1))
+	party.add_member(Character.Zirkak([0,0], 50)) #Level 50 for testing purposes
+	
 	pyscroll_map_data = pyscroll.data.TiledMapData(current_map)
 	map_layer = pyscroll.BufferedRenderer(pyscroll_map_data, screen.get_size())
 	map_layer.zoom = 2
@@ -84,7 +284,7 @@ def main():
 					if  title_screen_event.key == K_RIGHT:
 						menus[-1].move_selection_right()
 					if title_screen_event.key == K_RETURN or title_screen_event.key == K_x:
-						
+						Sound.confirm.play()
 						if menus[-1].__class__ == Menu.MainMenu:							
 							if menus[-1].get_selected_name() == "New Game":
 								menus = []
@@ -100,6 +300,7 @@ def main():
 
 								title_screen = False
 								main_screen = True
+								Sound.play_overworld_music("sea")
 
 							elif menus[-1].get_selected_name() == "Load Game":
 								menus.append(Menu.LoadMenu())
@@ -176,10 +377,12 @@ def main():
 								for party_member in party.get_members():
 									party_member.reload_images()
 									party_member.reload_spell_lines()
+									party_member.reload_sounds()
 									for item in party_member.items:
 										item.reload_image()
 									for spell in party_member.spells:
 										spell.reload_image()
+										spell.reload_sound()
 								print("Images reloaded.")
 
 								print("Adding party to group data...")
@@ -190,11 +393,14 @@ def main():
 
 								title_screen = False
 								main_screen = True
+
+								Sound.play_overworld_music("sea")
 							except:
 								pass
 
 					if title_screen_event.key == K_z:
 						if len(menus) > 1:
+							Sound.back.play()
 							menus.remove(menus[-1])
 							if len(menus) > 0:
 								menus[-1].update()
@@ -233,17 +439,17 @@ def main():
 							map_layer.zoom = 1.2
 						if event.key == K_UP:
 							for party_member in party.get_members():
-								party_member.velocity[1] = -party_member.maxspeed
+								party_member.velocity[1] = -1
 						if event.key == K_DOWN:
 							for party_member in party.get_members():
-								party_member.velocity[1] = party_member.maxspeed
+								party_member.velocity[1] = 1
 						if event.key == K_LEFT:
 							for party_member in party.get_members():
-								party_member.velocity[0] = -party_member.maxspeed
+								party_member.velocity[0] = -1
 								party_member.frame = 0
 						if event.key == K_RIGHT:
 							for party_member in party.get_members():
-								party_member.velocity[0] = party_member.maxspeed
+								party_member.velocity[0] = 1
 								party_member.frame = 1
 
 						if event.key == K_RETURN:
@@ -251,6 +457,29 @@ def main():
 								menus.append(Menu.StartMenu())
 								for party_member in party.get_members():
 									party_member.velocity = [0,0]
+						if event.key == K_i:
+							#This code is important and will initiate a battle. It is run once!
+							global current_battle_member_index
+							current_battle_member_index = 0
+
+							global experience_pool
+							experience_pool = 0
+
+							enemy_party.add_member(Character.Googlyblob([0,0], 1))
+							enemy_party.add_member(Character.CocoonMan([0,0], 1))
+							enemy_party.add_member(Character.GenericPirate([0,0], 3))
+							menus = [Menu.BattleMenu(party[current_battle_member_index])]
+
+							Battle.position_for_battle(party, screen_size[1]-128)
+							Battle.position_for_battle(enemy_party, 64)
+
+							Sound.play_battle_music()
+
+							battle_over = False
+
+							battle_screen = True
+							main_screen = False
+
 					else:
 						
 						try:
@@ -268,6 +497,7 @@ def main():
 						if  event.key == K_RIGHT:
 							menus[-1].move_selection_right()
 						if event.key == K_z:
+							Sound.back.play()
 							menus.remove(menus[-1])
 							if len(menus) > 0:
 								menus[-1].update()
@@ -275,6 +505,7 @@ def main():
 								resiliant_textboxes.remove(resiliant_textboxes[-1])
 
 						if event.key == K_x:
+							Sound.confirm.play()
 							if menus[-1].__class__ == Menu.StartMenu:
 								if menus[-1].get_selected_name() == "Party":
 									menus.append(Menu.PartyMenu(party))
@@ -318,6 +549,7 @@ def main():
 								for member in party.get_members():
 									member.clear_images()
 									member.clear_spell_lines()
+									member.clear_sounds()
 									for item in member.items:
 										item.clear_image()
 									for spell in member.spells:
@@ -346,10 +578,12 @@ def main():
 								for party_member in party.get_members():
 									party_member.reload_images()
 									party_member.reload_spell_lines()
+									party_member.reload_sounds()
 									for item in party_member.items:
 										item.reload_image()
 									for spell in party_member.spells:
 										spell.reload_image()
+										spell.reload_sound()
 								print("Images reloaded.")
 
 								menus.remove(menus[-1])
@@ -471,7 +705,7 @@ def main():
 									party.get_current_member().shift_current_mp(-(menus[-1].get_spell().get_mp_cost()))
 									
 									if menus[-1].get_spell().__class__.__bases__[0] == Spell.HealingSpell:
-										party.get_members()[menus[-1].get_selected_element_position()["x"]].heal(-(menus[-1].get_spell().get_power()), Stat.HitPoints(-(menus[-1].get_spell().get_power())))
+										party.get_members()[menus[-1].get_selected_element_position()["x"]].heal((menus[-1].get_spell().get_power()), Stat.HitPoints(-(menus[-1].get_spell().get_power())))
 
 							elif menus[-1].__class__ == Menu.WhomEquipMenu:
 								party[menus[-1].get_selected_element_position()["x"]].equip(menus[-1].get_item())
@@ -505,6 +739,7 @@ def main():
 			pyscroll_group_data.update()
 
 			for party_member in party.get_members():
+				#Handles interaction with map objects!
 				for wall in walls:
 					if pygame.Rect.colliderect(party_member.feetrect, wall):
 						party_member.move_back()
@@ -533,8 +768,6 @@ def main():
 							elif map_object.type == "warp":
 								warps.append(map_object)
 
-						'''for party_member in party.get_members():
-							pyscroll_group_data.add(party_member)'''
 						pyscroll_group_data.add(party.get_current_member())
 
 			for menu in menus:
@@ -560,6 +793,160 @@ def main():
 			pygame.display.flip()
 			clock.tick(60)
 
+		while not done and battle_screen:
+			if party.get_members()[current_battle_member_index].get_current_hp() <= 0:
+				confirm_action("Nothing", party[current_battle_member_index])
+
+			for battle_event in pygame.event.get():
+				#Battle event handling
+				if battle_event.type == pygame.QUIT:
+					done = True
+				if battle_event.type == pygame.KEYDOWN:
+					if len(fragile_textboxes) > 0:
+						fragile_textboxes.remove(fragile_textboxes[-1])
+						if battle_over:
+							battle_screen = False
+							main_screen = True
+							enemy_party.set_members([])
+							menus = []
+							floating_texts = []
+							Sound.play_overworld_music("sea")
+
+					elif battle_event.key == K_x:
+						if len(menus) > 0:
+							Sound.confirm.play()
+							if menus[-1].__class__ == Menu.BattleMenu:
+								if menus[-1].get_selected_name() == "Attack":
+									menus.append(Menu.BattleTargetMenu(enemy_party.get_members(), menus[-1].get_user(), "Attack"))
+
+								elif menus[-1].get_selected_name() == "Spells":
+									menus.append(Menu.SpellMenu(menus[-1].get_user().get_spells()))
+
+								elif menus[-1].get_selected_name() == "Defend":
+									#Defend
+									confirm_action("Defend", party[current_battle_member_index])
+
+								elif menus[-1].get_selected_name() == "Run":
+									#This block sets the party speeds to the speed of their slowest member.
+									party_speed = False
+									for party_member in party:
+										if not party_speed:
+											party_speed = party_member.get_spd()
+										elif party_member.get_spd() < party_speed:
+											party_speed = party_member.get_spd()
+
+									enemy_party_speed = False
+									for enemy_party_member in enemy_party:
+										if not enemy_party_speed:
+											enemy_party_speed = enemy_party_member.get_spd()
+										elif enemy_party_member.get_spd() < enemy_party_speed:
+											enemy_party_speed = enemy_party_member.get_spd()
+
+									#If your party is faster, you get away.
+									if party_speed > enemy_party_speed: 
+										battle_screen = False
+										main_screen = True
+										#Clears enemy party
+										enemy_party.set_members([])
+										menus = []
+										fragile_textboxes.append(Text.TextBox(["You ran away..."], screen_size[0]/2, screen_size[1]/2))
+										battle_over = True
+									else:
+										fragile_textboxes.append(Text.TextBox(["You couldn't get away!"], screen_size[0]/2, screen_size[1]/2))
+										confirm_action("Nothing", party[current_battle_member_index])
+
+							elif menus[-1].__class__ == Menu.SpellMenu:
+								selected_spell = party[current_battle_member_index].get_spells()[menus[-1].get_selected_element_position()["x"]]
+
+								if party[current_battle_member_index].get_current_mp() >= selected_spell.get_mp_cost():
+									if selected_spell.get_targeting() == "self":
+										confirm_action("Spell", party[current_battle_member_index], party[current_battle_member_index], selected_spell)
+
+									elif selected_spell.get_targeting() == "friendly":
+										menus.append(Menu.BattleTargetMenu(party.get_members(), menus[0].get_user(), "Spell", selected_spell, True))
+
+									elif selected_spell.get_targeting() == "enemy":
+										menus.append(Menu.BattleTargetMenu(enemy_party.get_members(), menus[0].get_user(), "Spell", selected_spell))
+
+								else:
+									fragile_textboxes.append(Text.TextBox(["Not enough MP."], menus[-1].get_position()["x"], menus[-1].get_position()["y"]))
+									selected_spell = None
+
+							elif menus[-1].__class__ == Menu.BattleTargetMenu:
+								if menus[-2].__class__ == Menu.BattleMenu:
+									confirm_action("Attack", party[current_battle_member_index], enemy_party[menus[-1].get_selected_element_position()["x"]])
+							
+								elif menus[-2].__class__ == Menu.SpellMenu:
+									if menus[-1].get_friendly() == True:
+										confirm_action("Spell", party[current_battle_member_index], party[menus[-1].get_selected_element_position()["x"]], menus[-1].get_spell())
+									else:
+										confirm_action("Spell", party[current_battle_member_index], enemy_party[menus[-1].get_selected_element_position()["x"]], menus[-1].get_spell())
+
+					if battle_event.key == K_z:
+						if len(menus) > 0:
+							Sound.back.play()
+							if menus[-1].__class__ != Menu.BattleMenu:
+								menus.remove(menus[-1])
+							else:
+								pass
+
+					if battle_event.key == K_UP:
+						if len(menus) > 0:
+							menus[-1].move_selection_up()
+					if battle_event.key == K_DOWN:
+						if len(menus) > 0:
+							menus[-1].move_selection_down()
+					if battle_event.key == K_LEFT:
+						if len(menus) > 0:
+							menus[-1].move_selection_left()
+					if  battle_event.key == K_RIGHT:
+						if len(menus) > 0:
+							menus[-1].move_selection_right()
+
+			#Battle logic below
+			for menu in menus:
+				menu.update()
+
+			for floating_text in floating_texts:
+				floating_text.update()
+				if floating_text.age > floating_text.lifetime:
+					floating_texts.remove(floating_text)
+
+			#Battle Drawing below
+			screen.fill((0, 0 ,0))
+			screen.blit(BackgroundImage.grass, (0, 0))
+
+			for enemy_party_member in enemy_party:
+				screen.blit(enemy_party_member.get_battle_image(), enemy_party_member.get_battle_pos())
+
+			for party_member in party:
+				screen.blit(party_member.get_battle_image(), party_member.get_battle_pos())
+
+			for floating_text in floating_texts:
+				floating_text.draw()
+
+			for menu in menus:
+				menu.draw()
+
+			for textbox in fragile_textboxes:
+				textbox.draw()
+
+			pygame.draw.rect(screen, UIConstant.BACKGROUND_COLOUR, (screen_size[0]-224, 0, 224, screen_size[1]))
+			
+			for i in range(len(party.get_members())):
+				party_text_colour = (255,255,255)
+				hp_text_colour = (255, 255, 255)
+				if party[i] == party[current_battle_member_index]:
+					party_text_colour = (255, 255, 0)
+				if party[i].get_current_hp() <= 0:
+					hp_text_colour = (255, 0, 0)
+				Text.draw_text(screen_size[0]-224+32, (i+1)*80 - 40, party[i].get_name(), 24, party_text_colour)
+				Text.draw_text(screen_size[0]-244+48, (i+1)*80 - 24, "HP: "+str(party[i].get_current_hp())+"/"+str(party[i].get_hp()), 20, hp_text_colour)
+				Text.draw_text(screen_size[0]-244+48, (i+1)*80 - 14, "MP: "+str(party[i].get_current_mp())+"/"+str(party[i].get_mp()), 20, (255,255,255))
+
+			pygame.display.flip()
+			clock.tick(60)
+
 		while not done and paused:# Paused gameloop
 			for event in pygame.event.get():
 				#Event handling
@@ -568,16 +955,15 @@ def main():
 				if event.type == pygame.KEYDOWN:
 					if event.key == K_x:
 						paused = False
-				#Game logic below
-				paused_text = large_font.render("PAUSED",1,(255,255,255))
 
-				#Drawing below
-				#screen.blit(paused_outline, (screen_size[0]/2-paused_outline.get_width()/2, screen_size[1]/3))
-				screen.blit(paused_text, (screen_size[0]/2-paused_text.get_width()/2, screen_size[1]/3))
+			#Game logic below
+			paused_text = large_font.render("PAUSED",1,(255,255,255))
 
-				pygame.display.flip()
-				clock.tick(60)
+			#Drawing below
+			screen.blit(paused_text, (screen_size[0]/2-paused_text.get_width()/2, screen_size[1]/3))
 
+			pygame.display.flip()
+			clock.tick(60)
 
 	pygame.quit()
 

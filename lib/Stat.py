@@ -20,12 +20,6 @@ class Stat(object):
 	def shift_value(self, offset):
 		self.value += offset
 
-	def set_temp_modifier(self, new_temp_modifier, relative=True):
-		if relative:
-			self.temp_modifier += new_temp_modifier
-		else:
-			self.temp_modifier = new_temp_modifier
-
 	def set_value(self, new_value):
 		self.value = new_value
 

@@ -20,6 +20,9 @@ class Party():
 	def add_member(self, new_member):
 		self.members.append(new_member)
 
+	def remove_member(self, old_member):
+		self.members.remove(old_member)
+
 	def get_members(self):
 		return self.members
 
@@ -40,3 +43,9 @@ class Party():
 
 	def set_stored_pos(self, new_pos):
 		self.stored_pos = new_pos
+
+	def set_members(self, new_list):
+		if new_list.__class__ != list:
+			raise TypeError("Must set party members as a list!")
+
+		self.members = new_list

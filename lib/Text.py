@@ -13,8 +13,8 @@ screen = pygame.display.set_mode()
 
 #Helper function for rendering and blitting pygame text in one.
 
-def draw_text(x, y, text, antialiased=1, colour=(0, 0, 0)):
-	rendered_text = sized_oxygen_font(15).render(text, antialiased, colour)
+def draw_text(x, y, text, size=15, colour=(0, 0, 0), antialiased=1):
+	rendered_text = sized_oxygen_font(size).render(text, antialiased, colour)
 	screen.blit(rendered_text, (x, y))
 
 def sized_oxygen_font(x):
@@ -46,4 +46,25 @@ class TextBox():
 		pygame.draw.rect(screen, self.box_colour, (self.position["x"], self.position["y"], self.width, self.height))
 		
 		for line in self.text:
-			draw_text(self.position["x"]+8, self.position["y"]*(self.text.index(line)+1)+8, line, 1, self.text_colour)
+			draw_text(self.position["x"]+8, self.position["y"]*(self.text.index(line)+1)+8, line, 15, self.text_colour)
+
+class FloatingText():
+	"""Lifetime is expressed in frames. The game runs at about 60 FPS I think."""
+	def __init__(self, x, y, text, size, colour, lifetime, antialiased=1):
+		super(FloatingText, self).__init__()
+		self.x = x
+		self.y = y
+		self.text = text
+		self.size = size
+		self.colour = colour
+		self.lifetime = lifetime
+		self.antialiased = antialiased
+
+		self.alive = True
+		self.age = 0
+
+	def update(self):
+		self.age += 1
+	
+	def draw(self):
+		draw_text(self.x, self.y, self.text, self.size, self.colour, self.antialiased)

@@ -2,6 +2,7 @@
 #Possible spell targets: 'friendly', 'enemy', 'self'
 from lib import SpellImage
 from lib import EleImage
+from lib import Sound
 
 class Spell():
 	"""docstring for Spell"""
@@ -13,7 +14,7 @@ class Spell():
 		self.name = "Unknown spell"
 		self.description = "Default spell description."
 		self.mp_cost = 999999
-		self.power = 0 #This should be negative for healing spells!
+		self.power = 0 #This should still be positive for healing spells!
 		self.stat_target = False
 		self.stat_power = 0 #This should be positive for buffing spells!
 
@@ -28,8 +29,14 @@ class Spell():
 	def clear_image(self):
 		self.image = None
 
+	def clear_sound(self):
+		self.sound = None
+
 	def reload_image(self):
 		self.image = SpellImage.default
+
+	def reload_sound(self):
+		self.sound = Sound.attack
 
 	def set_ele_image(self):
 		if self.ele == "Mercury":
@@ -63,6 +70,12 @@ class Spell():
 	def get_power(self):
 		return self.power
 
+	def get_stat_power(self):
+		return self.stat_power
+
+	def get_stat_target(self):
+		return self.stat_target
+
 	def get_mp_cost(self):
 		return self.mp_cost
 
@@ -78,12 +91,13 @@ class Spell():
 	def get_useable_outside_battle(self):
 		return self.useable_outside_battle
 
+	def get_targeting(self):
+		return self.targeting
+
 class HealingSpell(Spell):
 	"""docstring for HealingSpell"""
 	def __init__(self, power):
 		super(HealingSpell, self).__init__()
-		if power > 0:
-			raise ValueError("Healing spells may not have positive power!")
 		self.description_ending = "Restores somewhere around "+str(self.power)+" HP."
 		self.power = power
 		self.name = "Unknown healing spell"
@@ -97,6 +111,7 @@ class DamageSpell(Spell):
 		self.targeting = "enemy"
 		self.name = "Unknown damaging spell"
 		self.description = "Default damaging spell description."
+		self.sound = Sound.attack
 
 class BuffSpell(Spell):
 	"""docstring for BuffSpell"""
@@ -132,7 +147,7 @@ class StatusSpell(Spell):
 class Mend(HealingSpell):
 	"""docstring for Mend"""
 	def __init__(self):
-		self.power = -10
+		self.power = 10
 		super(Mend, self).__init__(self.power)
 		self.name = "Mend"
 		self.description = "Weak spell capable of instantly soothing cuts and bruises. "+self.description_ending
@@ -147,7 +162,7 @@ class Mend(HealingSpell):
 class Heal(HealingSpell):
 	"""docstring for Heal"""
 	def __init__(self):
-		self.power = -25
+		self.power = 25
 		super(Heal, self).__init__(self.power)
 		self.name = "Heal"
 		self.description = "Average spell capable of instantly healing up to fractures. "+self.description_ending
@@ -162,7 +177,7 @@ class Heal(HealingSpell):
 class Cure(HealingSpell):
 	"""docstring for Cure"""
 	def __init__(self):
-		self.power = -50
+		self.power = 50
 		super(Cure, self).__init__(self.power)
 		self.name = "Cure"
 		self.description = "Stronger spell capable of quickly healing major lacerations and broken bones"
@@ -186,9 +201,13 @@ class Icicle(DamageSpell):
 		#self.set_ele_image()
 		self.radius = 1
 		self.image = SpellImage.icicle
+		self.sound = Sound.attack_rocket
 
 	def reload_image(self):
 		self.image = SpellImage.icicle
+
+	def reload_sound(self):
+		self.sound = Sound.attack_rocket
 
 class IceSpire(DamageSpell):
 	"""docstring for IceSpire"""
@@ -210,14 +229,28 @@ class Mire(NerfSpell):
 	"""docstring for Mire"""
 	def __init__(self):
 		super(Mire, self).__init__()
+		self.name = "Mire"
+		self.description = "Entrap your foes in a sticky bog."
 		self.stat_power = 5
 		self.mp_cost = 5
-		self.stat_target = "Speed"
+		self.stat_target = "spd"
 		self.radius = 3
 		self.image = SpellImage.mire
 
 	def reload_image(self):
 		self.image = SpellImage.mire
+
+class Slime(NerfSpell):
+	"""docstring for Slime"""
+	def __init__(self):
+		super(Slime, self).__init__()
+		self.stat_power = 8
+		self.mp_cost = 4
+		self.name = "Slime"
+		self.description = "Trap a foe in tough, gluey, slime."
+		self.radius = 1
+		self.image = SpellImage.slime
+		self.stat_target = "spd"
 
 class Swell(DamageSpell):
 	"""docstring for Swell"""
@@ -285,7 +318,7 @@ class Tsunami(DamageSpell):
 class Mist(HealingSpell):
 	"""docstring for Mist"""
 	def __init__(self):
-		self.power = -10
+		self.power = 10
 		super(Mist, self).__init__(self.power)
 		self.name = "Mist"
 		self.description = "Summon a soothing mist."+self.description_ending
@@ -492,7 +525,7 @@ class Swab(BuffSpell):
 		super(Swab, self).__init__(self.stat_power)
 		self.name = "Swab"
 		self.description = "Swab the decks! Speed up an ally."
-		self.stat_target = "Speed"
+		self.stat_target = "spd"
 		self.mp_cost = 3
 		self.radius = 1
 		self.image = SpellImage.swab
@@ -507,7 +540,7 @@ class Batten(BuffSpell):
 		super(Batten, self).__init__(self.stat_power)
 		self.name = "Batten"
 		self.description = "Batten down the hatches! Boost an ally's defence."
-		self.stat_target = "Defence"
+		self.stat_target = "dfn"
 		self.mp_cost = 5
 		self.radius = 1
 		self.image = SpellImage.batten
@@ -522,7 +555,7 @@ class Swig(BuffSpell):
 		super(Swig, self).__init__(self.stat_power)
 		self.name = "Swig"
 		self.description = "Down a tankard of magical rum."
-		self.stat_target = "Attack"
+		self.stat_target = "atk"
 		self.mp_cost = 15
 		self.radius = 1
 		self.targeting = "self"
@@ -545,8 +578,12 @@ class Lime(StatusSpell):
 
 	def reload_image(self):
 		self.image = SpellImage.lime
+		
 
 basic_healer_line = {1: Mend(), 5: Heal(), 10: Cure()}
-test_line = {1: Mire(), 1: Icicle(), 3: IceSpire()}
+test_line = {1: Mire(), 2: Icicle(), 3: IceSpire()}
 neptune_line = {2: Aquablast(), 3: Drizzle(), 3: Mist(), 5: Swell(), 9: Rainstorm(), 14: LargeSwell(), 20: Hail(), 30: RogueWave(), 33: Deluge(), 42: Tsunami(), 58: SuperSleet()}
 wrath_o_the_sea_line = {1: Swab(), 3: Swell(), 6: Lime(), 11: Squall(), 15: Batten(), 21: Swig(), 60: Waterspout()}
+weak_slime_line = {15: Heal(), 15: Mist(), 17: Aquablast()}
+weak_flying_line = {20: Breeze()}
+servant_line = {1: Mend(), 2: Heal(), 4: Cure(), 10: Breeze()}
