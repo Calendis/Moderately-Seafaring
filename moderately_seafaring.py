@@ -940,6 +940,9 @@ def main():
 					party_text_colour = (255, 255, 0)
 				if party[i].get_current_hp() <= 0:
 					hp_text_colour = (255, 0, 0)
+				if party[i].get_current_hp() <= party[i].get_hp()/10:
+					hp_text_colour = (255, 128, 0)
+
 				Text.draw_text(screen_size[0]-224+32, (i+1)*80 - 40, party[i].get_name(), 24, party_text_colour)
 				Text.draw_text(screen_size[0]-244+48, (i+1)*80 - 24, "HP: "+str(party[i].get_current_hp())+"/"+str(party[i].get_hp()), 20, hp_text_colour)
 				Text.draw_text(screen_size[0]-244+48, (i+1)*80 - 14, "MP: "+str(party[i].get_current_mp())+"/"+str(party[i].get_mp()), 20, (255,255,255))
