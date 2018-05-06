@@ -25,6 +25,7 @@ class Spell():
 		self.useable_outside_battle = False
 
 		self.image = SpellImage.default
+		self.sleep_time = 0.6
 
 	def clear_image(self):
 		self.image = None
@@ -93,6 +94,9 @@ class Spell():
 
 	def get_targeting(self):
 		return self.targeting
+
+	def get_sleep_time(self):
+		return self.sleep_time
 
 class HealingSpell(Spell):
 	"""docstring for HealingSpell"""
@@ -341,9 +345,14 @@ class Aquablast(DamageSpell):
 		self.ele = "Neptune"
 		self.radius = 1
 		self.image = SpellImage.aquablast
+		self.sound = Sound.death_long
+		self.sleep_time = 1
 
 	def reload_image(self):
 		self.image = SpellImage.aquablast
+
+	def reload_sound(self):
+		self.sound = Sound.death_long
 
 class Electrolyze(DamageSpell):
 	"""docstring for Electrolyze"""

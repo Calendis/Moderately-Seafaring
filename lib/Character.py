@@ -330,6 +330,9 @@ class Character(pygame.sprite.Sprite):
 	def get_defending(self):
 		return self.defending
 
+	def get_statuses(self):
+		return self.statuses
+
 	def set_pos(self, new_pos):
 		self.pos = new_pos
 
@@ -352,6 +355,9 @@ class Character(pygame.sprite.Sprite):
 		if new_defending.__class__ != bool:
 			raise TypeError("defending must be True or False.")
 		self.defending = new_defending
+
+	def inflict_status(self, status):
+		self.statuses.append(status)
 
 	def shift_stats(self, equipment, positive=1):
 		print("Shifting stats!")
@@ -494,6 +500,9 @@ class Googlyblob(Character):
 
 		self.full_heal()
 
+	def get_battle_image(self):
+		return self.image
+
 	def reload_images(self):
 		self.images = [CharacterImage.googlyblob]
 		self.image = self.images[self.frame]
@@ -554,9 +563,12 @@ class GenericPirate(Character):
 		for i in range(self.lvl):
 			self.level_up()
 
-		self.death_exp = 12*self.lvl + 1
+		self.death_exp = 12*(self.lvl+1)
 
 		self.full_heal()
+
+	def get_battle_image(self):
+		return self.image
 
 class GenericPirateCaptain(Character):
 	"""docstring for GenericPirate"""

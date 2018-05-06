@@ -163,6 +163,16 @@ class Menu(object):
 	def get_box_width(self):
 		return self.box_width
 
+	def shift_position(self, rel_x, rel_y):
+		self.position["x"] += rel_x
+		self.position["y"] += rel_y
+
+	def centre_x(self):
+		self.shift_position(-self.get_box_width()/2, 0)
+
+	def move_width_back(self):
+		self.shift_position(-self.get_box_width(), 0)
+
 class MenuItem(object):
 	"""docstring for MenuItem"""
 	def __init__(self, text, image, colour=DEFAULT_COLOUR):
@@ -392,7 +402,7 @@ class BattleTargetMenu(Menu):
 		self.targets_elements = []
 		for target in targets:
 			self.targets_elements.append(BasicMenuItem(target.get_name()))
-		super(BattleTargetMenu, self).__init__(272, 16, 1, len(targets), self.targets_elements)
+		super(BattleTargetMenu, self).__init__(900-224, 0, 1, len(targets), self.targets_elements)
 		self.targets = targets
 		self.user = user
 		self.selected_option = selected_option
@@ -403,6 +413,4 @@ class BattleTargetMenu(Menu):
 		return self.friendly
 
 	def get_spell(self):
-		return self.spell
-		
-		
+		return self.spell		
