@@ -359,6 +359,9 @@ class Character(pygame.sprite.Sprite):
 	def inflict_status(self, status):
 		self.statuses.append(status)
 
+	def cure_status(self, status):
+		self.statuses.remove(status)
+
 	def shift_stats(self, equipment, positive=1):
 		print("Shifting stats!")
 		self.stats["hp"].shift_value(equipment.stats["hp"].get_value()*positive)

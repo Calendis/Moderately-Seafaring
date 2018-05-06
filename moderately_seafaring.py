@@ -95,7 +95,7 @@ def confirm_action(action, user, target=None, ability=None):
 							colour = (0, 255, 255)
 							damage *= 2
 
-					damage -= randint(floor(battle_action[3].get_dfn()/2), battle_action[3].get_dfn())
+					damage -= floor(randint(floor(battle_action[3].get_dfn()/2), battle_action[3].get_dfn())/2)
 
 					if battle_action[3].get_defending():
 						damage -= randint(floor(battle_action[3].get_dfn()/2), battle_action[3].get_dfn())
@@ -123,7 +123,7 @@ def confirm_action(action, user, target=None, ability=None):
 						if "down" in battle_action[3].get_statuses():
 							damage = 0
 							Sound.back.play()
-							colour = (150, 150, 0)
+							colour = (250, 255, 0)
 						else:
 							Sound.health.play()
 
@@ -156,6 +156,26 @@ def confirm_action(action, user, target=None, ability=None):
 						battle_action[3].buff(-nerf_level, battle_action[4].get_stat_target())
 						floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, battle_action[4].get_stat_target().upper()+" down.", 32, colour, UIConstant.FLOATING_TEXT_FRAMES))
 						Sound.nerf.play()
+
+					elif battle_action[4].__class__.__bases__[0] == Spell.StatusSpell:
+						status_target = battle_action[4].get_status_target()
+						if battle_action[4].get_inflict():
+							colour = (255, 255, 0)
+							if status_target not in battle_action[3].get_statuses():
+								battle_action[3].inflict_status(status_target)
+								floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, "+"+status_target.upper(), 32, colour, UIConstant.FLOATING_TEXT_FRAMES))
+								Sound.nerf.play()
+
+						else:
+							if status_target in battle_action[3].get_statuses():
+								colour = (0, 255, 255)
+								battle_action[3].cure_status(status_target)
+								floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, "-"+status_target.upper(), 32, colour, UIConstant.FLOATING_TEXT_FRAMES))
+								Sound.buff.play()
+
+								if status_target == "down":
+									battle_action[3].heal(1, Stat.HitPoints(0))
+
 
 				else:
 					print(battle_action[1].get_name()+" has selected an unknown action. This is probably a bug!")
@@ -273,7 +293,12 @@ def confirm_action(action, user, target=None, ability=None):
 			experience_pool = floor(experience_pool/len(party.get_members()))
 			for party_member in party:
 				party_member.debuff()
-				party_member.shift_exp(experience_pool)
+				for status in party_member.get_statuses():
+					if status != "down":
+						party_member.cure_status(status)
+				
+				if "down" not in party_member.get_statuses():
+					party_member.shift_exp(experience_pool)
 
 			menus = []
 			fragile_textboxes.append(Text.TextBox(["Victory! Gained "+str(experience_pool)+" EXP!"], (screen_size[0]-224)/2, screen_size[1]/2))
@@ -797,6 +822,16 @@ def main():
 										else:
 											fragile_textboxes.append(Text.TextBox(["It will have no effect"], menus[-1].get_box_width()+16+menus[-1].get_position()["x"], menus[-1].get_position()["y"]))
 											party.get_current_member().shift_current_mp(menus[-1].get_spell().get_mp_cost())
+
+									elif menus[-1].get_spell().__class__.__bases__[0] == Spell.StatusSpell:
+										if menus[-1].get_spell().get_inflict():
+											pass
+										else:
+											if menus[-1].get_spell().get_status_target() in party.get_members()[menus[-1].get_selected_element_position()["x"]].get_statuses():
+												party.get_members()[menus[-1].get_selected_element_position()["x"]].cure_status(menus[-1].get_spell().get_status_target())
+
+											if menus[-1].get_spell().get_status_target() == "down":
+												party.get_members()[menus[-1].get_selected_element_position()["x"]].heal(1, Stat.HitPoints(0))
 
 							elif menus[-1].__class__ == Menu.WhomEquipMenu:
 								party[menus[-1].get_selected_element_position()["x"]].equip(menus[-1].get_item())

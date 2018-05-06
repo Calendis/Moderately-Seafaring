@@ -142,10 +142,16 @@ class StatusSpell(Spell):
 	"""docstring for StatusSpell"""
 	def __init__(self):
 		super(StatusSpell, self).__init__()
-		self.afflict_status = None
-		self.cure_status = None
+		self.status_target = None
+		self.inflict = True
 		self.name = "Unknown status spell"
 		self.description = "Default status spell description."
+
+	def get_inflict(self):
+		return self.inflict
+
+	def get_status_target(self):
+		return self.status_target
 		
 		
 class Mend(HealingSpell):
@@ -557,6 +563,19 @@ class Batten(BuffSpell):
 	def reload_image(self):
 		self.image = SpellImage.batten
 
+
+class Bestow(BuffSpell):
+	"""docstring for Bestow"""
+	def __init__(self):
+		self.stat_power = 10
+		super(Bestow, self).__init__(self.stat_power)
+		self.name = "Bestow"
+		self.description = "Grant an ally immense strength."
+		self.stat_target = "atk"
+		self.targeting = "friendly"
+		self.mp_cost = 20
+		self.radius = 1
+
 class Swig(BuffSpell):
 	"""docstring for Swig"""
 	def __init__(self):
@@ -579,7 +598,8 @@ class Lime(StatusSpell):
 		super(Lime, self).__init__()
 		self.name = "Lime"
 		self.description = "Administer a magical lime to purge disease and poison."
-		self.cure_status = "Poison"
+		self.status_target = "poison"
+		self.inflict = False
 		self.mp_cost = 3
 		self.radius = 1
 		self.targeting = "friendly"
@@ -587,10 +607,22 @@ class Lime(StatusSpell):
 
 	def reload_image(self):
 		self.image = SpellImage.lime
-		
 
-basic_healer_line = {1: Mend(), 5: Heal(), 10: Cure()}
-test_line = {1: Mire(), 2: Icicle(), 3: IceSpire()}
+class Revive(StatusSpell):
+	"""docstring for Revive"""
+	def __init__(self):
+		super(Revive, self).__init__()
+		self.name = "Revive"
+		self.description = "Raise an ally."
+		self.status_target = "down"
+		self.inflict = False
+		self.mp_cost = 20
+		self.radius = 1
+		self.targeting = "friendly"
+		self.useable_outside_battle = True
+		
+basic_healer_line = {1: Mend(), 5: Heal(), 10: Cure(), 30: Revive()}
+test_line = {1: Mire(), 2: Icicle(), 3: IceSpire(), 4: Bestow(), 5: Revive()}
 neptune_line = {2: Aquablast(), 3: Drizzle(), 3: Mist(), 5: Swell(), 9: Rainstorm(), 14: LargeSwell(), 20: Hail(), 30: RogueWave(), 33: Deluge(), 42: Tsunami(), 58: SuperSleet()}
 wrath_o_the_sea_line = {1: Swab(), 3: Swell(), 6: Lime(), 11: Squall(), 15: Batten(), 21: Swig(), 60: Waterspout()}
 weak_slime_line = {15: Heal(), 15: Mist(), 17: Aquablast()}
