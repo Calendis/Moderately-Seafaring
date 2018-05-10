@@ -1022,7 +1022,8 @@ def main():
 
 								elif menus[-1].get_selected_name() == "Spells":
 									if len(menus[-1].get_user().get_spells()) > 0: #Don't open a spell menu if the character has no spells.
-										menus.append(Menu.SpellMenu(menus[-1].get_user().get_spells()))
+										#menus.append(Menu.SpellMenu(menus[-1].get_user().get_spells()))
+										menus.append(Menu.SpellMenu(party[current_battle_member_index].get_spells()))
 									else:
 										fragile_textboxes.append(Text.TextBox(["You have no spells!"], (screen_size[0]-224)/2, screen_size[1]/2))
 										fragile_textboxes[-1].centre_x()
