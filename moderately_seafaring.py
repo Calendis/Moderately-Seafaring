@@ -19,6 +19,7 @@ import sys
 from random import randint
 
 from math import floor
+from math import sin
 
 from lib import Character
 from lib import Menu
@@ -31,6 +32,67 @@ from lib import Battle
 from lib import Sound
 from lib import UIConstant
 from lib import BackgroundImage
+from lib import Selector
+
+def battle_drawing(exclude_menus=False, exclude_floating=False, exclude_selectors=False):
+	#global current_battle_member_index
+
+	screen.fill((0, 0 ,0))
+	screen.blit(BackgroundImage.grass, (0, 0))
+
+	for party_member in party:
+		screen.blit(party_member.get_battle_image(), party_member.get_battle_pos())
+
+	for enemy_party_member in enemy_party:
+		screen.blit(enemy_party_member.get_battle_image(), enemy_party_member.get_battle_pos())
+
+	pygame.draw.rect(screen, UIConstant.BACKGROUND_COLOUR, (screen_size[0]-224, 0, 224, screen_size[1]))
+			
+	for i in range(len(party.get_members())):
+		party_text_colour = (255,255,255)
+		hp_text_colour = (255, 255, 255)
+		try:
+			party[current_battle_member_index]
+		except:
+			pass
+		else:
+			if party[i] == party[current_battle_member_index]:
+				party_text_colour = (255, 255, 0)
+			if party[i].get_current_hp() <= party[i].get_hp()/10:
+				hp_text_colour = (255, 128, 0)				
+			if party[i].get_current_hp() <= 0:
+				hp_text_colour = (255, 0, 0)
+
+		Text.draw_text(screen_size[0]-224+32, (i+1)*80 - 40, party[i].get_name(), 24, party_text_colour)
+		Text.draw_text(screen_size[0]-244+48, (i+1)*80 - 24, "HP: "+str(party[i].get_current_hp())+"/"+str(party[i].get_hp()), 20, hp_text_colour)
+		Text.draw_text(screen_size[0]-244+48, (i+1)*80 - 14, "MP: "+str(party[i].get_current_mp())+"/"+str(party[i].get_mp()), 20, (255,255,255))
+
+	if not exclude_selectors:
+		selectors[0].set_pos(party[current_battle_member_index].get_battle_pos()[0]-16,
+			party[current_battle_member_index].get_battle_pos()[1]-16)
+		selectors[1].set_pos(party[current_battle_member_index].get_battle_pos()[0]+party[current_battle_member_index].get_battle_image().get_width(),
+			party[current_battle_member_index].get_battle_pos()[1]-16)
+		selectors[2].set_pos(party[current_battle_member_index].get_battle_pos()[0]-16,
+			party[current_battle_member_index].get_battle_pos()[1]+party[current_battle_member_index].get_battle_image().get_height())
+		selectors[3].set_pos(party[current_battle_member_index].get_battle_pos()[0]+party[current_battle_member_index].get_battle_image().get_width(),
+			party[current_battle_member_index].get_battle_pos()[1]+party[current_battle_member_index].get_battle_image().get_height())
+
+		for selector in selectors:
+			selector.update()
+			screen.blit(selector.get_image(), selector.get_pos())
+
+	if not exclude_floating:
+		for floating_text in floating_texts:
+			floating_text.draw()
+
+	if not exclude_menus:
+		for menu in menus:
+			menu.draw()
+
+	for textbox in fragile_textboxes:
+		textbox.draw()
+
+	pygame.display.flip() #Now you can see the effects
 
 def confirm_action(action, user, target=None, ability=None):
 	global party
@@ -80,8 +142,8 @@ def confirm_action(action, user, target=None, ability=None):
 			if "confused" in battle_action[1].get_statuses():
 				pass
 
-			if battle_action[1].get_current_hp() > 0:
-
+			if battle_action[1].get_current_hp() > 0:				
+				
 				if battle_action[0] == "Nothing":
 					#print(battle_action[1].get_name()+" didn't do anything!")
 					pass
@@ -254,29 +316,7 @@ def confirm_action(action, user, target=None, ability=None):
 
 
 			#Battle Drawing below (action loop)
-			screen.fill((0, 0 ,0))
-			screen.blit(BackgroundImage.grass, (0, 0))
-
-			for enemy_party_member in enemy_party:
-				screen.blit(enemy_party_member.get_battle_image(), enemy_party_member.get_battle_pos())
-
-			for party_member in party:
-				screen.blit(party_member.get_battle_image(), party_member.get_battle_pos())
-			
-			pygame.draw.rect(screen, UIConstant.BACKGROUND_COLOUR, (screen_size[0]-224, 0, 224, screen_size[1]))
-			
-			for i in range(len(party.get_members())):
-				party_text_colour = (255,255,255)
-
-				Text.draw_text(screen_size[0]-224+32, (i+1)*80 - 40, party[i].get_name(), 24, party_text_colour)
-				Text.draw_text(screen_size[0]-244+48, (i+1)*80 - 24, "HP: "+str(party[i].get_current_hp())+"/"+str(party[i].get_hp()), 20, (255,255,255))
-				Text.draw_text(screen_size[0]-244+48, (i+1)*80 - 14, "MP: "+str(party[i].get_current_mp())+"/"+str(party[i].get_mp()), 20, (255,255,255))
-
-			for floating_text in floating_texts:
-				floating_text.update()
-				floating_text.draw()
-
-			pygame.display.flip() #Now you can see the effects
+			battle_drawing(exclude_menus=True, exclude_selectors=True)
 			clock.tick(60)
 
 			if battle_action[0] == "Spell":
@@ -331,6 +371,22 @@ def main():
 
 	global menus
 	menus = []
+
+	global selectors
+	selectors = [
+		Selector.SelectorTopLeft(0, 0),
+		Selector.SelectorTopRight(0, 0),
+		Selector.SelectorBottomLeft(0, 0),
+		Selector.SelectorBottomRight(0, 0)
+	]
+
+	'''global enemy_selectors
+	enemy_selectors = [
+		Selector.SelectorTopLeft(0, 0),
+		Selector.SelectorTopRight(0, 0),
+		Selector.SelectorBottomLeft(0, 0),
+		Selector.SelectorBottomRight(0, 0)
+	]'''
 
 	global party
 	party = Party.Party()
@@ -489,7 +545,7 @@ def main():
 									party_member.reload_images()
 									party_member.reload_spell_lines()
 									party_member.reload_sounds()
-									for item in party_member.items:
+									for item in party_member.get_items():
 										item.reload_image()
 									for spell in party_member.spells:
 										spell.reload_image()
@@ -621,14 +677,23 @@ def main():
 								if menus[-1].get_selected_name() == "Party":
 									menus.append(Menu.PartyMenu(party))
 								elif menus[-1].get_selected_name() == "Items":
-									menus.append(Menu.ItemMenu(party.get_current_member().get_items()))
+									if len(party.get_current_member().get_items()) > 0:
+										menus.append(Menu.ItemMenu(party.get_current_member().get_items()))
+									else:
+										fragile_textboxes.append(Text.TextBox(["You have no items!"], screen_size[0]/2, screen_size[1]/2))
+										fragile_textboxes[-1].centre_x()
 								elif menus[-1].get_selected_name() == "Save":
 									menus.append(Menu.SaveMenu())
 									menus[-1].centre_x()
 								elif menus[-1].get_selected_name() == "Pause":
 									paused = True
 								elif menus[-1].get_selected_name() == "Spells":
-									menus.append(Menu.SpellMenu(party.get_current_member().get_spells()))
+									if len(party.get_current_member().get_spells()) > 0:
+										menus.append(Menu.SpellMenu(party.get_current_member().get_spells()))
+									else: #Don't open the spell menu if the selected character has no spells.
+										fragile_textboxes.append(Text.TextBox(["You have no spells!"], screen_size[0]/2, screen_size[1]/2))
+										fragile_textboxes[-1].centre_x()
+
 								elif menus[-1].get_selected_name() == "Quit":
 									done = True
 								elif menus[-1].get_selected_name() == "Skills":
@@ -662,7 +727,7 @@ def main():
 									member.clear_images()
 									member.clear_spell_lines()
 									member.clear_sounds()
-									for item in member.items:
+									for item in member.get_items():
 										item.clear_image()
 									for spell in member.spells:
 										spell.clear_image()
@@ -691,7 +756,7 @@ def main():
 									party_member.reload_images()
 									party_member.reload_spell_lines()
 									party_member.reload_sounds()
-									for item in party_member.items:
+									for item in party_member.get_items():
 										item.reload_image()
 									for spell in party_member.spells:
 										spell.reload_image()
@@ -731,9 +796,13 @@ def main():
 											menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
 
 								elif menus[-1].get_selected_name() == "Discard":
-									party.get_current_member().items.remove(menus[-1].get_item())
-									menus[1] = Menu.ItemMenu(party.get_current_member().items)
-									menus.remove(menus[-1])
+									party.get_current_member().get_items().remove(menus[-1].get_item())
+									if len(party.get_current_member().get_items()) > 0:
+										menus[1] = Menu.ItemMenu(party.get_current_member().get_items())
+										menus.remove(menus[-1])
+									else:
+										menus.remove(menus[-1])
+										menus.remove(menus[-1])
 
 							elif menus[-1].__class__ == Menu.SpellUseMenu:
 								if menus[-1].get_selected_name() == "Use":
@@ -804,8 +873,8 @@ def main():
 							elif menus[-1].__class__ == Menu.WhomUseMenu:
 								if menus[-1].get_item().__class__.__bases__[0] == Item.Medicine:
 									party[menus[-1].get_selected_element_position()["x"]].heal(menus[-1].get_item().get_value(), menus[-1].get_item().get_stat())
-									party.get_current_member().items.remove(menus[-1].get_item())
-									menus[1] = Menu.ItemMenu(party.get_current_member().items)
+									party.get_current_member().get_items().remove(menus[-1].get_item())
+									menus[1] = Menu.ItemMenu(party.get_current_member().get_items())
 									menus.remove(menus[-1])
 									menus.remove(menus[-1])
 
@@ -835,13 +904,13 @@ def main():
 
 							elif menus[-1].__class__ == Menu.WhomEquipMenu:
 								party[menus[-1].get_selected_element_position()["x"]].equip(menus[-1].get_item())
-								party.get_current_member().items.remove(menus[-1].get_item())
-								menus[1] = Menu.ItemMenu(party.get_current_member().items)
+								party.get_current_member().get_items().remove(menus[-1].get_item())
+								menus[1] = Menu.ItemMenu(party.get_current_member().get_items())
 								menus.remove(menus[-1])
 								menus.remove(menus[-1])
 
 							elif menus[-1].__class__ == Menu.UnequipMenu:
-								party[menus[1].get_selected_element_position()["x"]].items.append(equipped_items[menus[-1].get_selected_element_position()["x"]])
+								party[menus[1].get_selected_element_position()["x"]].get_items().append(equipped_items[menus[-1].get_selected_element_position()["x"]])
 								party[menus[1].get_selected_element_position()["x"]].unequip(equipped_items[menus[-1].get_selected_element_position()["x"]])
 								menus.remove(menus[-1])
 
@@ -921,7 +990,12 @@ def main():
 
 		while not done and battle_screen:
 			if party.get_members()[current_battle_member_index].get_current_hp() <= 0:
+				if "down" not in party.get_members()[current_battle_member_index].get_statuses():
+					fragile_textboxes.append(Text.TextBox([party.get_members()[current_battle_member_index].get_name()+" went down!"], (screen_size[0]-224)/2 ,screen_size[1]/2 ))
+					fragile_textboxes[-1].centre_x()
+					party.get_members()[current_battle_member_index].inflict_status("down")
 				confirm_action("Nothing", party[current_battle_member_index])
+
 
 			for battle_event in pygame.event.get():
 				#Battle event handling
@@ -947,7 +1021,11 @@ def main():
 									menus[-1].move_width_back()
 
 								elif menus[-1].get_selected_name() == "Spells":
-									menus.append(Menu.SpellMenu(menus[-1].get_user().get_spells()))
+									if len(menus[-1].get_user().get_spells()) > 0: #Don't open a spell menu if the character has no spells.
+										menus.append(Menu.SpellMenu(menus[-1].get_user().get_spells()))
+									else:
+										fragile_textboxes.append(Text.TextBox(["You have no spells!"], (screen_size[0]-224)/2, screen_size[1]/2))
+										fragile_textboxes[-1].centre_x()
 
 								elif menus[-1].get_selected_name() == "Defend":
 									#Defend
@@ -1013,24 +1091,26 @@ def main():
 									else:
 										confirm_action("Spell", party[current_battle_member_index], enemy_party[menus[-1].get_selected_element_position()["x"]], menus[-1].get_spell())
 
-					if battle_event.key == K_z:
+					elif battle_event.key == K_z:
 						if len(menus) > 0:
 							Sound.back.play()
 							if menus[-1].__class__ != Menu.BattleMenu:
-								menus.remove(menus[-1])
-							else:
-								pass
+								menus.remove(menus[-1]) #Delete the topmost menu, as long as you aren't on the base menu!
+							else: #If you are on the base menu, do this:
+								if current_battle_member_index > 0: #If you aren't on the first party member, you can cancel the previous member's action and reselect
+									battle_actions.remove(battle_actions[-1])
+									current_battle_member_index -= 1
 
-					if battle_event.key == K_UP:
+					elif battle_event.key == K_UP:
 						if len(menus) > 0:
 							menus[-1].move_selection_up()
-					if battle_event.key == K_DOWN:
+					elif battle_event.key == K_DOWN:
 						if len(menus) > 0:
 							menus[-1].move_selection_down()
-					if battle_event.key == K_LEFT:
+					elif battle_event.key == K_LEFT:
 						if len(menus) > 0:
 							menus[-1].move_selection_left()
-					if  battle_event.key == K_RIGHT:
+					elif  battle_event.key == K_RIGHT:
 						if len(menus) > 0:
 							menus[-1].move_selection_right()
 
@@ -1044,41 +1124,7 @@ def main():
 					floating_texts.remove(floating_text)
 
 			#Battle Drawing below
-			screen.fill((0, 0 ,0))
-			screen.blit(BackgroundImage.grass, (0, 0))
-
-			for enemy_party_member in enemy_party:
-				screen.blit(enemy_party_member.get_battle_image(), enemy_party_member.get_battle_pos())
-
-			for party_member in party:
-				screen.blit(party_member.get_battle_image(), party_member.get_battle_pos())
-
-			for floating_text in floating_texts:
-				floating_text.draw()
-
-			for menu in menus:
-				menu.draw()
-
-			for textbox in fragile_textboxes:
-				textbox.draw()
-
-			pygame.draw.rect(screen, UIConstant.BACKGROUND_COLOUR, (screen_size[0]-224, 0, 224, screen_size[1]))
-			
-			for i in range(len(party.get_members())):
-				party_text_colour = (255,255,255)
-				hp_text_colour = (255, 255, 255)
-				if party[i] == party[current_battle_member_index]:
-					party_text_colour = (255, 255, 0)
-				if party[i].get_current_hp() <= party[i].get_hp()/10:
-					hp_text_colour = (255, 128, 0)				
-				if party[i].get_current_hp() <= 0:
-					hp_text_colour = (255, 0, 0)
-
-				Text.draw_text(screen_size[0]-224+32, (i+1)*80 - 40, party[i].get_name(), 24, party_text_colour)
-				Text.draw_text(screen_size[0]-244+48, (i+1)*80 - 24, "HP: "+str(party[i].get_current_hp())+"/"+str(party[i].get_hp()), 20, hp_text_colour)
-				Text.draw_text(screen_size[0]-244+48, (i+1)*80 - 14, "MP: "+str(party[i].get_current_mp())+"/"+str(party[i].get_mp()), 20, (255,255,255))
-
-			pygame.display.flip()
+			battle_drawing()
 			clock.tick(60)
 
 		while not done and paused:# Paused gameloop
@@ -1102,6 +1148,8 @@ def main():
 	pygame.quit()
 
 if __name__ == "__main__":
+	pygame.mixer.pre_init(44100, -16, 2, 512)
+	pygame.mixer.init()
 	pygame.init()
 	pygame.font.init()
 

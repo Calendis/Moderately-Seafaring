@@ -3,7 +3,7 @@
 import pygame
 from random import randint
 
-pygame.mixer.pre_init(44100, 16, 2, 4096)
+pygame.mixer.pre_init(44100, -16, 2, 512)
 pygame.mixer.init()
 
 menu = pygame.mixer.Sound("resources/aud/sfx/menu.wav")

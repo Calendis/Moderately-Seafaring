@@ -76,7 +76,10 @@ class Character(pygame.sprite.Sprite):
 		#screen.blit(self.image, self.pos)
 
 	def update(self):
-		self.image = self.images[self.frame]
+		if self.frame < len(self.images):
+			self.image = self.images[self.frame]
+		else:
+			self.image = self.images[0]
 
 		self.pos[0] += self.velocity[0]
 		self.pos[1] += self.velocity[1]
@@ -116,6 +119,9 @@ class Character(pygame.sprite.Sprite):
 		self.pos[1] -= self.velocity[1]
 		self.rect = pygame.Rect(self.pos[0], self.pos[1], 16, 32)
 		self.feetrect = pygame.Rect(self.pos[0], self.pos[1]+16, 16, 32-16)
+
+	def shift_battle_pos(self, shift_vector):
+		self.battle_pos = (self.battle_pos[0]+shift_vector[0], self.battle_pos[1]+shift_vector[1])
 
 	def clear_images(self):
 		self.image = None
@@ -430,7 +436,10 @@ class CaptainRizzko(Character):
 
 	def reload_images(self):
 		self.images = [CharacterImage.rizzko_left, CharacterImage.rizzko_right]
-		self.image = self.images[self.frame]
+		if self.frame < len(self.images):
+			self.image = self.images[self.frame]
+		else:
+			self.image = self.images[0]
 		self.reload_gear_images()
 
 	def reload_sounds(self):
@@ -459,7 +468,6 @@ class Zirkak(Character):
 
 		self.maxspeed = round(1 + self.stats["spd"].get_value()/100)
 
-		self.level_up()
 		for i in range(lvl):
 			self.level_up()
 
@@ -486,7 +494,7 @@ class Googlyblob(Character):
 		self.name = "Googlyblob"
 		self.description = "TODO: Googlyblob description."
 		self.character_class = CharacterClass.WeakSlime()
-		self.lvl = lvl
+		self.lvl = 0
 		self.stats["hp"] = Stat.HitPoints(4)
 		self.stats["mp"] = Stat.ManaPoints(0)
 		self.stats["atk"] = Stat.Attack(2)
@@ -496,7 +504,7 @@ class Googlyblob(Character):
 		self.stats["spd"] = Stat.Speed(1)
 		self.stats["luk"] = Stat.Luck(1)
 
-		for i in range(self.lvl):
+		for i in range(lvl):
 			self.level_up()
 
 		self.death_exp = 4*self.lvl + 1
@@ -510,6 +518,7 @@ class Googlyblob(Character):
 		self.images = [CharacterImage.googlyblob]
 		self.image = self.images[self.frame]
 		self.reload_gear_images()
+
 class BigBird(Character):
 	"""docstring for BigBird"""
 	def __init__(self, pos, lvl):
@@ -523,7 +532,7 @@ class BigBird(Character):
 		self.name = "Monstrous Duck"
 		self.description = "Someone's pet duck, Tweets, escaped long ago and bred with the local monsters..."
 		self.character_class = CharacterClass.WeakFlying()
-		self.lvl = lvl
+		self.lvl = 0
 		self.stats["hp"] = Stat.HitPoints(12)
 		self.stats["mp"] = Stat.ManaPoints(5)
 		self.stats["atk"] = Stat.Attack(20)
@@ -533,7 +542,7 @@ class BigBird(Character):
 		self.stats["spd"] = Stat.Speed(3)
 		self.stats["luk"] = Stat.Luck(0)
 
-		for i in range(self.lvl):
+		for i in range(lvl):
 			self.level_up()
 
 		self.death_exp = 12*self.lvl + 0
@@ -553,7 +562,7 @@ class GenericPirate(Character):
 		self.name = CharacterName.PirateName()
 		self.description = "A ferocious pirate."
 		self.character_class = CharacterClass.Pirate()
-		self.lvl = lvl
+		self.lvl = 0
 		self.stats["hp"] = Stat.HitPoints(randint(5, 12))
 		self.stats["mp"] = Stat.ManaPoints(randint(0, 9))
 		self.stats["atk"] = Stat.Attack(randint(2, 10))
@@ -563,7 +572,7 @@ class GenericPirate(Character):
 		self.stats["spd"] = Stat.Speed(randint(0, 10))
 		self.stats["luk"] = Stat.Luck(randint(4, 16))
 
-		for i in range(self.lvl):
+		for i in range(lvl):
 			self.level_up()
 
 		self.death_exp = 12*(self.lvl+1)
@@ -586,7 +595,7 @@ class GenericPirateCaptain(Character):
 		self.name = CharacterName.Pirate()
 		self.description = "The leader of a band of ferocious pirates."
 		self.character_class = CharacterClass.Captain()
-		self.lvl = lvl
+		self.lvl = 0
 		self.stats["hp"] = Stat.HitPoints(randint(13, 23))
 		self.stats["mp"] = Stat.ManaPoints(randint(5, 12))
 		self.stats["atk"] = Stat.Attack(randint(7, 15))
@@ -596,7 +605,7 @@ class GenericPirateCaptain(Character):
 		self.stats["spd"] = Stat.Speed(randint(8, 13))
 		self.stats["luk"] = Stat.Luck(randint(10, 20))
 
-		for i in range(self.lvl):
+		for i in range(lvl):
 			self.level_up()
 		
 		self.death_exp = 20*self.lvl + 1
@@ -616,7 +625,7 @@ class CocoonMan(Character):
 		self.name = "Cocoon Man"
 		self.description = "This silent figure serves the Mothmaster. His cocoon looks soft."
 		self.character_class = CharacterClass.Servant()
-		self.lvl = lvl
+		self.lvl = 0
 		self.stats["hp"] = Stat.HitPoints(30)
 		self.stats["mp"] = Stat.ManaPoints(30)
 		self.stats["atk"] = Stat.Attack(5)
