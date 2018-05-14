@@ -1096,7 +1096,9 @@ def main():
 									else:
 										fragile_textboxes.append(Text.TextBox(["You couldn't get away!"], (screen_size[0]-224)/2, screen_size[1]/2))
 										fragile_textboxes[-1].centre_x()
-										confirm_action("Nothing", party[current_battle_member_index])
+										
+										for i in range(current_battle_member_index, len(party.get_members())):
+											confirm_action("Nothing", party[i])
 
 							elif menus[-1].__class__ == Menu.SpellMenu:
 								selected_spell = party[current_battle_member_index].get_spells()[menus[-1].get_selected_element_position()["x"]]
