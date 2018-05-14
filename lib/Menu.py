@@ -384,6 +384,7 @@ battle_elements = [
 	BasicMenuItem("Attack"),
 	BasicMenuItem("Spells"),
 	BasicMenuItem("Defend"),
+	BasicMenuItem("Item"),
 	BasicMenuItem("Run")
 ]
 

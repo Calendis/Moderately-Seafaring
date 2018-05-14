@@ -44,7 +44,7 @@ def jiggle_battle_sprite(battle_actor):
 	battle_drawing(exclude_selectors=True, exclude_menus=True)
 	battle_actor.shift_battle_pos(10, 0)
 	battle_drawing(exclude_selectors=True, exclude_menus=True)
-	time.sleep(0.2)
+	time.sleep(0.4)
 
 def battle_drawing(exclude_menus=False, exclude_floating=False, exclude_selectors=False):
 	#global current_battle_member_index
@@ -187,6 +187,15 @@ def confirm_action(action, user, target=None, ability=None):
 					floating_texts.append(Text.FloatingText(battle_action[1].get_battle_pos()[0], battle_action[1].get_battle_pos()[1]-16, "Defending.", 32, colour, UIConstant.FLOATING_TEXT_FRAMES))
 					Sound.buff.play()
 
+				elif battle_action[0] == "Item":
+					if battle_action[4].__class__.__bases__[0] == Item.Medicine:
+						colour = (0, 255, 0)
+						if battle_action[4].get_stat().get_name() == "MP":
+							colour = (10, 20, 255)
+						
+						battle_action[3].heal(battle_action[4].get_value(), battle_action[4].get_stat())
+						floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, str(battle_action[4].get_value()), 32, colour, UIConstant.FLOATING_TEXT_FRAMES))
+
 				elif battle_action[0] == "Spell":
 					jiggle_battle_sprite(battle_action[1])
 					battle_action[1].shift_current_mp(-battle_action[4].get_mp_cost())
@@ -254,7 +263,7 @@ def confirm_action(action, user, target=None, ability=None):
 
 				else:
 					print(battle_action[1].get_name()+" has selected an unknown action. This is probably a bug! ERROR 30-0")
-					floating_texts.append(Text.TextBox(["ERROR 30-0", battle_action[1].get_name()+" has selected an unknown action."], 100, 100))
+					fragile_textboxes.append(Text.TextBox(["ERROR 30-0", battle_action[1].get_name()+" has selected an unknown action."], 100, 100))
 
 				try:
 					battle_action[3].get_current_hp()
@@ -714,7 +723,7 @@ def main():
 									print("TODO: Skills.")
 								else:
 									print("No item was selected. ERROR 00-0")
-									floating_texts.append(Text.TextBox(["ERROR 00-0", "No item was selected."], 100, 100))
+									fragile_textboxes.append(Text.TextBox(["ERROR 00-0", "No item was selected."], 100, 100))
 							elif menus[-1].__class__ == Menu.SaveMenu:
 								if menus[-1].get_selected_element_position()["x"] == 0: #Notice the x position is needed on a vertical list
 									gamefile = "0"
@@ -889,7 +898,10 @@ def main():
 								if menus[-1].get_item().__class__.__bases__[0] == Item.Medicine:
 									party[menus[-1].get_selected_element_position()["x"]].heal(menus[-1].get_item().get_value(), menus[-1].get_item().get_stat())
 									party.get_current_member().get_items().remove(menus[-1].get_item())
-									menus[1] = Menu.ItemMenu(party.get_current_member().get_items())
+									if len(party.get_current_member().get_items()) > 0:
+										menus[1] = Menu.ItemMenu(party.get_current_member().get_items())
+									else:
+										menus.remove(menus[-1])
 									menus.remove(menus[-1])
 									menus.remove(menus[-1])
 
@@ -1047,6 +1059,14 @@ def main():
 									#Defend
 									confirm_action("Defend", party[current_battle_member_index])
 
+								elif menus[-1].get_selected_name() == "Item":
+									#Item
+									if len(menus[-1].get_user().get_items()) > 0:
+										menus.append(Menu.ItemMenu(party[current_battle_member_index].get_items()))
+									else:
+										fragile_textboxes.append(Text.TextBox(["You have no items."], (screen_size[0]-224)/2, screen_size[1]/2))
+										fragile_textboxes[-1].centre_x()
+
 								elif menus[-1].get_selected_name() == "Run":
 									#This block sets the party speeds to the speed of their slowest member.
 									party_speed = False
@@ -1096,6 +1116,29 @@ def main():
 								else:
 									fragile_textboxes.append(Text.TextBox(["Not enough MP."], menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
 									selected_spell = None
+
+							elif menus[-1].__class__ == Menu.ItemMenu:
+								selected_item = party[current_battle_member_index].get_items()[menus[-1].get_selected_element_position()["x"]]
+
+								if selected_item.get_useable():
+									menus.append(Menu.WhomUseMenu(party[current_battle_member_index].get_items()[menus[-1].get_selected_element_position()["x"]], party))
+								else:
+									fragile_textboxes.append(Text.TextBox([selected_item.get_name()+" is not useable."], (screen_size[0]-224)/2, screen_size[1]/2))
+
+							elif menus[-1].__class__ == Menu.WhomUseMenu:
+								party[current_battle_member_index].get_items().remove(menus[-1].get_item())
+
+								confirm_action("Item", party[current_battle_member_index], #Item user
+									party[menus[-1].get_selected_element_position()["x"]], #Item target
+									menus[-1].get_item()) #Passes the actual item
+								
+									
+								'''if len(party[current_battle_member_index].get_items()) > 0:
+										menus[1] = Menu.ItemMenu(party[current_battle_member_index].get_items())
+								else:
+									menus.remove(menus[-1])
+								menus.remove(menus[-1])
+								menus.remove(menus[-1])'''
 
 							elif menus[-1].__class__ == Menu.BattleTargetMenu:
 								if menus[-2].__class__ == Menu.BattleMenu:
