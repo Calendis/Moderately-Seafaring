@@ -21,7 +21,7 @@ class Character(pygame.sprite.Sprite):
 		self.feetrect = pygame.Rect(self.pos[0], self.pos[1]+16, 16, 32-16)
 		self.velocity = [0,0]
 		self.images = [CharacterImage.default_left, CharacterImage.default_right]
-		self.battle_pos = (0, 0)
+		self.battle_pos = [0, 0]
 		self.spells = []
 		self.frame = 0
 		self.image = self.images[self.frame]
@@ -344,6 +344,10 @@ class Character(pygame.sprite.Sprite):
 
 	def set_battle_pos(self, new_battle_pos):
 		self.battle_pos = new_battle_pos
+
+	def shift_battle_pos(self, new_rel_x, new_rel_y):
+		self.battle_pos[0] += new_rel_x
+		self.battle_pos[1] += new_rel_y
 
 	def set_weapon(self, new_weapon):
 		self.weapon = new_weapon

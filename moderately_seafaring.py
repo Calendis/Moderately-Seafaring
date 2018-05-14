@@ -34,6 +34,18 @@ from lib import UIConstant
 from lib import BackgroundImage
 from lib import Selector
 
+def jiggle_battle_sprite(battle_actor):
+	#Jiggle the actor so you know they're taking the action
+	battle_actor.shift_battle_pos(10, 0)
+	battle_drawing(exclude_selectors=True, exclude_menus=True)
+	battle_actor.shift_battle_pos(-10, 0)
+	battle_drawing(exclude_selectors=True, exclude_menus=True)
+	battle_actor.shift_battle_pos(-10, 0)
+	battle_drawing(exclude_selectors=True, exclude_menus=True)
+	battle_actor.shift_battle_pos(10, 0)
+	battle_drawing(exclude_selectors=True, exclude_menus=True)
+	time.sleep(0.2)
+
 def battle_drawing(exclude_menus=False, exclude_floating=False, exclude_selectors=False):
 	#global current_battle_member_index
 
@@ -143,13 +155,13 @@ def confirm_action(action, user, target=None, ability=None):
 				pass
 
 			if battle_action[1].get_current_hp() > 0:				
-				
+
 				if battle_action[0] == "Nothing":
 					#print(battle_action[1].get_name()+" didn't do anything!")
 					pass
 
 				elif battle_action[0] == "Attack":
-				
+					jiggle_battle_sprite(battle_action[1])
 					damage = randint(floor(battle_action[1].get_atk()*0.9), floor(battle_action[1].get_atk()*1.35))
 					if damage == floor(battle_action[1].get_atk()*1.35):
 						if randint(0, floor(battle_action[3].get_luk()*100/(battle_action[1].get_atk()*1.35 - battle_action[1].get_atk()*0.9))) < battle_action[1].get_luk():
@@ -176,6 +188,7 @@ def confirm_action(action, user, target=None, ability=None):
 					Sound.buff.play()
 
 				elif battle_action[0] == "Spell":
+					jiggle_battle_sprite(battle_action[1])
 					battle_action[1].shift_current_mp(-battle_action[4].get_mp_cost())
 
 					if battle_action[4].__class__.__bases__[0] == Spell.HealingSpell:
@@ -240,7 +253,8 @@ def confirm_action(action, user, target=None, ability=None):
 
 
 				else:
-					print(battle_action[1].get_name()+" has selected an unknown action. This is probably a bug!")
+					print(battle_action[1].get_name()+" has selected an unknown action. This is probably a bug! ERROR 30-0")
+					floating_texts.append(Text.TextBox(["ERROR 30-0", battle_action[1].get_name()+" has selected an unknown action."], 100, 100))
 
 				try:
 					battle_action[3].get_current_hp()
@@ -699,7 +713,8 @@ def main():
 								elif menus[-1].get_selected_name() == "Skills":
 									print("TODO: Skills.")
 								else:
-									print("No item was selected. This is a bug.")
+									print("No item was selected. ERROR 00-0")
+									floating_texts.append(Text.TextBox(["ERROR 00-0", "No item was selected."], 100, 100))
 							elif menus[-1].__class__ == Menu.SaveMenu:
 								if menus[-1].get_selected_element_position()["x"] == 0: #Notice the x position is needed on a vertical list
 									gamefile = "0"
