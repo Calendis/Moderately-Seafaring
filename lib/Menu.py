@@ -122,6 +122,12 @@ class Menu(object):
 					screen.blit(menu_element.get_image(), (self.get_position()["x"]+(216),
 						self.get_position()["y"]+(menu_list_counter*self.font_size*self.y_spacing_multiplier)+(4+self.additional_top_buffer)))
 
+		#Draws the menu borders
+		pygame.draw.rect(screen, UIConstant.BORDER_COLOUR_U, ((self.get_position()["x"]-UIConstant.BORDER_WIDTH, self.get_position()["y"]-UIConstant.BORDER_WIDTH), (self.box_width+2*UIConstant.BORDER_WIDTH, UIConstant.BORDER_WIDTH)))
+		pygame.draw.rect(screen, UIConstant.BORDER_COLOUR_R, ((self.get_position()["x"]+self.box_width, self.get_position()["y"]), (UIConstant.BORDER_WIDTH, self.box_height+8+UIConstant.BORDER_WIDTH)))
+		pygame.draw.rect(screen, UIConstant.BORDER_COLOUR_D, ((self.get_position()["x"]+self.box_width, self.get_position()["y"]+8+self.box_height), (-self.box_width+1, UIConstant.BORDER_WIDTH)))
+		pygame.draw.rect(screen, UIConstant.BORDER_COLOUR_L, ((self.get_position()["x"]-UIConstant.BORDER_WIDTH, self.get_position()["y"]+self.box_height+8+UIConstant.BORDER_WIDTH-1), (UIConstant.BORDER_WIDTH, -self.box_height-8-UIConstant.BORDER_WIDTH+1)))
+
 				
 	def move_selection_right(self):
 		Sound.menu.play()
