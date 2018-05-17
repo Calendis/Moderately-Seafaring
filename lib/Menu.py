@@ -77,7 +77,7 @@ class Menu(object):
 			self.xspacing = self.box_width//self.width
 		else:
 			#self.box_width = self.xspacing*self.width
-			self.box_width = ((longest_text_rendered.get_width()+16)*self.width)+16
+			self.box_width = ((longest_text_rendered.get_width()+0)*self.width)+16
 			self.xspacing = longest_text_rendered.get_width()
 
 		if not box_height:

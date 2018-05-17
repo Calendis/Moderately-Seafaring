@@ -31,16 +31,21 @@ class TextBox():
 		self.text_colour = text_colour
 		self.box_colour = box_colour
 
-		if not self.width:
-			self.width = len(self.text[0])*8
-		if not self.height:
-			self.height = len(self.text)*(16)+16
-
+		
 		#Remove None type from the text lines.
 		#None will be passed as part of spell descriptions for spells that do not restore any hp
 		for item in self.text:
 			if item == None:
 				self.text.remove(item)
+
+		longest_text_rendered = sized_oxygen_font(16).render(text[text.index(max(text, key=len))], 1, (0,0,0))
+
+		if not self.width:
+			#self.width = len(self.text[0])*8
+			self.width = longest_text_rendered.get_width()+16
+
+		if not self.height:
+			self.height = len(self.text)*(16)+16
 
 	def get_width(self):
 		return self.width
