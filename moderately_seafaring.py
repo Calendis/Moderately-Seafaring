@@ -444,7 +444,6 @@ def main():
 
 	pyscroll_group_data.add(party.get_current_member())
 						
-
 	logo = pygame.image.load("resources/img/logo.png")
 
 	while not done:# Master gameloop that can contain other gameloops.

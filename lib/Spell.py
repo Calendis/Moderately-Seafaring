@@ -575,6 +575,10 @@ class Bestow(BuffSpell):
 		self.targeting = "friendly"
 		self.mp_cost = 20
 		self.radius = 1
+		self.image = SpellImage.bestow
+
+	def reload_image(self):
+		self.image = SpellImage.bestow
 
 class Swig(BuffSpell):
 	"""docstring for Swig"""
@@ -619,7 +623,11 @@ class Revive(StatusSpell):
 		self.mp_cost = 20
 		self.radius = 1
 		self.targeting = "friendly"
+		self.image = SpellImage.revive
 		self.useable_outside_battle = True
+
+	def reload_image(self):
+		self.image = SpellImage.revive
 		
 basic_healer_line = {1: Mend(), 5: Heal(), 10: Cure(), 30: Revive()}
 test_line = {1: Mire(), 2: Icicle(), 3: IceSpire(), 4: Bestow(), 5: Revive()}

@@ -63,13 +63,23 @@ class Menu(object):
 		for element in elements:
 			strlen_elements.append(len(element.get_text()))
 
-		self.xspacing = self.font_size*max(strlen_elements)
+		longest_text_string = elements[strlen_elements.index(max(strlen_elements))].get_text()
+		longest_text_rendered = Text.sized_oxygen_font(self.font_size).render(longest_text_string, 1, (0,0,0))
+
+		#self.xspacing = self.font_size*max(strlen_elements)
+		#self.xspacing = longest_text_rendered.get_width()
+
 		#print(str(self)+"'s xspacing is "+str(self.xspacing))
 
 		self.background_colour = background_colour
 
-		if not box_width:
-			self.box_width = self.xspacing*self.width
+		if self.box_width:
+			self.xspacing = self.box_width//self.width
+		else:
+			#self.box_width = self.xspacing*self.width
+			self.box_width = ((longest_text_rendered.get_width()+16)*self.width)+16
+			self.xspacing = longest_text_rendered.get_width()
+
 		if not box_height:
 			self.box_height = self.font_size*self.height
 
@@ -391,7 +401,7 @@ battle_elements = [
 class BattleMenu(Menu):
 	"""docstring for BattleMenu"""
 	def __init__(self, user):
-		super(BattleMenu, self).__init__(16, SCREEN_SIZE[1]-32, len(battle_elements), 1, battle_elements)
+		super(BattleMenu, self).__init__(16, SCREEN_SIZE[1]-32, len(battle_elements), 1, battle_elements, SCREEN_SIZE[0]-224-32)
 		self.user = user
 
 	def get_user(self):

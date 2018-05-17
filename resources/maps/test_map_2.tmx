@@ -154,7 +154,7 @@
    <properties>
     <property name="destination" value="test_house"/>
     <property name="xwarp" type="int" value="752"/>
-    <property name="ywarp" type="int" value="1512"/>
+    <property name="ywarp" type="int" value="1552"/>
    </properties>
   </object>
  </objectgroup>
