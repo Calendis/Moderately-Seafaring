@@ -33,6 +33,7 @@ from lib import Sound
 from lib import UIConstant
 from lib import BackgroundImage
 from lib import Selector
+from lib import EnemyPool
 
 def jiggle_battle_sprite(battle_actor):
 	#Jiggle the actor so you know they're taking the action
@@ -416,6 +417,8 @@ def main():
 	
 	global enemy_party
 	enemy_party = Party.Party()
+
+	npcs = []
 	
 	global fragile_textboxes
 	fragile_textboxes = [] #Fragile textboxes disappear at a button press
@@ -431,18 +434,20 @@ def main():
 	large_font = pygame.font.Font("resources/fonts/coders_crux.ttf", 80)
 
 	current_map = load_pygame("resources/maps/test_map.tmx")
-	party.add_member(Character.CaptainRizzko([750,1450], 1))
+	party.add_member(Character.CaptainRizzko([415, 487], 1))
 	party.add_member(Character.Zirkak([0,0], 50)) #Level 50 for testing purposes
+	#party.add_member(Character.GenericPirate([0, 0], 1))
 	
 	pyscroll_map_data = pyscroll.data.TiledMapData(current_map)
 	map_layer = pyscroll.BufferedRenderer(pyscroll_map_data, screen.get_size())
 	map_layer.zoom = 2
-	pyscroll_group_data = PyscrollGroup(map_layer=map_layer, default_layer=1)
+	pyscroll_group_data = PyscrollGroup(map_layer=map_layer, default_layer=party.get_current_member().get_layer())
 	
 	'''for party_member in party.get_members():
 		pyscroll_group_data.add(party_member)'''
 
 	pyscroll_group_data.add(party.get_current_member())
+	pyscroll_group_data.change_layer(party.get_current_member(), party.get_current_member().get_layer())
 						
 	logo = pygame.image.load("resources/img/logo.png")
 
@@ -479,12 +484,15 @@ def main():
 
 								walls = []
 								warps = []
+								layer_switches = []
 
 								for map_object in current_map.objects:
 									if map_object.type == "wall":
-										walls.append(pygame.Rect(map_object.x, map_object.y, map_object.width, map_object.height))	
+										walls.append(map_object)	
 									elif map_object.type == "warp":
 										warps.append(map_object)
+									elif map_object.type == "layer_switch":
+										layer_switches.append(map_object)
 
 								title_screen = False
 								main_screen = True
@@ -537,11 +545,15 @@ def main():
 								print("Generating map objects...")
 								walls = []
 								warps = []
+								layer_switches = []
+
 								for map_object in current_map.objects:
 									if map_object.type == "wall":
-										walls.append(pygame.Rect(map_object.x, map_object.y, map_object.width, map_object.height))
+										walls.append(map_object)
 									elif map_object.type == "warp":
 										warps.append(map_object)
+									elif map_object.type == "layer_switch":
+										layer_switches.append(map_object)
 								print("Map objects generated.\n")
 							
 								
@@ -559,7 +571,7 @@ def main():
 								print("Map layer created.\n")
 
 								print("Creating group data...")
-								pyscroll_group_data = PyscrollGroup(map_layer=map_layer, default_layer=2)
+								pyscroll_group_data = PyscrollGroup(map_layer=map_layer, default_layer=party.get_current_member().get_layer())
 								print("Group data created.\n")
 								
 								print("Reloading party and item images...")
@@ -578,6 +590,7 @@ def main():
 								'''for party_member in party.get_members():
 									pyscroll_group_data.add(party_member)'''
 								pyscroll_group_data.add(party.get_current_member())
+								pyscroll_group_data.change_layer(party.get_current_member(), party.get_current_member().get_layer())
 								print("Party added to group data.\n")
 
 								title_screen = False
@@ -654,9 +667,9 @@ def main():
 							global experience_pool
 							experience_pool = 0
 
-							enemy_party.add_member(Character.Googlyblob([0,0], 2))
-							enemy_party.add_member(Character.GenericPirate([0,0], 1))
-							enemy_party.add_member(Character.GenericPirate([0,0], 1))
+							for i in range(randint(1,4)):
+								enemy_party.add_member(EnemyPool.test[randint(0, len(EnemyPool.test)-1)]([0,0], randint(1,2)))
+
 							menus = [Menu.BattleMenu(party[current_battle_member_index])]
 
 							Battle.position_for_battle(party, screen_size[1]-128)
@@ -764,6 +777,8 @@ def main():
 								'''for party_member in party.get_members():
 									pyscroll_group_data.add(party_member)'''
 								pyscroll_group_data.add(party.get_current_member())
+								pyscroll_group_data.change_layer(party.get_current_member(), party.get_current_member().get_layer())
+
 								print("Party added to group data.\n")
 
 								print("Saving map...")
@@ -871,10 +886,17 @@ def main():
 
 								elif menus[-1].get_selected_name() == "Select":
 									pyscroll_group_data.remove(party.get_current_member())
+									
 									party.set_stored_pos(party.get_current_member().get_pos())
+									party.set_stored_layer(party.get_current_member().get_layer())
+
 									party.set_current_member(party[menus[1].get_selected_element_position()["x"]])
+									
 									party.get_current_member().set_pos(party.get_stored_pos())
+									party.get_current_member().set_layer(party.get_stored_layer())
+									
 									pyscroll_group_data.add(party.get_current_member())
+									pyscroll_group_data.change_layer(party.get_current_member(), party.get_current_member().get_layer())
 
 								elif menus[-1].get_selected_name() == "Unequip":
 									equipped_items = []
@@ -959,37 +981,49 @@ def main():
 			#Game Logic Below
 			pyscroll_group_data.update()
 
-			for party_member in party.get_members():
-				#Handles interaction with map objects!
-				for wall in walls:
-					if pygame.Rect.colliderect(party_member.feetrect, wall):
-						party_member.move_back()
-				for warp in warps:
-					if pygame.Rect.colliderect(party_member.feetrect, pygame.Rect(warp.x, warp.y, warp.width, warp.height)):
-						current_map = load_pygame("resources/maps/"+warp.destination+".tmx")
-						party_member.set_pos([int(warp.xwarp), int(warp.ywarp)])
+			#Handles interaction with map objects!
+			for wall in walls:
+				if int(wall.layer)+2 == party.get_current_member().get_layer():
+					if pygame.Rect.colliderect(party.get_current_member().feetrect, pygame.Rect(wall.x, wall.y, wall.width, wall.height)):
+						party.get_current_member().move_back()
+			for warp in warps:
+				if int(warp.layer)+2 == party.get_current_member().get_layer() and pygame.Rect.colliderect(party.get_current_member().feetrect, pygame.Rect(warp.x, warp.y, warp.width, warp.height)):
+					#Enter a new map
+					current_map = load_pygame("resources/maps/"+warp.destination+".tmx")
+					party.get_current_member().set_pos([int(warp.xwarp), int(warp.ywarp)])
 
-						'''for party_member in party.get_members():
-							pyscroll_group_data.remove(party_member)'''
-						pyscroll_group_data.remove(party.get_current_member())
+					'''for party_member in party.get_members():
+						pyscroll_group_data.remove(party_member)'''
+					pyscroll_group_data.remove(party.get_current_member())
 
-						pyscroll_map_data = pyscroll.data.TiledMapData(current_map)
+					pyscroll_map_data = pyscroll.data.TiledMapData(current_map)
 
-						map_layer = pyscroll.BufferedRenderer(pyscroll_map_data, screen.get_size())
-						map_layer.zoom = 2
+					map_layer = pyscroll.BufferedRenderer(pyscroll_map_data, screen.get_size())
+					map_layer.zoom = 2
 
-						pyscroll_group_data = PyscrollGroup(map_layer=map_layer, default_layer=2)
+					pyscroll_group_data = PyscrollGroup(map_layer=map_layer, default_layer=party.get_current_member().get_layer())
 
-						walls = []
-						warps = []
+					walls = []
+					warps = []
+					layer_switches = []
+					npcs = []
 
-						for map_object in current_map.objects:
-							if map_object.type == "wall":
-								walls.append(pygame.Rect(map_object.x, map_object.y, map_object.width, map_object.height))	
-							elif map_object.type == "warp":
-								warps.append(map_object)
+					for map_object in current_map.objects:
+						if map_object.type == "wall":
+							walls.append(map_object)	
+						elif map_object.type == "warp":
+							warps.append(map_object)
+						elif map_object.type == "layer_switch":
+							layer_switches.append(map_object)
 
-						pyscroll_group_data.add(party.get_current_member())
+					pyscroll_group_data.add(party.get_current_member())
+					pyscroll_group_data.change_layer(party.get_current_member(), party.get_current_member().get_layer())
+
+			for layer_switch in layer_switches:
+				if int(layer_switch.layer)+2 == party.get_current_member().get_layer():
+					if pygame.Rect.colliderect(party.get_current_member().feetrect, pygame.Rect(layer_switch.x, layer_switch.y, layer_switch.width, layer_switch.height)):
+						party.get_current_member().set_layer(int(layer_switch.layer_to)+2)
+						pyscroll_group_data.change_layer(party.get_current_member(), party.get_current_member().get_layer())
 
 			for menu in menus:
 				menu.update()

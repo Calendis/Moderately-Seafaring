@@ -35,7 +35,7 @@ class Character(pygame.sprite.Sprite):
 		self.hometown = "???"
 		self.description = "Couldn't get a read on "+self.name+"!"
 		
-		self.items = [Item.GreenHerb(), Item.BrownHerb(), Item.Healing_Potion_I(), Item.Dagger(), Item.CrossRing()]
+		self.items = [Item.GreenHerb(), Item.BrownHerb(), Item.Healing_Potion_I(), Item.Dagger(), Item.Mana_Potion_I()]
 		
 		self.lvl = 0
 		self.exp = 0
@@ -69,7 +69,21 @@ class Character(pygame.sprite.Sprite):
 		self.current_mp = self.stats["mp"]
 		self.defending = False
 
-		self.collision_object = None #This is new
+		self.collision_object = None
+		self.layer = 2
+
+		'''
+			Lines are accessed by a dict key.
+			Line format:
+			Text to display, Options to give (dict keys), key to go to (if no options), items to give
+		'''
+		self.lines = {
+			0: ["This message should not appear: ERROR 60-0", ("Yes", "No"), 1, None],
+			1: ["This message should not appear: ERROR 60-1", (), 1, None],
+			"Yes": ["This message should not appear: ERROR 60-2", (), 1, Item.RedHerb],
+			"No": ["This message should not appear: ERROR 60-3", (), 1, None]
+		}
+		self.advances_lines = False
 
 	def draw(self):
 		pass
@@ -339,6 +353,9 @@ class Character(pygame.sprite.Sprite):
 	def get_statuses(self):
 		return self.statuses
 
+	def get_layer(self):
+		return self.layer
+
 	def set_pos(self, new_pos):
 		self.pos = new_pos
 
@@ -365,6 +382,9 @@ class Character(pygame.sprite.Sprite):
 		if new_defending.__class__ != bool:
 			raise TypeError("defending must be True or False.")
 		self.defending = new_defending
+
+	def set_layer(self, new_layer):
+		self.layer = new_layer
 
 	def inflict_status(self, status):
 		self.statuses.append(status)
@@ -645,3 +665,19 @@ class CocoonMan(Character):
 		self.death_exp = 330
 
 		self.full_heal()
+
+class Avik(Character):
+	"""docstring for Avik"""
+	def __init__(self, pos):
+		super(Avik, self).__init__(pos)
+		self.race = "Kobold"
+		self.title = ""
+		self.name = "Avik Clearwater"
+		
+		self.lines = {
+			0:["You leave us, and I'll whoop yer ass! Don't you have any respect for your elders?", (), 1, None],
+			1:["Oh... I'm sorry for that little outburst. I was the same way when I was your age. If anything, I was more energetic! Why are you guys so damned lazy?", (), 2, None],
+			2:["Erm... Sorry again for that. Thanks for stopping by to chat before you go, young'un. Remember me, Arbot. I hope you end up more successful than I did.", (), 3, Item.CrossRing],
+			3:["Remember me Arbot, and thanks for your help. Go on, get out of here! You don't have to hang around any longer...", (), None, 3]
+
+		}

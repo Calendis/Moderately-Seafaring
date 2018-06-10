@@ -181,6 +181,20 @@ class Healing_Potion_I(Medicine):
 	def reload_image(self):
 		self.image = ItemImage.healing_potion_I
 
+class Mana_Potion_I(Medicine):
+	"""docstring for Mana_Potion_I"""
+	def __init__(self):
+		self.value = 50
+		self.stat = Stat.ManaPoints(self.value)
+		super(Mana_Potion_I, self).__init__(self.value, self.stat)
+		self.name = "Mana Potion I"
+		self.description = "A tongue-tickling brew that fills you with magical power. "+self.description_ending
+		self.image = ItemImage.mana_potion_I
+	
+	def reload_image(self):
+		self.image = ItemImage.mana_potion_I
+		
+
 class RedHerb(Ingredient):
 	"""docstring for RedHerb"""
 	def __init__(self):

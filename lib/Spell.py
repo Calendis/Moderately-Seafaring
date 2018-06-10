@@ -102,8 +102,8 @@ class HealingSpell(Spell):
 	"""docstring for HealingSpell"""
 	def __init__(self, power):
 		super(HealingSpell, self).__init__()
-		self.description_ending = "Restores somewhere around "+str(self.power)+" HP."
 		self.power = power
+		self.description_ending = "Restores somewhere around "+str(self.power)+" HP."
 		self.name = "Unknown healing spell"
 		self.description = "Default healing spell description."+self.description_ending
 		self.useable_outside_battle = True

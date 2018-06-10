@@ -7,6 +7,7 @@ class Party():
 		self.members = []
 		self.current_member_number = 0
 		self.stored_pos = [0, 0]
+		self.stored_layer = 2
 
 	def __getitem__(self, index):
 		return self.get_members()[index]
@@ -29,6 +30,9 @@ class Party():
 	def get_stored_pos(self):
 		return self.stored_pos
 
+	def get_stored_layer(self):
+		return self.stored_layer
+
 	def get_current_member(self):
 		return self.get_members()[self.current_member_number]
 
@@ -43,6 +47,9 @@ class Party():
 
 	def set_stored_pos(self, new_pos):
 		self.stored_pos = new_pos
+
+	def set_stored_layer(self, new_layer):
+		self.stored_layer = new_layer
 
 	def set_members(self, new_list):
 		if new_list.__class__ != list:

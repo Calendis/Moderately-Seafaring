@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.1.2" orientation="orthogonal" renderorder="right-down" width="10" height="15" tilewidth="16" tileheight="16" infinite="0" nextobjectid="40">
+ <properties>
+  <property name="name" value="test_cave"/>
+ </properties>
+ <tileset firstgid="1" source="../tilesets/cave_tileset_0.tsx"/>
+ <layer name="0" width="10" height="15">
+  <data encoding="csv">
+1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,
+1,1,41,1,1,1,1,1,1,1
+</data>
+ </layer>
+ <layer name="1" width="10" height="15">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,167
+</data>
+ </layer>
+ <layer name="2" width="10" height="15">
+  <data encoding="csv">
+44,163,163,163,163,163,163,163,42,44,
+44,203,203,203,203,203,203,203,42,44,
+44,243,243,243,243,243,243,243,42,44,
+44,0,0,0,0,0,0,41,42,44,
+44,207,207,207,207,2,3,3,46,44,
+44,247,168,169,247,42,43,43,43,44,
+44,207,207,207,207,42,43,43,43,44,
+44,247,168,169,247,42,43,43,43,44,
+44,0,0,0,0,42,43,43,43,44,
+44,207,207,207,207,42,43,43,43,44,
+44,168,169,247,247,82,83,83,83,84,
+44,207,207,207,207,122,123,123,123,124,
+44,247,168,169,247,162,163,163,163,164,
+44,0,0,0,0,202,203,203,203,204,
+44,0,0,0,0,242,243,243,243,244
+</data>
+ </layer>
+ <layer name="3" width="10" height="15">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup color="#00d39b" name="layer_switches">
+  <object id="31" type="layer_switch" x="16" y="224" width="48" height="48">
+   <properties>
+    <property name="layer" type="int" value="2"/>
+    <property name="layer_to" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="32" type="layer_switch" x="96" y="48" width="48" height="48">
+   <properties>
+    <property name="layer" type="int" value="0"/>
+    <property name="layer_to" type="int" value="2"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup color="#5555ff" name="warps">
+  <object id="11" type="warp" x="32" y="240" width="16" height="16">
+   <properties>
+    <property name="destination" value="test_map"/>
+    <property name="layer" type="int" value="0"/>
+    <property name="xwarp" type="int" value="270"/>
+    <property name="ywarp" type="int" value="516"/>
+   </properties>
+  </object>
+  <object id="16" type="warp" x="112" y="64" width="16" height="16">
+   <properties>
+    <property name="destination" value="test_map"/>
+    <property name="layer" type="int" value="2"/>
+    <property name="xwarp" type="int" value="242"/>
+    <property name="ywarp" type="int" value="402"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup color="#ff0000" name="c0">
+  <object id="1" type="wall" x="144" y="224" width="16" height="16">
+   <properties>
+    <property name="layer" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="2" type="wall" x="80" y="208" width="80" height="16">
+   <properties>
+    <property name="layer" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="3" type="wall" x="0" y="0" width="16" height="240">
+   <properties>
+    <property name="layer" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="4" type="wall" x="80" y="64" width="16" height="144">
+   <properties>
+    <property name="layer" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="5" type="wall" x="16" y="16" width="112" height="16">
+   <properties>
+    <property name="layer" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="6" type="wall" x="96" y="64" width="16" height="16">
+   <properties>
+    <property name="layer" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="7" type="wall" x="128" y="0" width="16" height="80">
+   <properties>
+    <property name="layer" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="8" type="wall" x="16" y="192" width="16" height="16">
+   <properties>
+    <property name="layer" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="9" type="wall" x="64" y="192" width="16" height="16">
+   <properties>
+    <property name="layer" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="10" type="wall" x="48" y="160" width="32" height="16">
+   <properties>
+    <property name="layer" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="14" type="wall" x="0" y="240" width="32" height="16">
+   <properties>
+    <property name="layer" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="15" type="wall" x="48" y="240" width="96" height="16">
+   <properties>
+    <property name="layer" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="33" type="wall" x="16" y="80" width="16" height="16">
+   <properties>
+    <property name="layer" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="34" type="wall" x="16" y="112" width="16" height="16">
+   <properties>
+    <property name="layer" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="35" type="wall" x="64" y="112" width="16" height="16">
+   <properties>
+    <property name="layer" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="37" type="wall" x="64" y="80" width="16" height="16">
+   <properties>
+    <property name="layer" type="int" value="0"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup color="#ffaa00" name="c2">
+  <object id="17" type="wall" x="128" y="0" width="16" height="80">
+   <properties>
+    <property name="layer" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="18" type="wall" x="0" y="0" width="16" height="240">
+   <properties>
+    <property name="layer" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="19" type="wall" x="16" y="16" width="112" height="16">
+   <properties>
+    <property name="layer" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="20" type="wall" x="80" y="64" width="16" height="144">
+   <properties>
+    <property name="layer" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="21" type="wall" x="0" y="240" width="32" height="16">
+   <properties>
+    <property name="layer" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="22" type="wall" x="48" y="240" width="96" height="16">
+   <properties>
+    <property name="layer" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="23" type="wall" x="144" y="224" width="16" height="16">
+   <properties>
+    <property name="layer" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="24" type="wall" x="80" y="208" width="80" height="16">
+   <properties>
+    <property name="layer" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="25" type="wall" x="16" y="80" width="16" height="16">
+   <properties>
+    <property name="layer" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="26" type="wall" x="16" y="192" width="16" height="16">
+   <properties>
+    <property name="layer" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="27" type="wall" x="64" y="112" width="16" height="16">
+   <properties>
+    <property name="layer" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="28" type="wall" x="64" y="80" width="16" height="16">
+   <properties>
+    <property name="layer" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="29" type="wall" x="96" y="64" width="16" height="16">
+   <properties>
+    <property name="layer" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="36" type="wall" x="16" y="112" width="16" height="16">
+   <properties>
+    <property name="layer" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="38" type="wall" x="64" y="192" width="16" height="16">
+   <properties>
+    <property name="layer" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="39" type="wall" x="48" y="160" width="32" height="16">
+   <properties>
+    <property name="layer" type="int" value="2"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
