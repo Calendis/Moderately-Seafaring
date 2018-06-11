@@ -253,7 +253,10 @@
   </object>
   <object id="106" type="warp" x="240" y="800" width="352" height="16">
    <properties>
+    <property name="destination" value="test_map_2"/>
     <property name="layer" type="int" value="0"/>
+    <property name="xwarp" type="int" value="402"/>
+    <property name="ywarp" type="int" value="4"/>
    </properties>
   </object>
  </objectgroup>
