@@ -48,7 +48,7 @@ class TextBox():
 			self.width = self.longest_text_rendered.get_width()+UIConstant.MENU_LEFT_BUFFER*2
 
 		if not self.height:
-			self.height = len(self.text)*(self.longest_text_rendered.get_height())+UIConstant.MENU_TOP_BUFFER
+			self.height = len(self.text)*(self.longest_text_rendered.get_height())+2*UIConstant.MENU_TOP_BUFFER
 
 	def get_width(self):
 		return self.width

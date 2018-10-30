@@ -128,8 +128,8 @@ class Menu(object):
 		pygame.draw.rect(surface, UIConstant.MENU_LEFT_BORDER_COLOUR, ((self.get_position()["x"]-UIConstant.MENU_BORDER_WIDTH, self.get_position()["y"]+self.box_height+UIConstant.MENU_BORDER_BUFFER+UIConstant.MENU_BORDER_WIDTH-1), (UIConstant.MENU_BORDER_WIDTH, -self.box_height-UIConstant.MENU_BORDER_BUFFER-UIConstant.MENU_BORDER_WIDTH+1)))
 
 		# Draws the box width and height for debugging/menu aligning purposes
-		Text.draw_text(surface, self.get_position()["x"]+30, self.get_position()["y"], str(self.get_box_width()), UIConstant.LARGE_FONT_SIZE, (255, 0, 0))
-		Text.draw_text(surface, self.get_position()["x"]+30, self.get_position()["y"]+30, str(self.box_height), UIConstant.LARGE_FONT_SIZE, (255, 0, 0))
+		'''Text.draw_text(surface, self.get_position()["x"]+30, self.get_position()["y"], str(self.get_box_width()), UIConstant.LARGE_FONT_SIZE, (255, 0, 0))
+		Text.draw_text(surface, self.get_position()["x"]+30, self.get_position()["y"]+30, str(self.box_height), UIConstant.LARGE_FONT_SIZE, (255, 0, 0))'''
 
 	def move_selection_right(self):
 		if self.y_selected_element < self.width-1:
