@@ -1,24 +1,28 @@
 #Useful stuff related to pygame text rendering
 import pygame
-
 from lib import UIConstant
-from lib import Menu
 
 pygame.font.init()
-
-crux_font_path = "resources/fonts/coders_crux.ttf"
-oxygen_font_path = "resources/fonts/Oxygen-Regular.ttf"
-oxygen_font = pygame.font.Font(oxygen_font_path, 12)
-screen = pygame.display.set_mode()
+font_path = "resources/fonts/coders_crux.ttf"
 
 #Helper function for rendering and blitting pygame text in one.
-
-def draw_text(x, y, text, size=15, colour=(0, 0, 0), surface=screen, antialiased=1):
-	rendered_text = sized_oxygen_font(size).render(text, antialiased, colour)
+def draw_text(surface, x, y, text, size=UIConstant.FONT_SIZE, colour=UIConstant.FONT_COLOUR, antialiased=1):
+	rendered_text = sized_font(size).render(text, antialiased, colour)
 	surface.blit(rendered_text, (x, y))
 
-def sized_oxygen_font(x):
-	return pygame.font.Font(crux_font_path, x)
+	# Draws a box around the text for debug purposes
+	# pygame.draw.rect(surface, (0, 0, 255), (x, y, rendered_text.get_width(), rendered_text.get_height()), 1)
+
+def sized_font(x):
+	return pygame.font.Font(font_path, x)
+
+def get_text_width(text, size=UIConstant.FONT_SIZE):
+	rendered_text = sized_font(size).render(text, 1, UIConstant.FONT_COLOUR)
+	return rendered_text.get_width()
+
+def get_text_height(text, size=UIConstant.FONT_SIZE):
+	rendered_text = sized_font(size).render(text, 1, UIConstant.FONT_COLOUR)
+	return rendered_text.get_height()
 
 class TextBox():
 	"""docstring for TextBox"""
@@ -38,7 +42,7 @@ class TextBox():
 			if item == None:
 				self.text.remove(item)
 
-		longest_text_rendered = sized_oxygen_font(16).render(text[text.index(max(text, key=len))], 1, (0,0,0))
+		longest_text_rendered = sized_font(16).render(text[text.index(max(text, key=len))], 1, (0,0,0))
 
 		if not self.width:
 			#self.width = len(self.text[0])*8
@@ -50,11 +54,22 @@ class TextBox():
 	def get_width(self):
 		return self.width
 
-	def draw(self):
-		pygame.draw.rect(screen, self.box_colour, (self.position["x"], self.position["y"], self.width, self.height))
+	def get_height(self):
+		return self.height
+
+	def get_position(self):
+		return self.position
+
+	def draw(self, surface):
+		pygame.draw.rect(surface, self.box_colour, (self.position["x"], self.position["y"], self.width, self.height))
 		
 		for line in self.text:
-			draw_text(self.position["x"]+8, self.position["y"]*(self.text.index(line)+1)+8, line, 15, self.text_colour)
+			draw_text(surface, self.position["x"]+8, self.position["y"]*(self.text.index(line)+1)+8, line, 15, self.text_colour)
+
+		pygame.draw.rect(surface, UIConstant.MENU_UPPER_BORDER_COLOUR, ((self.get_position()["x"]-UIConstant.MENU_BORDER_WIDTH, self.get_position()["y"]-UIConstant.MENU_BORDER_WIDTH), (self.get_width()+2*UIConstant.MENU_BORDER_WIDTH, UIConstant.MENU_BORDER_WIDTH)))
+		pygame.draw.rect(surface, UIConstant.MENU_RIGHT_BORDER_COLOUR, ((self.get_position()["x"]+self.get_width(), self.get_position()["y"]), (UIConstant.MENU_BORDER_WIDTH, self.get_height()+UIConstant.MENU_BORDER_WIDTH)))
+		pygame.draw.rect(surface, UIConstant.MENU_LOWER_BORDER_COLOUR, ((self.get_position()["x"]+self.get_width(), self.get_position()["y"]+self.get_height()), (-self.get_width()+1, UIConstant.MENU_BORDER_WIDTH)))
+		pygame.draw.rect(surface, UIConstant.MENU_LEFT_BORDER_COLOUR, ((self.get_position()["x"]-UIConstant.MENU_BORDER_WIDTH, self.get_position()["y"]+self.get_height()+UIConstant.MENU_BORDER_WIDTH-1), (UIConstant.MENU_BORDER_WIDTH, -self.get_height()-UIConstant.MENU_BORDER_WIDTH+1)))
 
 	def shift_position(self, rel_x, rel_y):
 		self.position["x"] += rel_x
@@ -81,5 +96,5 @@ class FloatingText():
 	def update(self):
 		self.age += 1
 	
-	def draw(self, surface=screen):
-		draw_text(self.x, self.y, self.text, self.size, self.colour, surface, self.antialiased)
+	def draw(self, surface):
+		draw_text(surface, self.x, self.y, self.text, self.size, self.colour, self.antialiased)

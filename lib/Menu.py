@@ -36,8 +36,8 @@ class Menu(object):
 		#Error handling to make sure valid arguments are used.
 		if elements.__class__ != list:
 			raise TypeError("Elements must be passed in in a list!")
-		if len(elements) == 0:
-			raise ValueError("Menu cannot have zero elements!")
+		if len(elements) < 1:
+			raise ValueError("Menu cannot have fewer than one element!")
 		for element in elements:
 			if element.__class__ != MenuItem:
 				raise TypeError("Menu elements must be of type "+str(MenuItem))
@@ -53,34 +53,33 @@ class Menu(object):
 		self.elements = elements
 		self.x_selected_element = 0
 		self.y_selected_element = 0
-		self.font_size = 16 #I'm locking the font size, as it will make the menus much easier to design
+		self.font_size = UIConstant.MENU_FONT_SIZE
 		self.box_width = box_width
 		self.box_height = box_height
 		self.y_spacing_multiplier = y_spacing_multiplier
 		self.additional_top_buffer = additional_top_buffer
+		if self.width > 1:
+			self.centred_text_value = 0
+		else:
+			self.centred_text_value = 1
 
 		strlen_elements = []
 		for element in elements:
 			strlen_elements.append(len(element.get_text()))
 
 		longest_text_string = elements[strlen_elements.index(max(strlen_elements))].get_text()
-		longest_text_rendered = Text.sized_oxygen_font(self.font_size).render(longest_text_string, 1, (0,0,0))
-
-		#self.xspacing = self.font_size*max(strlen_elements)
-		#self.xspacing = longest_text_rendered.get_width()
-
-		#print(str(self)+"'s xspacing is "+str(self.xspacing))
+		longest_text_rendered = Text.sized_font(self.font_size).render(longest_text_string, 1, (0,0,0))
 
 		self.background_colour = background_colour
 
 		if self.box_width:
 			self.xspacing = self.box_width//self.width
+			self.centred_text_value = 0
 		else:
-			#self.box_width = self.xspacing*self.width
-			self.box_width = ((longest_text_rendered.get_width()+0)*self.width)+16
+			self.box_width = ((longest_text_rendered.get_width())*self.width)+16
 			self.xspacing = longest_text_rendered.get_width()
 
-		if not box_height:
+		if not self.box_height:
 			self.box_height = self.font_size*self.height
 
 		for i in range(self.height):
@@ -100,10 +99,10 @@ class Menu(object):
 		self.menu_list[self.x_selected_element][self.y_selected_element].set_colour(self.menu_list[self.x_selected_element][self.y_selected_element].get_selected_colour())
 		self.menu_list[self.x_selected_element][self.y_selected_element].selected = True
 
-	def draw(self): #This draws the menu and menu elements. It's hard to explain.
+	def draw(self, surface): #This draws the menu and menu elements. It's hard to explain.
 				
 		#This first part draws the box around the menu
-		pygame.draw.rect(screen, self.background_colour, ((self.position["x"], self.position["y"]), (self.box_width, self.box_height+8))) #8 is a buffer
+		pygame.draw.rect(surface, self.background_colour, ((self.position["x"], self.position["y"]), (self.box_width, self.box_height+UIConstant.MENU_TOP_BUFFER)))
 
 		menu_list_counter = -1
 		menu_element_counter = -1
@@ -112,25 +111,23 @@ class Menu(object):
 			menu_element_counter = -1
 			for menu_element in menu_element_list:
 				menu_element_counter += 1
-				menu_element_text = Text.sized_oxygen_font(self.font_size).render(menu_element.get_text(), 1, menu_element.get_colour())
+				menu_element_text = Text.sized_font(self.font_size).render(menu_element.get_text(), 1, menu_element.get_colour())
 				
 				#The important bit
-				screen.blit(menu_element_text, (self.get_position()["x"]+(self.get_xspacing()*menu_element_counter)+(8),
-					self.get_position()["y"]+(menu_list_counter*self.font_size*self.y_spacing_multiplier)+(8+self.additional_top_buffer)))
+				surface.blit(menu_element_text, (self.get_position()["x"]+(self.get_xspacing()*menu_element_counter)+UIConstant.MENU_LEFT_BUFFER+self.centred_text_value*(self.get_xspacing()-menu_element_text.get_width())/2,
+					self.get_position()["y"]+(menu_list_counter*self.font_size*self.y_spacing_multiplier)+(UIConstant.MENU_TOP_BUFFER+self.additional_top_buffer)))
 
 				if menu_element.get_image():
-					screen.blit(menu_element.get_image(), (self.get_position()["x"]+(216),
-						self.get_position()["y"]+(menu_list_counter*self.font_size*self.y_spacing_multiplier)+(4+self.additional_top_buffer)))
+					surface.blit(menu_element.get_image(), (self.get_position()["x"]+UIConstant.MENU_IMAGE_LEFT_BUFFER,
+						self.get_position()["y"]+(menu_list_counter*self.font_size*self.y_spacing_multiplier)+(UIConstant.MENU_IMAGE_TOP_BUFFER+self.additional_top_buffer)))
 
 		#Draws the menu borders
-		pygame.draw.rect(screen, UIConstant.BORDER_COLOUR_U, ((self.get_position()["x"]-UIConstant.BORDER_WIDTH, self.get_position()["y"]-UIConstant.BORDER_WIDTH), (self.box_width+2*UIConstant.BORDER_WIDTH, UIConstant.BORDER_WIDTH)))
-		pygame.draw.rect(screen, UIConstant.BORDER_COLOUR_R, ((self.get_position()["x"]+self.box_width, self.get_position()["y"]), (UIConstant.BORDER_WIDTH, self.box_height+8+UIConstant.BORDER_WIDTH)))
-		pygame.draw.rect(screen, UIConstant.BORDER_COLOUR_D, ((self.get_position()["x"]+self.box_width, self.get_position()["y"]+8+self.box_height), (-self.box_width+1, UIConstant.BORDER_WIDTH)))
-		pygame.draw.rect(screen, UIConstant.BORDER_COLOUR_L, ((self.get_position()["x"]-UIConstant.BORDER_WIDTH, self.get_position()["y"]+self.box_height+8+UIConstant.BORDER_WIDTH-1), (UIConstant.BORDER_WIDTH, -self.box_height-8-UIConstant.BORDER_WIDTH+1)))
-
+		pygame.draw.rect(surface, UIConstant.MENU_UPPER_BORDER_COLOUR, ((self.get_position()["x"]-UIConstant.MENU_BORDER_WIDTH, self.get_position()["y"]-UIConstant.MENU_BORDER_WIDTH), (self.box_width+2*UIConstant.MENU_BORDER_WIDTH, UIConstant.MENU_BORDER_WIDTH)))
+		pygame.draw.rect(surface, UIConstant.MENU_RIGHT_BORDER_COLOUR, ((self.get_position()["x"]+self.box_width, self.get_position()["y"]), (UIConstant.MENU_BORDER_WIDTH, self.box_height+UIConstant.MENU_BORDER_BUFFER+UIConstant.MENU_BORDER_WIDTH)))
+		pygame.draw.rect(surface, UIConstant.MENU_LOWER_BORDER_COLOUR, ((self.get_position()["x"]+self.box_width, self.get_position()["y"]+UIConstant.MENU_BORDER_BUFFER+self.box_height), (-self.box_width+1, UIConstant.MENU_BORDER_WIDTH)))
+		pygame.draw.rect(surface, UIConstant.MENU_LEFT_BORDER_COLOUR, ((self.get_position()["x"]-UIConstant.MENU_BORDER_WIDTH, self.get_position()["y"]+self.box_height+UIConstant.MENU_BORDER_BUFFER+UIConstant.MENU_BORDER_WIDTH-1), (UIConstant.MENU_BORDER_WIDTH, -self.box_height-UIConstant.MENU_BORDER_BUFFER-UIConstant.MENU_BORDER_WIDTH+1)))
 				
 	def move_selection_right(self):
-		Sound.menu.play()
 		if self.y_selected_element < self.width-1:
 			self.y_selected_element += 1
 
@@ -140,12 +137,10 @@ class Menu(object):
 			self.y_selected_element -= 1
 
 	def move_selection_left(self):
-		Sound.menu.play()
 		if self.y_selected_element > 0:
 			self.y_selected_element -= 1
 
 	def move_selection_down(self):
-		Sound.menu.play()
 		if self.x_selected_element < self.height-1:
 			self.x_selected_element += 1
 
@@ -155,7 +150,6 @@ class Menu(object):
 			self.x_selected_element -= 1
 
 	def move_selection_up(self):
-		Sound.menu.play()
 		if self.x_selected_element > 0:
 			self.x_selected_element -= 1
 
@@ -183,8 +177,11 @@ class Menu(object):
 		self.position["x"] += rel_x
 		self.position["y"] += rel_y
 
-	def centre_x(self):
-		self.shift_position(-self.get_box_width()/2, 0)
+	def centre_x(self, multiplier=1):
+		self.shift_position(-self.get_box_width()*multiplier/2, 0)
+
+	def centre_y(self):
+		self.shift_position(0, -self.box_height/2)
 
 	def move_width_back(self):
 		self.shift_position(-self.get_box_width(), 0)
@@ -197,10 +194,7 @@ class MenuItem(object):
 		self.text = str(text)
 		self.colour = colour
 		self.original_colour = colour
-		#self.selected_colour = ((255-self.colour[0]), (255-self.colour[1]), (255-self.colour[2]))
-		#self.selected_colour = limit_colour_255( ((self.colour[0]+30), (self.colour[1]+30), (self.colour[2]+30)) )
-		#self.selected_colour = ((self.colour[1]), (self.colour[2]), (self.colour[0]))
-		self.selected_colour = (255, 255, 255)
+		self.selected_colour = UIConstant.MENU_SELECTED_COLOUR
 
 		self.image = image
 		self.selected = False
@@ -236,34 +230,39 @@ class BasicMenuItem(MenuItem):
 		self.image = False
 		self.text = text
 		super(BasicMenuItem, self).__init__(self.text, self.image, self.colour)
-		self.__class__ = MenuItem		
+		self.__class__ = MenuItem
 
-main_elements = [
-	BasicMenuItem("New Game"),
-	BasicMenuItem("Load Game"),
-	BasicMenuItem("Settings"),
-	BasicMenuItem("Quit")
-]
 
 class MainMenu(Menu):
 	"""docstring for MainMenu"""
 	def __init__(self):
-		super(MainMenu, self).__init__(SCREEN_SIZE[0]/2, SCREEN_SIZE[1]/2, 1, len(main_elements), main_elements)
+		
+		self.elements = [
+			BasicMenuItem("New Game"),
+			BasicMenuItem("Load Game"),
+			BasicMenuItem("Settings"),
+			BasicMenuItem("Quit")
+		]
 
-start_elements = [
-	BasicMenuItem("Items"),
-	BasicMenuItem("Party"),
-	BasicMenuItem("Spells"),
-	BasicMenuItem("Skills"),
-	BasicMenuItem("Save"),
-	BasicMenuItem("Pause"),
-	BasicMenuItem("Quit")
-]
+		super(MainMenu, self).__init__(SCREEN_SIZE[0]/2, SCREEN_SIZE[1]/2, 1, len(self.elements), self.elements)
+		self.centre_x()
+		self.centre_y()
 
 class StartMenu(Menu):
 	"""docstring for StartMenu"""
 	def __init__(self):
-		super(StartMenu, self).__init__(16, SCREEN_SIZE[1]-16-(2*15), len(start_elements)/2, 2, start_elements, SCREEN_SIZE[0]-32)
+		
+		self.elements = [
+			BasicMenuItem("Items"),
+			BasicMenuItem("Party"),
+			BasicMenuItem("Spells"),
+			BasicMenuItem("Skills"),
+			BasicMenuItem("Save"),
+			BasicMenuItem("Pause"),
+			BasicMenuItem("Quit")
+		]
+
+		super(StartMenu, self).__init__(16, SCREEN_SIZE[1]-16-(2*15), len(self.elements)/2, 2, self.elements, SCREEN_SIZE[0]-32)
 		
 file_elements = [
 	BasicMenuItem("File 1"),
@@ -287,7 +286,7 @@ class ItemMenu(Menu):
 		item_elements = []
 		for item in items:
 			item_elements.append(MenuItem(item.get_name(), item.get_image()))
-		super(ItemMenu, self).__init__(16, 16, 1, len(item_elements), item_elements, 240, SCREEN_SIZE[1]-(32+16+(2*16)), 1.4, 4)
+		super(ItemMenu, self).__init__(16, 16, 1, len(item_elements), item_elements, 240, SCREEN_SIZE[1]-(32+16+(2*16))-8, 1.4, 4)
 
 class SpellMenu(Menu):
 	"""docstring for SpellMenu"""
@@ -295,7 +294,7 @@ class SpellMenu(Menu):
 		spell_elements = []
 		for spell in spells:
 			spell_elements.append(MenuItem(spell.get_name(), spell.get_image()))
-		super(SpellMenu, self).__init__(16, 16, 1, len(spell_elements), spell_elements, 240, SCREEN_SIZE[1]-(32+16+(2*16)), 1.4, 4)
+		super(SpellMenu, self).__init__(16, 16, 1, len(spell_elements), spell_elements, 240, SCREEN_SIZE[1]-(32+16+(2*16))-8, 1.4, 4)
 
 class PartyMenu(Menu):
 	"""docstring for PartyMenu"""
@@ -303,7 +302,7 @@ class PartyMenu(Menu):
 		party_elements = []
 		for member in party.get_members():
 			party_elements.append(BasicMenuItem(member.get_name()))
-		super(PartyMenu, self).__init__(16, 16, 1, len(party_elements), party_elements, 240, 256, 1, 4)
+		super(PartyMenu, self).__init__(16, 16, 1, len(party_elements), party_elements, 240, SCREEN_SIZE[1]-(32+16+(2*16))-8, 1, 4)
 
 itemuse_elements = [
 	BasicMenuItem("Use"),
@@ -419,7 +418,7 @@ class BattleTargetMenu(Menu):
 		self.targets_elements = []
 		for target in targets:
 			self.targets_elements.append(BasicMenuItem(target.get_name()))
-		super(BattleTargetMenu, self).__init__(900-224, 0, 1, len(targets), self.targets_elements)
+		super(BattleTargetMenu, self).__init__(128+16, 16, 1, len(targets), self.targets_elements, 128)
 		self.targets = targets
 		self.user = user
 		self.selected_option = selected_option

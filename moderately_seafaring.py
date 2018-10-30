@@ -77,9 +77,9 @@ def battle_drawing(exclude_menus=False, exclude_floating=False, exclude_selector
 			if party[i].get_current_hp() <= 0:
 				hp_text_colour = (255, 0, 0)
 
-		Text.draw_text(screen_size[0]-224+32, (i+1)*80 - 40, party[i].get_name(), 24, party_text_colour)
-		Text.draw_text(screen_size[0]-244+48, (i+1)*80 - 24, "HP: "+str(party[i].get_current_hp())+"/"+str(party[i].get_hp()), 20, hp_text_colour)
-		Text.draw_text(screen_size[0]-244+48, (i+1)*80 - 14, "MP: "+str(party[i].get_current_mp())+"/"+str(party[i].get_mp()), 20, (255,255,255))
+		Text.draw_text(screen, screen_size[0]-224+32, (i+1)*80 - 40, party[i].get_name(), 24, party_text_colour)
+		Text.draw_text(screen, screen_size[0]-244+48, (i+1)*80 - 24, "HP: "+str(party[i].get_current_hp())+"/"+str(party[i].get_hp()), 20, hp_text_colour)
+		Text.draw_text(screen, screen_size[0]-244+48, (i+1)*80 - 14, "MP: "+str(party[i].get_current_mp())+"/"+str(party[i].get_mp()), 20, (255,255,255))
 
 	if not exclude_selectors:
 		selectors[0].set_pos(party[current_battle_member_index].get_battle_pos()[0]-16,
@@ -97,14 +97,14 @@ def battle_drawing(exclude_menus=False, exclude_floating=False, exclude_selector
 
 	if not exclude_floating:
 		for floating_text in floating_texts:
-			floating_text.draw()
+			floating_text.draw(screen)
 
 	if not exclude_menus:
 		for menu in menus:
-			menu.draw()
+			menu.draw(screen)
 
 	for textbox in fragile_textboxes:
-		textbox.draw()
+		textbox.draw(screen)
 
 	pygame.display.flip() #Now you can see the effects
 
@@ -291,13 +291,13 @@ def confirm_action(action, user, target=None, ability=None):
 								for i in range(len(party.get_members())):
 									party_text_colour = (255,255,255)
 
-									Text.draw_text(screen_size[0]-224+32, (i+1)*80 - 40, party[i].get_name(), 24, party_text_colour)
-									Text.draw_text(screen_size[0]-244+48, (i+1)*80 - 24, "HP: "+str(party[i].get_current_hp())+"/"+str(party[i].get_hp()), 20, (255,255,255))
-									Text.draw_text(screen_size[0]-244+48, (i+1)*80 - 14, "MP: "+str(party[i].get_current_mp())+"/"+str(party[i].get_mp()), 20, (255,255,255))
+									Text.draw_text(screen, screen_size[0]-224+32, (i+1)*80 - 40, party[i].get_name(), 24, party_text_colour)
+									Text.draw_text(screen, screen_size[0]-244+48, (i+1)*80 - 24, "HP: "+str(party[i].get_current_hp())+"/"+str(party[i].get_hp()), 20, (255,255,255))
+									Text.draw_text(screen, screen_size[0]-244+48, (i+1)*80 - 14, "MP: "+str(party[i].get_current_mp())+"/"+str(party[i].get_mp()), 20, (255,255,255))
 
 								for floating_text in floating_texts:
 									#floating_text.update()
-									floating_text.draw()
+									floating_text.draw(screen)
 
 								#The blitting sections above and below this comment allow for the transparent fade-out effect when
 								#Enemies are killed
@@ -313,9 +313,9 @@ def confirm_action(action, user, target=None, ability=None):
 								for i in range(len(party.get_members())):
 									party_text_colour = (255,255,255)
 
-									Text.draw_text(screen_size[0]-224+32, (i+1)*80 - 40, party[i].get_name(), 24, party_text_colour, transparent_surface)
-									Text.draw_text(screen_size[0]-244+48, (i+1)*80 - 24, "HP: "+str(party[i].get_current_hp())+"/"+str(party[i].get_hp()), 20, (255,255,255), transparent_surface)
-									Text.draw_text(screen_size[0]-244+48, (i+1)*80 - 14, "MP: "+str(party[i].get_current_mp())+"/"+str(party[i].get_mp()), 20, (255,255,255), transparent_surface)
+									Text.draw_text(transparent_surface, screen_size[0]-224+32, (i+1)*80 - 40, party[i].get_name(), 24, party_text_colour)
+									Text.draw_text(transparent_surface, screen_size[0]-244+48, (i+1)*80 - 24, "HP: "+str(party[i].get_current_hp())+"/"+str(party[i].get_hp()), 20, (255,255,255))
+									Text.draw_text(transparent_surface, screen_size[0]-244+48, (i+1)*80 - 14, "MP: "+str(party[i].get_current_mp())+"/"+str(party[i].get_mp()), 20, (255,255,255))
 
 								for floating_text in floating_texts:
 									#floating_text.update()
@@ -432,7 +432,6 @@ def main():
 	
 	main_menu = Menu.MainMenu()
 	menus.append(main_menu)
-	menus[-1].centre_x()
 
 	large_font = pygame.font.Font("resources/fonts/coders_crux.ttf", 80)
 
@@ -500,7 +499,6 @@ def main():
 
 							elif menus[-1].get_selected_name() == "Load Game":
 								menus.append(Menu.LoadMenu())
-								menus[-1].centre_x()
 							elif menus[-1].get_selected_name() == "Settings":
 								print("TODO: Settings")
 							elif menus[-1].get_selected_name() == "Quit":
@@ -604,8 +602,6 @@ def main():
 								menus[-1].update()
 
 			#Game logic below
-			'''for button in buttons:
-				button.update()'''
 
 			for menu in menus:
 				menu.update()
@@ -615,11 +611,8 @@ def main():
 
 			screen.blit(logo, (screen_size[0]/2-logo.get_width()/2, 0))
 
-			'''for button in buttons:
-				button.draw()'''
-
 			for menu in menus:
-				menu.draw()
+				menu.draw(screen)
 
 			pygame.display.flip()
 			clock.tick(60)
@@ -654,7 +647,7 @@ def main():
 							if Menu.StartMenu() not in menus:
 								menus.append(Menu.StartMenu())
 								for party_member in party.get_members():
-									party_member.velocity = [0,0]
+									party_member.velocity = [0, 0]
 						if event.key == K_i:
 							#This code is important and will initiate a battle. It is run once!
 							global current_battle_member_index
@@ -725,7 +718,6 @@ def main():
 										fragile_textboxes[-1].centre_x()
 								elif menus[-1].get_selected_name() == "Save":
 									menus.append(Menu.SaveMenu())
-									menus[-1].centre_x()
 								elif menus[-1].get_selected_name() == "Pause":
 									paused = True
 								elif menus[-1].get_selected_name() == "Spells":
@@ -1063,13 +1055,13 @@ def main():
 
 			#Draws menus
 			for menu in menus:
-				menu.draw()
+				menu.draw(screen)
 
 			for textbox in fragile_textboxes:
-				textbox.draw()
+				textbox.draw(screen)
 
 			for textbox in resiliant_textboxes:
-				textbox.draw()
+				textbox.draw(screen)
 
 			pygame.display.flip()
 			clock.tick(60)
