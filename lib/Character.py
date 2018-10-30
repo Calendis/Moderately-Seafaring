@@ -75,15 +75,15 @@ class Character(pygame.sprite.Sprite):
 		'''
 			Lines are accessed by a dict key.
 			Line format:
-			Text to display, Options to give (dict keys), key to go to (if no options), items to give
+			Text to display, Options to give (if any), respectivedict keys to go to from options, items to give, auto T/F
 		'''
 		self.lines = {
-			0: ["This message should not appear: ERROR 60-0", ("Yes", "No"), 1, None],
-			1: ["This message should not appear: ERROR 60-1", (), 1, None],
-			"Yes": ["This message should not appear: ERROR 60-2", (), 1, Item.RedHerb],
-			"No": ["This message should not appear: ERROR 60-3", (), 1, None]
+			0: ["This message should not appear: ERROR 60-0", ("Yes", "No"), (2, 3), None, False],
+			1: ["This message should not appear: ERROR 60-1", None, 1, None, False],
+			2: ["This message should not appear: ERROR 60-2", None, 1, Item.RedHerb, False],
+			3: ["This message should not appear: ERROR 60-3", None, 1, None, False]
 		}
-		self.advances_lines = False
+		self.current_line = 0
 
 	def draw(self):
 		pass
@@ -220,6 +220,12 @@ class Character(pygame.sprite.Sprite):
 		
 		self.shift_stats(equipment, -1)
 
+	def advance_lines(self):
+		#Text to display, Options to give (if any), respectivedict keys to go to from options, items to give, auto T/F
+
+		self.current_line = self.lines[self.current_line][2]
+
+
 	def get_pos(self):
 		return self.pos
 
@@ -355,6 +361,12 @@ class Character(pygame.sprite.Sprite):
 
 	def get_layer(self):
 		return self.layer
+
+	def get_lines(self):
+		return self.lines
+
+	def get_current_line(self):
+		return self.current_line
 
 	def set_pos(self, new_pos):
 		self.pos = new_pos
@@ -583,7 +595,7 @@ class GenericPirate(Character):
 
 		self.race = "Human"
 		self.title = ""
-		self.name = CharacterName.PirateName()
+		self.name = CharacterName.GenerateName("pirate_male")
 		self.description = "A ferocious pirate."
 		self.character_class = CharacterClass.Pirate()
 		self.lvl = 0
@@ -609,14 +621,14 @@ class GenericPirate(Character):
 class GenericPirateCaptain(Character):
 	"""docstring for GenericPirate"""
 	def __init__(self, pos, lvl):
-		super(GenericPirate, self).__init__(pos)
+		super(GenericPirateCaptain, self).__init__(pos)
 		
 		self.images = [CharacterImage.pirates[randint(0, len(CharacterImage.pirates)-1)]]
 		self.image = self.images[self.frame]
 
 		self.race = "Human"
 		self.title = "Captain"
-		self.name = CharacterName.Pirate()
+		self.name = CharacterName.GenerateName("pirate_male")
 		self.description = "The leader of a band of ferocious pirates."
 		self.character_class = CharacterClass.Captain()
 		self.lvl = 0
@@ -675,9 +687,23 @@ class Avik(Character):
 		self.name = "Avik Clearwater"
 		
 		self.lines = {
-			0:["You leave us, and I'll whoop yer ass! Don't you have any respect for your elders?", (), 1, None],
-			1:["Oh... I'm sorry for that little outburst. I was the same way when I was your age. If anything, I was more energetic! Why are you guys so damned lazy?", (), 2, None],
-			2:["Erm... Sorry again for that. Thanks for stopping by to chat before you go, young'un. Remember me, Arbot. I hope you end up more successful than I did.", (), 3, Item.CrossRing],
-			3:["Remember me Arbot, and thanks for your help. Go on, get out of here! You don't have to hang around any longer...", (), None, 3]
+			0:["You leave us, and I'll whoop yer ass! Don't you have any respect for your elders?", None, 1, None, False],
+			1:["Oh... I'm sorry for that little outburst. I was the same way when I was your age. If anything, I was more energetic! Why are you guys so damned lazy?", None, 2, None, False],
+			2:["Erm... Sorry again for that. Thanks for stopping by to chat before you go, young'un. Remember me, Arbot. I hope you end up more successful than I did.", None, 3, Item.CrossRing, False],
+			3:["Remember me Arbot, and thanks for your help. Go on, get out of here! You don't have to hang around any longer...", None, 3, 3, False]
 
+		}
+
+class GenericOldMan(Character):
+	"""docstring for GenericOldMan"""
+	def __init__(self, pos):
+		super(GenericOldMan, self).__init__(pos)
+		self.race = "Human"
+		self.title = ""
+		self.name = CharacterName.GenerateName("human_male")
+		self.images = [CharacterImage.old_man_overworld]
+
+		self.lines = {
+			0:["Ho hum.", None, 1, None, False],
+			1:["I've nothing to say.", None, 0, None, False]
 		}

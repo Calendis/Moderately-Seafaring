@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="16" tileheight="16" infinite="0" nextobjectid="106">
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="16" tileheight="16" infinite="0" nextobjectid="106">
  <properties>
   <property name="name" value="test_map_2"/>
+  <property name="npcs_by_id" value="0 1"/>
+  <property name="respective_npc_x" value="500 542"/>
+  <property name="respective_npc_y" value="277 125"/>
  </properties>
  <tileset firstgid="1" source="../tilesets/overworld_tileset_0.tsx"/>
  <tileset firstgid="1441" source="../tilesets/cave_tileset_0.tsx"/>

@@ -14,3 +14,5 @@ cocoon_man = pygame.image.load("resources/img/characters/cocoon_man.png")
 pirates = [
 	pygame.image.load("resources/img/characters/pirate00.png")
 ]
+
+old_man_overworld = pygame.image.load("resources/img/characters/oldman.png")

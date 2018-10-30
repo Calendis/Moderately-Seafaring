@@ -34,6 +34,7 @@ from lib import UIConstant
 from lib import BackgroundImage
 from lib import Selector
 from lib import EnemyPool
+from lib import NPCID
 
 def jiggle_battle_sprite(battle_actor):
 	#Jiggle the actor so you know they're taking the action
@@ -419,6 +420,8 @@ def main():
 	enemy_party = Party.Party()
 
 	npcs = []
+
+	current_colliding_object = None
 	
 	global fragile_textboxes
 	fragile_textboxes = [] #Fragile textboxes disappear at a button press
@@ -442,9 +445,6 @@ def main():
 	map_layer = pyscroll.BufferedRenderer(pyscroll_map_data, screen.get_size())
 	map_layer.zoom = 2
 	pyscroll_group_data = PyscrollGroup(map_layer=map_layer, default_layer=party.get_current_member().get_layer())
-	
-	'''for party_member in party.get_members():
-		pyscroll_group_data.add(party_member)'''
 
 	pyscroll_group_data.add(party.get_current_member())
 	pyscroll_group_data.change_layer(party.get_current_member(), party.get_current_member().get_layer())
@@ -518,8 +518,6 @@ def main():
 								print("Shelf loaded.\n")
 								
 								print("Clearing party from group data...")
-								'''for party_member in party.get_members():
-									pyscroll_group_data.remove(party_member)'''
 								pyscroll_group_data.remove(party.get_current_member())
 								print("Party cleared from group data.\n")
 
@@ -587,8 +585,6 @@ def main():
 								print("Images reloaded.")
 
 								print("Adding party to group data...")
-								'''for party_member in party.get_members():
-									pyscroll_group_data.add(party_member)'''
 								pyscroll_group_data.add(party.get_current_member())
 								pyscroll_group_data.change_layer(party.get_current_member(), party.get_current_member().get_layer())
 								print("Party added to group data.\n")
@@ -682,6 +678,16 @@ def main():
 							battle_screen = True
 							main_screen = False
 
+						if event.key == K_x:
+							#Confirm button in the overworld
+							#Used for NPC interactions, etc.
+							if current_colliding_object != None:
+								if current_colliding_object.__class__.__bases__[0] == Character.Character:
+									fragile_textboxes.append(Text.TextBox([current_colliding_object.get_lines()[current_colliding_object.get_current_line()][0]], screen_size[0]/2, screen_size[1]-32-8))
+									fragile_textboxes[-1].centre_x()
+									current_colliding_object.advance_lines()
+							else:
+								pass
 					else:
 						
 						try:
@@ -774,8 +780,6 @@ def main():
 								print("Party saved.\n")
 
 								print("Adding party to group data...")
-								'''for party_member in party.get_members():
-									pyscroll_group_data.add(party_member)'''
 								pyscroll_group_data.add(party.get_current_member())
 								pyscroll_group_data.change_layer(party.get_current_member(), party.get_current_member().get_layer())
 
@@ -992,8 +996,6 @@ def main():
 					current_map = load_pygame("resources/maps/"+warp.destination+".tmx")
 					party.get_current_member().set_pos([int(warp.xwarp), int(warp.ywarp)])
 
-					'''for party_member in party.get_members():
-						pyscroll_group_data.remove(party_member)'''
 					pyscroll_group_data.remove(party.get_current_member())
 
 					pyscroll_map_data = pyscroll.data.TiledMapData(current_map)
@@ -1019,6 +1021,19 @@ def main():
 					pyscroll_group_data.add(party.get_current_member())
 					pyscroll_group_data.change_layer(party.get_current_member(), party.get_current_member().get_layer())
 
+					#NPC Loading code start
+					map_npc_list = current_map.npcs_by_id.split()
+					map_npc_x_positions = current_map.respective_npc_x.split()
+					map_npc_y_positions = current_map.respective_npc_y.split()
+
+					for i in range(len(map_npc_list)):
+						npcs.append(NPCID.npc_id_list[int(map_npc_list[i])]([int(map_npc_x_positions[i]), int(map_npc_y_positions[i]) ]))
+
+					for npc in npcs:
+						pyscroll_group_data.add(npc)
+						pyscroll_group_data.change_layer(npc, party.get_current_member().get_layer())
+					#NPC Loading code end
+
 			for layer_switch in layer_switches:
 				if int(layer_switch.layer)+2 == party.get_current_member().get_layer():
 					if pygame.Rect.colliderect(party.get_current_member().feetrect, pygame.Rect(layer_switch.x, layer_switch.y, layer_switch.width, layer_switch.height)):
@@ -1028,6 +1043,17 @@ def main():
 			for menu in menus:
 				menu.update()
 
+			colliding = False
+			for npc in npcs:
+				if pygame.Rect.colliderect(party.get_current_member().feetrect, pygame.Rect(npc.get_pos()[0], npc.get_pos()[1], npc.get_image().get_width(), npc.get_image().get_height())):
+					current_colliding_object = npc
+					colliding = True
+			#for interactable in interactables, etc...
+			if not colliding:
+				current_colliding_object = None
+			else:
+				#party.get_current_member().move_back()
+				pass
 
 			#Drawing Below
 			screen.fill((255, 0, 255))
