@@ -351,7 +351,7 @@ class WhomUseMenu(Menu):
 		whomuse_elements = []
 		for party_member in party.get_members():
 			whomuse_elements.append(BasicMenuItem(party_member.get_name()))
-		super(WhomUseMenu, self).__init__(330, 16, 1, len(whomuse_elements), whomuse_elements)
+		super(WhomUseMenu, self).__init__(330, UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, 1, len(whomuse_elements), whomuse_elements)
 
 	def get_item(self):
 		return self.item
@@ -363,7 +363,7 @@ class WhomSpellMenu(Menu):
 		whomspell_elements = []
 		for party_member in party.get_members():
 			whomspell_elements.append(BasicMenuItem(party_member.get_name()))
-		super(WhomSpellMenu, self).__init__(330, 16, 1, len(whomspell_elements), whomspell_elements)
+		super(WhomSpellMenu, self).__init__(330, UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, 1, len(whomspell_elements), whomspell_elements)
 
 	def get_spell(self):
 		return self.spell
@@ -376,7 +376,7 @@ class WhomEquipMenu(Menu):
 		whomequip_elements = []
 		for party_member in party.get_members():
 			whomequip_elements.append(BasicMenuItem(party_member.get_name()))
-		super(WhomEquipMenu, self).__init__(330, 16, 1, len(whomequip_elements), whomequip_elements)
+		super(WhomEquipMenu, self).__init__(330, UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, 1, len(whomequip_elements), whomequip_elements)
 
 	def get_item(self):
 		return self.item
@@ -390,7 +390,7 @@ partyuse_elements = [
 class PartyUseMenu(Menu):
 	"""docstring for PartyUseMenu"""
 	def __init__(self, party_member):
-		super(PartyUseMenu, self).__init__(272, 16, 1, len(partyuse_elements), partyuse_elements)
+		super(PartyUseMenu, self).__init__(281, UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, 1, len(partyuse_elements), partyuse_elements)
 	
 	def get_party_member(self):
 		return party_member
@@ -401,7 +401,7 @@ class UnequipMenu(Menu):
 		unequip_elements = []
 		for item in items:
 			unequip_elements.append(BasicMenuItem(item.get_name()))
-		super(UnequipMenu, self).__init__(111+240+32+16, 16, 1, len(unequip_elements), unequip_elements)
+		super(UnequipMenu, self).__init__(111+240+32+16, UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, 1, len(unequip_elements), unequip_elements)
 
 battle_elements = [
 	BasicMenuItem("Attack"),
@@ -426,7 +426,7 @@ class BattleTargetMenu(Menu):
 		self.targets_elements = []
 		for target in targets:
 			self.targets_elements.append(BasicMenuItem(target.get_name()))
-		super(BattleTargetMenu, self).__init__(128+UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, 16, 1, len(targets), self.targets_elements, 128)
+		super(BattleTargetMenu, self).__init__(128+UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, 1, len(targets), self.targets_elements, 128)
 		self.targets = targets
 		self.user = user
 		self.selected_option = selected_option
