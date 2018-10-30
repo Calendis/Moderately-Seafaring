@@ -77,9 +77,9 @@ def battle_drawing(exclude_menus=False, exclude_floating=False, exclude_selector
 			if party[i].get_current_hp() <= 0:
 				hp_text_colour = (255, 0, 0)
 
-		Text.draw_text(screen, screen_size[0]-224+32, (i+1)*80 - 40, party[i].get_name(), 24, party_text_colour)
-		Text.draw_text(screen, screen_size[0]-244+48, (i+1)*80 - 24, "HP: "+str(party[i].get_current_hp())+"/"+str(party[i].get_hp()), 20, hp_text_colour)
-		Text.draw_text(screen, screen_size[0]-244+48, (i+1)*80 - 14, "MP: "+str(party[i].get_current_mp())+"/"+str(party[i].get_mp()), 20, (255,255,255))
+		Text.draw_text(screen, screen_size[0]-224+32, (i+1)*80 - 40, party[i].get_name(), UIConstant.LARGE_FONT_SIZE, party_text_colour)
+		Text.draw_text(screen, screen_size[0]-244+48, (i+1)*80 - 24, "HP: "+str(party[i].get_current_hp())+"/"+str(party[i].get_hp()), UIConstant.FONT_SIZE, hp_text_colour)
+		Text.draw_text(screen, screen_size[0]-244+48, (i+1)*80 - 14, "MP: "+str(party[i].get_current_mp())+"/"+str(party[i].get_mp()), UIConstant.FONT_SIZE, (255,255,255))
 
 	if not exclude_selectors:
 		selectors[0].set_pos(party[current_battle_member_index].get_battle_pos()[0]-16,
@@ -432,8 +432,6 @@ def main():
 	
 	main_menu = Menu.MainMenu()
 	menus.append(main_menu)
-
-	large_font = pygame.font.Font("resources/fonts/coders_crux.ttf", 80)
 
 	current_map = load_pygame("resources/maps/test_map.tmx")
 	party.add_member(Character.CaptainRizzko([415, 487], 1))
@@ -814,12 +812,12 @@ def main():
 										menus.append(Menu.WhomUseMenu(menus[-1].get_item(), party))
 									else:
 										fragile_textboxes.append(Text.TextBox([party.get_current_member().get_items()[menus[1].get_selected_element_position()["x"]].get_name()+" isn't useable!"],
-											menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
+											menus[-1].get_position()["x"]+menus[-1].get_box_width()+UIConstant.MENU_SPACING+2*UIConstant.MENU_BORDER_WIDTH, menus[-1].get_position()["y"]))
 
 								elif menus[-1].get_selected_name() == "Examine":
 									fragile_textboxes.append(Text.TextBox([party.get_current_member().get_items()[menus[1].get_selected_element_position()["x"]].get_description(),
 										"","Type: "+party.get_current_member().get_items()[menus[1].get_selected_element_position()["x"]].get_item_type()],
-									 menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
+									 menus[-1].get_position()["x"]+menus[-1].get_box_width()+UIConstant.MENU_SPACING+2*UIConstant.MENU_BORDER_WIDTH, menus[-1].get_position()["y"]))
 								
 								elif menus[-1].get_selected_name() == "Equip": #Equip
 									if party.get_current_member().get_items()[menus[1].get_selected_element_position()["x"]].get_equippable():
@@ -827,7 +825,7 @@ def main():
 										menus.append(Menu.WhomEquipMenu(menus[-1].get_item(), party))
 									else:
 										fragile_textboxes.append(Text.TextBox([party.get_current_member().get_items()[menus[1].get_selected_element_position()["x"]].get_name()+" isn't equippable!"],
-											menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
+											menus[-1].get_position()["x"]+menus[-1].get_box_width()+UIConstant.MENU_SPACING+2*UIConstant.MENU_BORDER_WIDTH, menus[-1].get_position()["y"]))
 
 								elif menus[-1].get_selected_name() == "Discard":
 									party.get_current_member().get_items().remove(menus[-1].get_item())
@@ -847,11 +845,11 @@ def main():
 										print("TODO: Use spells in field.")
 									else:
 										fragile_textboxes.append(Text.TextBox([menus[-1].get_spell().get_name()+" isn't useable in the field."],
-											menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
+											menus[-1].get_position()["x"]+menus[-1].get_box_width()+UIConstant.MENU_SPACING+2*UIConstant.MENU_BORDER_WIDTH, menus[-1].get_position()["y"]))
 								elif menus[-1].get_selected_name() == "Description":
 									fragile_textboxes.append(Text.TextBox([party.get_current_member().get_spells()[menus[1].get_selected_element_position()["x"]].get_description(),
 										"",menus[-1].get_spell().get_restore_text()],
-										menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
+										menus[-1].get_position()["x"]+menus[-1].get_box_width()+UIConstant.MENU_SPACING+2*UIConstant.MENU_BORDER_WIDTH, menus[-1].get_position()["y"]))
 
 
 							elif menus[-1].__class__ == Menu.PartyMenu:
@@ -878,7 +876,7 @@ def main():
 										"Accessory: "+selected_party_member.get_accessory_name()+" (+"+str(selected_party_member.get_accessory_power())+")",
 										"EXP: "+str(selected_party_member.get_exp())+"/"+str(selected_party_member.get_exp_to_next())],
 
-										menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
+										menus[-1].get_position()["x"]+menus[-1].get_box_width()+UIConstant.MENU_SPACING+2*UIConstant.MENU_BORDER_WIDTH, menus[-1].get_position()["y"]))
 
 								elif menus[-1].get_selected_name() == "Select":
 									pyscroll_group_data.remove(party.get_current_member())
@@ -909,7 +907,7 @@ def main():
 										menus.append(Menu.UnequipMenu(equipped_items))
 									else:
 										fragile_textboxes.append(Text.TextBox([party[menus[1].get_selected_element_position()["x"]].get_name()+" has nothing equipped."],
-											menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
+											menus[-1].get_position()["x"]+menus[-1].get_box_width()+UIConstant.MENU_SPACING+2*UIConstant.MENU_BORDER_WIDTH, menus[-1].get_position()["y"]))
 
 							elif menus[-1].__class__ == Menu.WhomUseMenu:
 								if menus[-1].get_item().__class__.__bases__[0] == Item.Medicine:
@@ -925,7 +923,7 @@ def main():
 							elif menus[-1].__class__ == Menu.WhomSpellMenu:
 								if party.get_current_member().get_current_mp() < menus[-1].get_spell().get_mp_cost():
 									fragile_textboxes.append(Text.TextBox(["Not enough MP!"],
-										menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
+										menus[-1].get_position()["x"]+menus[-1].get_box_width()+UIConstant.MENU_SPACING+2*UIConstant.MENU_BORDER_WIDTH, menus[-1].get_position()["y"]))
 								else:
 									party.get_current_member().shift_current_mp(-(menus[-1].get_spell().get_mp_cost()))
 									
@@ -933,7 +931,7 @@ def main():
 										if "down" not in party.get_members()[menus[-1].get_selected_element_position()["x"]].get_statuses():
 											party.get_members()[menus[-1].get_selected_element_position()["x"]].heal((menus[-1].get_spell().get_power()), Stat.HitPoints(-(menus[-1].get_spell().get_power())))
 										else:
-											fragile_textboxes.append(Text.TextBox(["It will have no effect"], menus[-1].get_box_width()+16+menus[-1].get_position()["x"], menus[-1].get_position()["y"]))
+											fragile_textboxes.append(Text.TextBox(["It will have no effect"], menus[-1].get_box_width()+UIConstant.MENU_SPACING+2*UIConstant.MENU_BORDER_WIDTH+menus[-1].get_position()["x"], menus[-1].get_position()["y"]))
 											party.get_current_member().shift_current_mp(menus[-1].get_spell().get_mp_cost())
 
 									elif menus[-1].get_spell().__class__.__bases__[0] == Spell.StatusSpell:
@@ -1167,7 +1165,7 @@ def main():
 										menus[-1].move_width_back()
 
 								else:
-									fragile_textboxes.append(Text.TextBox(["Not enough MP."], menus[-1].get_position()["x"]+menus[-1].get_box_width()+16, menus[-1].get_position()["y"]))
+									fragile_textboxes.append(Text.TextBox(["Not enough MP."], menus[-1].get_position()["x"]+menus[-1].get_box_width()+UIConstant.MENU_SPACING+2*UIConstant.MENU_BORDER_WIDTH, menus[-1].get_position()["y"]))
 									selected_spell = None
 
 							elif menus[-1].__class__ == Menu.ItemMenu:
@@ -1249,10 +1247,9 @@ def main():
 						paused = False
 
 			#Game logic below
-			paused_text = large_font.render("PAUSED",1,(255,255,255))
 
 			#Drawing below
-			screen.blit(paused_text, (screen_size[0]/2-paused_text.get_width()/2, screen_size[1]/3))
+			Text.draw_text(screen, screen_size[0]/2-Text.get_text_width("PAUSED", 64), screen_size[1]/3, "PAUSED", 64)
 
 			pygame.display.flip()
 			clock.tick(60)

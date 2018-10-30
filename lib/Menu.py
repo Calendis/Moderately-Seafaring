@@ -68,7 +68,7 @@ class Menu(object):
 			strlen_elements.append(len(element.get_text()))
 
 		longest_text_string = elements[strlen_elements.index(max(strlen_elements))].get_text()
-		longest_text_rendered = Text.sized_font(self.font_size).render(longest_text_string, 1, (0,0,0))
+		self.longest_text_rendered = Text.sized_font(self.font_size).render(longest_text_string, 1, (0,0,0))
 
 		self.background_colour = background_colour
 
@@ -76,11 +76,11 @@ class Menu(object):
 			self.xspacing = self.box_width//self.width
 			self.centred_text_value = 0
 		else:
-			self.box_width = ((longest_text_rendered.get_width())*self.width)+16
-			self.xspacing = longest_text_rendered.get_width()
+			self.box_width = ((self.longest_text_rendered.get_width())*self.width)+UIConstant.MENU_LEFT_BUFFER*2
+			self.xspacing = self.longest_text_rendered.get_width()
 
 		if not self.box_height:
-			self.box_height = self.font_size*self.height
+			self.box_height = self.longest_text_rendered.get_height()*self.height + UIConstant.MENU_TOP_BUFFER
 
 		for i in range(self.height):
 			self.menu_list.append([])
@@ -101,7 +101,7 @@ class Menu(object):
 
 	def draw(self, surface): #This draws the menu and menu elements. It's hard to explain.
 				
-		#This first part draws the box around the menu
+		# This first part draws the box around the menu
 		pygame.draw.rect(surface, self.background_colour, ((self.position["x"], self.position["y"]), (self.box_width, self.box_height+UIConstant.MENU_TOP_BUFFER)))
 
 		menu_list_counter = -1
@@ -115,18 +115,22 @@ class Menu(object):
 				
 				#The important bit
 				surface.blit(menu_element_text, (self.get_position()["x"]+(self.get_xspacing()*menu_element_counter)+UIConstant.MENU_LEFT_BUFFER+self.centred_text_value*(self.get_xspacing()-menu_element_text.get_width())/2,
-					self.get_position()["y"]+(menu_list_counter*self.font_size*self.y_spacing_multiplier)+(UIConstant.MENU_TOP_BUFFER+self.additional_top_buffer)))
+					self.get_position()["y"]+(menu_list_counter*self.longest_text_rendered.get_height()*self.y_spacing_multiplier)+(UIConstant.MENU_TOP_BUFFER+self.additional_top_buffer)))
 
 				if menu_element.get_image():
 					surface.blit(menu_element.get_image(), (self.get_position()["x"]+UIConstant.MENU_IMAGE_LEFT_BUFFER,
-						self.get_position()["y"]+(menu_list_counter*self.font_size*self.y_spacing_multiplier)+(UIConstant.MENU_IMAGE_TOP_BUFFER+self.additional_top_buffer)))
+						self.get_position()["y"]+(menu_list_counter*self.longest_text_rendered.get_height()*self.y_spacing_multiplier)+(UIConstant.MENU_IMAGE_TOP_BUFFER+self.additional_top_buffer)))
 
-		#Draws the menu borders
+		# Draws the menu borders
 		pygame.draw.rect(surface, UIConstant.MENU_UPPER_BORDER_COLOUR, ((self.get_position()["x"]-UIConstant.MENU_BORDER_WIDTH, self.get_position()["y"]-UIConstant.MENU_BORDER_WIDTH), (self.box_width+2*UIConstant.MENU_BORDER_WIDTH, UIConstant.MENU_BORDER_WIDTH)))
 		pygame.draw.rect(surface, UIConstant.MENU_RIGHT_BORDER_COLOUR, ((self.get_position()["x"]+self.box_width, self.get_position()["y"]), (UIConstant.MENU_BORDER_WIDTH, self.box_height+UIConstant.MENU_BORDER_BUFFER+UIConstant.MENU_BORDER_WIDTH)))
 		pygame.draw.rect(surface, UIConstant.MENU_LOWER_BORDER_COLOUR, ((self.get_position()["x"]+self.box_width, self.get_position()["y"]+UIConstant.MENU_BORDER_BUFFER+self.box_height), (-self.box_width+1, UIConstant.MENU_BORDER_WIDTH)))
 		pygame.draw.rect(surface, UIConstant.MENU_LEFT_BORDER_COLOUR, ((self.get_position()["x"]-UIConstant.MENU_BORDER_WIDTH, self.get_position()["y"]+self.box_height+UIConstant.MENU_BORDER_BUFFER+UIConstant.MENU_BORDER_WIDTH-1), (UIConstant.MENU_BORDER_WIDTH, -self.box_height-UIConstant.MENU_BORDER_BUFFER-UIConstant.MENU_BORDER_WIDTH+1)))
-				
+
+		# Draws the box width and height for debugging/menu aligning purposes
+		Text.draw_text(surface, self.get_position()["x"]+30, self.get_position()["y"], str(self.get_box_width()), UIConstant.LARGE_FONT_SIZE, (255, 0, 0))
+		Text.draw_text(surface, self.get_position()["x"]+30, self.get_position()["y"]+30, str(self.box_height), UIConstant.LARGE_FONT_SIZE, (255, 0, 0))
+
 	def move_selection_right(self):
 		if self.y_selected_element < self.width-1:
 			self.y_selected_element += 1
@@ -262,7 +266,7 @@ class StartMenu(Menu):
 			BasicMenuItem("Quit")
 		]
 
-		super(StartMenu, self).__init__(16, SCREEN_SIZE[1]-16-(2*15), len(self.elements)/2, 2, self.elements, SCREEN_SIZE[0]-32)
+		super(StartMenu, self).__init__(UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, SCREEN_SIZE[1]-(3*UIConstant.FONT_SIZE)-2*UIConstant.MENU_TOP_BUFFER-1, len(self.elements)/2, 2, self.elements, SCREEN_SIZE[0]-4*(UIConstant.MENU_LEFT_BUFFER))
 		
 file_elements = [
 	BasicMenuItem("File 1"),
@@ -274,11 +278,15 @@ class SaveMenu(Menu):
 	"""docstring for SaveMenu"""
 	def __init__(self):
 		super(SaveMenu, self).__init__(SCREEN_SIZE[0]/2, SCREEN_SIZE[1]/2, 1, len(file_elements), file_elements)
+		self.centre_x()
+		self.centre_y()
 
 class LoadMenu(Menu):
 	"""docstring for LoadMenu"""
 	def __init__(self):
 		super(LoadMenu, self).__init__(SCREEN_SIZE[0]/2, SCREEN_SIZE[1]/2+100, 1, len(file_elements), file_elements)
+		self.centre_x()
+		self.centre_y()
 
 class ItemMenu(Menu):
 	"""docstring for ItemMenu"""
@@ -286,7 +294,7 @@ class ItemMenu(Menu):
 		item_elements = []
 		for item in items:
 			item_elements.append(MenuItem(item.get_name(), item.get_image()))
-		super(ItemMenu, self).__init__(16, 16, 1, len(item_elements), item_elements, 240, SCREEN_SIZE[1]-(32+16+(2*16))-8, 1.4, 4)
+		super(ItemMenu, self).__init__(UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, 1, len(item_elements), item_elements, 240, SCREEN_SIZE[1]-(50+(4*(UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH))), 1.4, 4)
 
 class SpellMenu(Menu):
 	"""docstring for SpellMenu"""
@@ -294,7 +302,7 @@ class SpellMenu(Menu):
 		spell_elements = []
 		for spell in spells:
 			spell_elements.append(MenuItem(spell.get_name(), spell.get_image()))
-		super(SpellMenu, self).__init__(16, 16, 1, len(spell_elements), spell_elements, 240, SCREEN_SIZE[1]-(32+16+(2*16))-8, 1.4, 4)
+		super(SpellMenu, self).__init__(UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, 1, len(spell_elements), spell_elements, 240, SCREEN_SIZE[1]-(50+(4*(UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH))), 1.4, 4)
 
 class PartyMenu(Menu):
 	"""docstring for PartyMenu"""
@@ -302,7 +310,7 @@ class PartyMenu(Menu):
 		party_elements = []
 		for member in party.get_members():
 			party_elements.append(BasicMenuItem(member.get_name()))
-		super(PartyMenu, self).__init__(16, 16, 1, len(party_elements), party_elements, 240, SCREEN_SIZE[1]-(32+16+(2*16))-8, 1, 4)
+		super(PartyMenu, self).__init__(UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, 1, len(party_elements), party_elements, 240, SCREEN_SIZE[1]-(50+(4*(UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH))), 1, 4)
 
 itemuse_elements = [
 	BasicMenuItem("Use"),
@@ -316,7 +324,7 @@ class ItemUseMenu(Menu):
 	"""docstring for ItemUseMenu"""
 	def __init__(self, item):
 		self.item = item
-		super(ItemUseMenu, self).__init__(272, 16, 1, len(itemuse_elements), itemuse_elements)
+		super(ItemUseMenu, self).__init__(281, UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, 1, len(itemuse_elements), itemuse_elements)
 
 	def get_item(self):
 		return self.item
@@ -330,7 +338,7 @@ class SpellUseMenu(Menu):
 	"""docstring for SpellUseMenu"""
 	def __init__(self, spell):
 		self.spell = spell
-		super(SpellUseMenu, self).__init__(272, 16, 1, len(spelluse_elements), spelluse_elements)
+		super(SpellUseMenu, self).__init__(281, UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, 1, len(spelluse_elements), spelluse_elements)
 
 	def get_spell(self):
 		return self.spell
@@ -343,7 +351,7 @@ class WhomUseMenu(Menu):
 		whomuse_elements = []
 		for party_member in party.get_members():
 			whomuse_elements.append(BasicMenuItem(party_member.get_name()))
-		super(WhomUseMenu, self).__init__(272+16+(7*15), 16, 1, len(whomuse_elements), whomuse_elements)
+		super(WhomUseMenu, self).__init__(330, 16, 1, len(whomuse_elements), whomuse_elements)
 
 	def get_item(self):
 		return self.item
@@ -355,7 +363,7 @@ class WhomSpellMenu(Menu):
 		whomspell_elements = []
 		for party_member in party.get_members():
 			whomspell_elements.append(BasicMenuItem(party_member.get_name()))
-		super(WhomSpellMenu, self).__init__(344+16+(7*15), 16, 1, len(whomspell_elements), whomspell_elements)
+		super(WhomSpellMenu, self).__init__(330, 16, 1, len(whomspell_elements), whomspell_elements)
 
 	def get_spell(self):
 		return self.spell
@@ -368,7 +376,7 @@ class WhomEquipMenu(Menu):
 		whomequip_elements = []
 		for party_member in party.get_members():
 			whomequip_elements.append(BasicMenuItem(party_member.get_name()))
-		super(WhomEquipMenu, self).__init__(272+16+(7*15), 16, 1, len(whomequip_elements), whomequip_elements)
+		super(WhomEquipMenu, self).__init__(330, 16, 1, len(whomequip_elements), whomequip_elements)
 
 	def get_item(self):
 		return self.item
@@ -406,7 +414,7 @@ battle_elements = [
 class BattleMenu(Menu):
 	"""docstring for BattleMenu"""
 	def __init__(self, user):
-		super(BattleMenu, self).__init__(16, SCREEN_SIZE[1]-32, len(battle_elements), 1, battle_elements, SCREEN_SIZE[0]-224-32)
+		super(BattleMenu, self).__init__(UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, SCREEN_SIZE[1]-56, len(battle_elements), 1, battle_elements, SCREEN_SIZE[0]-224-32)
 		self.user = user
 
 	def get_user(self):
@@ -418,7 +426,7 @@ class BattleTargetMenu(Menu):
 		self.targets_elements = []
 		for target in targets:
 			self.targets_elements.append(BasicMenuItem(target.get_name()))
-		super(BattleTargetMenu, self).__init__(128+16, 16, 1, len(targets), self.targets_elements, 128)
+		super(BattleTargetMenu, self).__init__(128+UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, 16, 1, len(targets), self.targets_elements, 128)
 		self.targets = targets
 		self.user = user
 		self.selected_option = selected_option

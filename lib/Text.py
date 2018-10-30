@@ -3,7 +3,7 @@ import pygame
 from lib import UIConstant
 
 pygame.font.init()
-font_path = "resources/fonts/coders_crux.ttf"
+font_path = "resources/fonts/advanced_pixel-7.ttf"
 
 #Helper function for rendering and blitting pygame text in one.
 def draw_text(surface, x, y, text, size=UIConstant.FONT_SIZE, colour=UIConstant.FONT_COLOUR, antialiased=1):
@@ -42,14 +42,13 @@ class TextBox():
 			if item == None:
 				self.text.remove(item)
 
-		longest_text_rendered = sized_font(16).render(text[text.index(max(text, key=len))], 1, (0,0,0))
+		self.longest_text_rendered = sized_font(UIConstant.FONT_SIZE).render(text[text.index(max(text, key=len))], 1, (0, 0, 0))
 
 		if not self.width:
-			#self.width = len(self.text[0])*8
-			self.width = longest_text_rendered.get_width()+16
+			self.width = self.longest_text_rendered.get_width()+UIConstant.MENU_LEFT_BUFFER*2
 
 		if not self.height:
-			self.height = len(self.text)*(16)+16
+			self.height = len(self.text)*(self.longest_text_rendered.get_height())+UIConstant.MENU_TOP_BUFFER
 
 	def get_width(self):
 		return self.width
@@ -64,7 +63,7 @@ class TextBox():
 		pygame.draw.rect(surface, self.box_colour, (self.position["x"], self.position["y"], self.width, self.height))
 		
 		for line in self.text:
-			draw_text(surface, self.position["x"]+8, self.position["y"]*(self.text.index(line)+1)+8, line, 15, self.text_colour)
+			draw_text(surface, self.position["x"]+8, self.position["y"]*(self.text.index(line)+1)+8, line, UIConstant.FONT_SIZE, self.text_colour)
 
 		pygame.draw.rect(surface, UIConstant.MENU_UPPER_BORDER_COLOUR, ((self.get_position()["x"]-UIConstant.MENU_BORDER_WIDTH, self.get_position()["y"]-UIConstant.MENU_BORDER_WIDTH), (self.get_width()+2*UIConstant.MENU_BORDER_WIDTH, UIConstant.MENU_BORDER_WIDTH)))
 		pygame.draw.rect(surface, UIConstant.MENU_RIGHT_BORDER_COLOUR, ((self.get_position()["x"]+self.get_width(), self.get_position()["y"]), (UIConstant.MENU_BORDER_WIDTH, self.get_height()+UIConstant.MENU_BORDER_WIDTH)))
