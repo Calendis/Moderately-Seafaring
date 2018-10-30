@@ -674,7 +674,7 @@ def main():
 							#Used for NPC interactions, etc.
 							if current_colliding_object != None:
 								if current_colliding_object.__class__.__bases__[0] == Character.Character:
-									fragile_textboxes.append(Text.TextBox([current_colliding_object.get_lines()[current_colliding_object.get_current_line()][0]], screen_size[0]/2, screen_size[1]-32-8))
+									fragile_textboxes.append(Text.TextBox([current_colliding_object.get_lines()[current_colliding_object.get_current_line()][0]], screen_size[0]/2, screen_size[1]-32-16-3, screen_size[0]-32))
 									fragile_textboxes[-1].centre_x()
 									current_colliding_object.advance_lines()
 							else:

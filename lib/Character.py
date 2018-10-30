@@ -528,7 +528,7 @@ class Googlyblob(Character):
 		self.race = "Googlyblob"
 		self.title = "Monster"
 		self.name = "Googlyblob"
-		self.description = "TODO: Googlyblob description."
+		self.description = "Googlyblob are a common phenomena formed from fresh dew and clay."
 		self.character_class = CharacterClass.WeakSlime()
 		self.lvl = 0
 		self.stats["hp"] = Stat.HitPoints(4)
@@ -665,7 +665,7 @@ class CocoonMan(Character):
 		self.stats["hp"] = Stat.HitPoints(30)
 		self.stats["mp"] = Stat.ManaPoints(30)
 		self.stats["atk"] = Stat.Attack(5)
-		self.stats["dfn"] = Stat.Defence(8)
+		self.stats["dfn"] = Stat.Defence(1)
 		self.stats["mag"] = Stat.MagicalAttack(14)
 		self.stats["res"] = Stat.MagicalResistance(20)
 		self.stats["spd"] = Stat.Speed(14)
@@ -674,7 +674,7 @@ class CocoonMan(Character):
 		for i in range(lvl):
 			self.level_up()
 
-		self.death_exp = 330
+		self.death_exp = 30*self.lvl + 1
 
 		self.full_heal()
 
@@ -687,10 +687,10 @@ class Avik(Character):
 		self.name = "Avik Clearwater"
 		
 		self.lines = {
-			0:["You leave us, and I'll whoop yer ass! Don't you have any respect for your elders?", None, 1, None, False],
-			1:["Oh... I'm sorry for that little outburst. I was the same way when I was your age. If anything, I was more energetic! Why are you guys so damned lazy?", None, 2, None, False],
-			2:["Erm... Sorry again for that. Thanks for stopping by to chat before you go, young'un. Remember me, Arbot. I hope you end up more successful than I did.", None, 3, Item.CrossRing, False],
-			3:["Remember me Arbot, and thanks for your help. Go on, get out of here! You don't have to hang around any longer...", None, 3, 3, False]
+			0:["If you leave us Arbot, I'll whoop yer ass! Don't you have any respect for your elders?", None, 1, None, False],
+			1:["Oh... I'm sorry for that little outburst. I was the same way when I was your age... full of wanderlust.\nIf anything, I was more energetic! Today's youth are so lazy!", None, 2, None, False],
+			2:["...Sorry again for that. Thanks for stopping by to chat before you go, young'un. Remember me, Arbot. I hope you end up more successful than I did.", None, 3, Item.CrossRing, False],
+			3:["Go on, get out of here! You don't have to hang around any longer...", None, 3, 3, False]
 
 		}
 
