@@ -1,5 +1,5 @@
-#The gameloop for Moderately Seafaring, an RPG
-#4 Dec, 2016
+# The gameloop for Moderately Seafaring, an RPG
+# 4 Dec, 2016
 
 import pygame
 from pygame.locals import *
@@ -674,7 +674,7 @@ def main():
 							#Used for NPC interactions, etc.
 							if current_colliding_object != None:
 								if current_colliding_object.__class__.__bases__[0] == Character.Character:
-									fragile_textboxes.append(Text.TextBox([current_colliding_object.get_lines()[current_colliding_object.get_current_line()][0]], screen_size[0]/2, screen_size[1]-32-16-3, screen_size[0]-32))
+									fragile_textboxes.append(Text.DialogueBox([current_colliding_object.get_lines()[current_colliding_object.get_current_line()][0]], screen_size[0]/2, screen_size[1]-32-16-3))
 									fragile_textboxes[-1].centre_x()
 									current_colliding_object.advance_lines()
 							else:

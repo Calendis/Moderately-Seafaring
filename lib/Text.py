@@ -1,6 +1,9 @@
-#Useful stuff related to pygame text rendering
+# Useful stuff related to pygame text rendering
+
 import pygame
 from lib import UIConstant
+
+import time
 
 pygame.font.init()
 font_path = "resources/fonts/advanced_pixel-7.ttf"
@@ -35,7 +38,6 @@ class TextBox():
 		self.text_colour = text_colour
 		self.box_colour = box_colour
 
-		
 		#Remove None type from the text lines.
 		#None will be passed as part of spell descriptions for spells that do not restore any hp
 		for item in self.text:
@@ -63,7 +65,9 @@ class TextBox():
 		pygame.draw.rect(surface, self.box_colour, (self.position["x"], self.position["y"], self.width, self.height))
 		
 		for line in self.text:
-			draw_text(surface, self.position["x"]+8, self.position["y"]*(self.text.index(line)+1)+8, line, UIConstant.FONT_SIZE, self.text_colour)
+			draw_text(surface, self.position["x"]+UIConstant.MENU_LEFT_BUFFER,
+				self.position["y"]*(self.text.index(line)+1)+UIConstant.MENU_TOP_BUFFER,
+				line, UIConstant.FONT_SIZE, self.text_colour)
 
 		pygame.draw.rect(surface, UIConstant.MENU_UPPER_BORDER_COLOUR, ((self.get_position()["x"]-UIConstant.MENU_BORDER_WIDTH, self.get_position()["y"]-UIConstant.MENU_BORDER_WIDTH), (self.get_width()+2*UIConstant.MENU_BORDER_WIDTH, UIConstant.MENU_BORDER_WIDTH)))
 		pygame.draw.rect(surface, UIConstant.MENU_RIGHT_BORDER_COLOUR, ((self.get_position()["x"]+self.get_width(), self.get_position()["y"]), (UIConstant.MENU_BORDER_WIDTH, self.get_height()+UIConstant.MENU_BORDER_WIDTH)))
@@ -76,6 +80,49 @@ class TextBox():
 
 	def centre_x(self):
 		self.shift_position(-self.get_width()/2, 0)
+
+class DialogueBox(TextBox):
+	"""docstring for DialogueBox"""
+	def __init__(self, text, x, y, text_colour=UIConstant.FOREGROUND_COLOUR, box_colour = UIConstant.BACKGROUND_COLOUR):
+		super(DialogueBox, self).__init__(text, x, y, UIConstant.DIALOGUE_WIDTH, UIConstant.DIALOGUE_HEIGHT, text_colour, box_colour)
+		self.done_dialogue = False
+
+	def draw(self, surface):
+		pygame.draw.rect(surface, self.box_colour, (self.position["x"], self.position["y"], self.width, self.height))
+
+		pygame.draw.rect(surface, UIConstant.MENU_UPPER_BORDER_COLOUR, ((self.get_position()["x"]-UIConstant.MENU_BORDER_WIDTH, self.get_position()["y"]-UIConstant.MENU_BORDER_WIDTH), (self.get_width()+2*UIConstant.MENU_BORDER_WIDTH, UIConstant.MENU_BORDER_WIDTH)))
+		pygame.draw.rect(surface, UIConstant.MENU_RIGHT_BORDER_COLOUR, ((self.get_position()["x"]+self.get_width(), self.get_position()["y"]), (UIConstant.MENU_BORDER_WIDTH, self.get_height()+UIConstant.MENU_BORDER_WIDTH)))
+		pygame.draw.rect(surface, UIConstant.MENU_LOWER_BORDER_COLOUR, ((self.get_position()["x"]+self.get_width(), self.get_position()["y"]+self.get_height()), (-self.get_width()+1, UIConstant.MENU_BORDER_WIDTH)))
+		pygame.draw.rect(surface, UIConstant.MENU_LEFT_BORDER_COLOUR, ((self.get_position()["x"]-UIConstant.MENU_BORDER_WIDTH, self.get_position()["y"]+self.get_height()+UIConstant.MENU_BORDER_WIDTH-1), (UIConstant.MENU_BORDER_WIDTH, -self.get_height()-UIConstant.MENU_BORDER_WIDTH+1)))
+		
+		if not self.done_dialogue:
+			for line in self.text:
+				character_in_line = -1
+				character_widths = []
+				for character in line:
+					character_in_line += 1
+					draw_text(surface,
+						self.position["x"]+UIConstant.MENU_LEFT_BUFFER+sum(character_widths),
+						self.position["y"]*(self.text.index(line)+1)+UIConstant.MENU_TOP_BUFFER, 
+						character, UIConstant.FONT_SIZE, self.text_colour)
+					character_widths.append(get_text_width(character))
+
+					pygame.display.flip()
+					time.sleep(0.04)
+
+			self.done_dialogue = True
+
+		else:
+			for line in self.text:
+				draw_text(surface, self.position["x"]+UIConstant.MENU_LEFT_BUFFER,
+					self.position["y"]*(self.text.index(line)+1)+UIConstant.MENU_TOP_BUFFER,
+					line, UIConstant.FONT_SIZE, self.text_colour)
+
+	def get_done_dialogue(self):
+		return self.done_dialogue
+
+	def set_done_dialogue(self, new_done_dialogue):
+		self.done_dialogue = new_done_dialogue
 
 class FloatingText():
 	"""Lifetime is expressed in frames. The game runs at about 60 FPS I think."""

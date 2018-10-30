@@ -1,4 +1,4 @@
-#Classes for all in-game characters, inlcuding PCs, monsters, NPCs, etc.
+# Classes for all in-game characters, inlcuding PCs, monsters, NPCs, etc.
 from lib import CharacterImage
 from lib import Item
 from lib import CharacterClass
