@@ -549,7 +549,6 @@ def main():
 									elif map_object.type == "layer_switch":
 										layer_switches.append(map_object)
 								print("Map objects generated.\n")
-							
 								
 								print("Exiting menus...")
 								menus = []
@@ -584,6 +583,21 @@ def main():
 								pyscroll_group_data.add(party.get_current_member())
 								pyscroll_group_data.change_layer(party.get_current_member(), party.get_current_member().get_layer())
 								print("Party added to group data.\n")
+
+								print("Loading NPCS...")
+								#NPC Loading code start
+								map_npc_list = current_map.npcs_by_id.split()
+								map_npc_x_positions = current_map.respective_npc_x.split()
+								map_npc_y_positions = current_map.respective_npc_y.split()
+
+								for i in range(len(map_npc_list)):
+									npcs.append(NPCID.npc_id_list[int(map_npc_list[i])]([int(map_npc_x_positions[i]), int(map_npc_y_positions[i]) ]))
+
+								for npc in npcs:
+									pyscroll_group_data.add(npc)
+									pyscroll_group_data.change_layer(npc, party.get_current_member().get_layer())
+								#NPC Loading code end
+								print("NPCs loaded.")
 
 								title_screen = False
 								main_screen = True
