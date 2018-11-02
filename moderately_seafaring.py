@@ -453,7 +453,7 @@ def main():
 			title_screen_events = pygame.event.get()
 
 			for title_screen_event in title_screen_events:
-				#Event handling 
+				#Event handling
 				if title_screen_event.type == pygame.QUIT:
 					done = True
 				if title_screen_event.type == pygame.MOUSEBUTTONDOWN and False:
