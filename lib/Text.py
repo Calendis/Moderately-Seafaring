@@ -4,6 +4,7 @@ import pygame
 from lib import UIConstant
 
 import time
+from random import randint
 
 pygame.font.init()
 font_path = "resources/fonts/advanced_pixel-7.ttf"
@@ -83,9 +84,11 @@ class TextBox():
 
 class DialogueBox(TextBox):
 	"""docstring for DialogueBox"""
-	def __init__(self, text, x, y, text_colour=UIConstant.FOREGROUND_COLOUR, box_colour = UIConstant.BACKGROUND_COLOUR):
+	def __init__(self, text, x, y, line_delays, text_colour=UIConstant.FOREGROUND_COLOUR, box_colour = UIConstant.BACKGROUND_COLOUR):
 		super(DialogueBox, self).__init__(text, x, y, UIConstant.DIALOGUE_WIDTH, UIConstant.DIALOGUE_HEIGHT, text_colour, box_colour)
 		self.done_dialogue = False
+		self.dialogue_lines = self.text[0].split("\n")
+		self.line_delays = line_delays
 
 	def draw(self, surface):
 		pygame.draw.rect(surface, self.box_colour, (self.position["x"], self.position["y"], self.width, self.height))
@@ -96,26 +99,29 @@ class DialogueBox(TextBox):
 		pygame.draw.rect(surface, UIConstant.MENU_LEFT_BORDER_COLOUR, ((self.get_position()["x"]-UIConstant.MENU_BORDER_WIDTH, self.get_position()["y"]+self.get_height()+UIConstant.MENU_BORDER_WIDTH-1), (UIConstant.MENU_BORDER_WIDTH, -self.get_height()-UIConstant.MENU_BORDER_WIDTH+1)))
 		
 		if not self.done_dialogue:
-			for line in self.text:
+			for line in self.dialogue_lines:
 				character_in_line = -1
 				character_widths = []
 				for character in line:
 					character_in_line += 1
 					draw_text(surface,
 						self.position["x"]+UIConstant.MENU_LEFT_BUFFER+sum(character_widths),
-						self.position["y"]*(self.text.index(line)+1)+UIConstant.MENU_TOP_BUFFER, 
+						self.position["y"]+UIConstant.FONT_SIZE*(self.dialogue_lines.index(line))+UIConstant.MENU_TOP_BUFFER, 
 						character, UIConstant.FONT_SIZE, self.text_colour)
 					character_widths.append(get_text_width(character))
 
 					pygame.display.flip()
-					time.sleep(0.04)
+					time.sleep(randint(UIConstant.LETTER_SCROLL_DELAY_MIN, UIConstant.LETTER_SCROLL_DELAY_MAX)/100)
+
+				print(self.line_delays[self.dialogue_lines.index(line)])
+				time.sleep(UIConstant.LINE_SCROLL_DELAY/100 * self.line_delays[self.dialogue_lines.index(line)])
 
 			self.done_dialogue = True
 
 		else:
-			for line in self.text:
+			for line in self.dialogue_lines:
 				draw_text(surface, self.position["x"]+UIConstant.MENU_LEFT_BUFFER,
-					self.position["y"]*(self.text.index(line)+1)+UIConstant.MENU_TOP_BUFFER,
+					self.position["y"]+UIConstant.FONT_SIZE*(self.dialogue_lines.index(line))+UIConstant.MENU_TOP_BUFFER,
 					line, UIConstant.FONT_SIZE, self.text_colour)
 
 	def get_done_dialogue(self):

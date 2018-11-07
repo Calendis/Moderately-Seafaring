@@ -78,12 +78,14 @@ class Character(pygame.sprite.Sprite):
 			Text to display, Options to give (if any), respectivedict keys to go to from options, items to give, auto T/F
 		'''
 		self.lines = {
-			0: ["This message should not appear: ERROR 60-0", ("Yes", "No"), (2, 3), None, False],
-			1: ["This message should not appear: ERROR 60-1", None, 1, None, False],
-			2: ["This message should not appear: ERROR 60-2", None, 1, Item.RedHerb, False],
-			3: ["This message should not appear: ERROR 60-3", None, 1, None, False]
+			0: ["This message should not appear.\nERROR 60-0", ("Yes", "No"), (2, 3), None, False],
+			1: ["This message should not appear.\nERROR 60-1", None, 1, None, False],
+			2: ["This message should not appear.\nERROR 60-2", None, 1, Item.RedHerb, False],
+			3: ["This message should not appear.\nERROR 60-3", None, 1, None, False]
 		}
 		self.current_line = 0
+
+		self.line_delays = [0, 0, 0, 0]
 
 	def draw(self):
 		pass
@@ -367,6 +369,9 @@ class Character(pygame.sprite.Sprite):
 
 	def get_current_line(self):
 		return self.current_line
+
+	def get_line_delays(self):
+		return self.line_delays
 
 	def set_pos(self, new_pos):
 		self.pos = new_pos
@@ -687,12 +692,13 @@ class Avik(Character):
 		self.name = "Avik Clearwater"
 		
 		self.lines = {
-			0:["If you leave us Arbot, I'll whoop yer ass! Don't you have any respect for your elders?", None, 1, None, False],
-			1:["Oh... I'm sorry for that little outburst. I was the same way when I was your age... full of wanderlust.\nIf anything, I was more energetic! Today's youth are so lazy!", None, 2, None, False],
-			2:["...Sorry again for that. Thanks for stopping by to chat before you go, young'un. Remember me, Arbot. I hope you end up more successful than I did.", None, 3, Item.CrossRing, False],
-			3:["Go on, get out of here! You don't have to hang around any longer...", None, 3, 3, False]
-
+			0:["If you leave us Arbot, I'll whoop yer ass!\nDon't you have any respect for your elders?", None, 1, None, False],
+			1:["Oh... I'm sorry for that little outburst.\nI was the same way when I was your age... \nAlways wanted adventure.. so energetic.\nIf anything, I was even more energetic!\nToday's youth are so lazy!", None, 2, None, False],
+			2:["Oh, apologies for calling you lazy.\nThanks for stopping by to chat\nbefore you go, young'un.\nRemember me, Arbot.\n\nI hope you end up more successful than\nI did.", None, 3, Item.CrossRing, False],
+			3:["Go on, get out of here!\n\nYou don't have to hang around any longer...", None, 3, 3, False]
 		}
+
+		self.line_delays = [1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0]
 
 class GenericOldMan(Character):
 	"""docstring for GenericOldMan"""

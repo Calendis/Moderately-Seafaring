@@ -223,7 +223,7 @@ class Dagger(Weapon):
 class CrossRing(Accessory):
 	"""docstring for CrossRing"""
 	def __init__(self):
-		super(CrossRing, self).__init__(0, 0, 60, 100, 0, 0, 0, 0)
+		super(CrossRing, self).__init__(0, 0, 4, 6, 0, 0, 0, 0)
 		self.name = "Cross Ring"
 		self.description = "A grey metal ring, awkwardly shaped like a cross."+self.description_ending
 		self.image = ItemImage.cross_ring

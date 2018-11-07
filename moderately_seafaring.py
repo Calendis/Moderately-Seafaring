@@ -688,7 +688,13 @@ def main():
 							#Used for NPC interactions, etc.
 							if current_colliding_object != None:
 								if current_colliding_object.__class__.__bases__[0] == Character.Character:
-									fragile_textboxes.append(Text.DialogueBox([current_colliding_object.get_lines()[current_colliding_object.get_current_line()][0]], screen_size[0]/2, screen_size[1]-32-16-3))
+									
+									fragile_textboxes.append(
+										Text.DialogueBox([current_colliding_object.get_lines()[current_colliding_object.get_current_line()][0]],
+										screen_size[0]/2,
+										screen_size[1]-UIConstant.DIALOGUE_HEIGHT-UIConstant.MENU_BORDER_WIDTH-16,
+										current_colliding_object.get_line_delays()))
+
 									fragile_textboxes[-1].centre_x()
 									current_colliding_object.advance_lines()
 							else:
@@ -747,7 +753,7 @@ def main():
 									print("No item was selected. ERROR 00-0")
 									fragile_textboxes.append(Text.TextBox(["ERROR 00-0", "No item was selected."], 100, 100))
 							elif menus[-1].__class__ == Menu.SaveMenu:
-								if menus[-1].get_selected_element_position()["x"] == 0: #Notice the x position is needed on a vertical list
+								if menus[-1].get_selected_element_position()["x"] == 0: #Notice the x position is needed on a vertical list. This is because it represents the ROW
 									gamefile = "0"
 								elif menus[-1].get_selected_element_position()["x"] == 1:
 									gamefile = "1"
