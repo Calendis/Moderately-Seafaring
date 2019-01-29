@@ -38,14 +38,13 @@ from lib import NPCID
 
 def jiggle_battle_sprite(battle_actor):
 	#Jiggle the actor so you know they're taking the action
-	battle_actor.shift_battle_pos(10, 0)
-	battle_drawing(exclude_selectors=True, exclude_menus=True)
-	battle_actor.shift_battle_pos(-10, 0)
-	battle_drawing(exclude_selectors=True, exclude_menus=True)
-	battle_actor.shift_battle_pos(-10, 0)
-	battle_drawing(exclude_selectors=True, exclude_menus=True)
-	battle_actor.shift_battle_pos(10, 0)
-	battle_drawing(exclude_selectors=True, exclude_menus=True)
+	for i in range(3):
+		battle_actor.shift_battle_pos(UIConstant.BATTLE_JIGGLE_AMOUNT, 0)
+		battle_drawing(exclude_selectors=True, exclude_menus=True)
+		time.sleep(0.1)
+		battle_actor.shift_battle_pos(-UIConstant.BATTLE_JIGGLE_AMOUNT, 0)
+		battle_drawing(exclude_selectors=True, exclude_menus=True)
+		time.sleep(0.1)
 	time.sleep(0.4)
 
 def battle_drawing(exclude_menus=False, exclude_floating=False, exclude_selectors=False):

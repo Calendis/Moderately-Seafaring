@@ -113,10 +113,11 @@ class Menu(object):
 				menu_element_counter += 1
 				menu_element_text = Text.sized_font(self.font_size).render(menu_element.get_text(), 1, menu_element.get_colour())
 				
-				#The important bit
+				# The important bit
 				surface.blit(menu_element_text, (self.get_position()["x"]+(self.get_xspacing()*menu_element_counter)+UIConstant.MENU_LEFT_BUFFER+self.centred_text_value*(self.get_xspacing()-menu_element_text.get_width())/2,
 					self.get_position()["y"]+(menu_list_counter*self.longest_text_rendered.get_height()*self.y_spacing_multiplier)+(UIConstant.MENU_TOP_BUFFER+self.additional_top_buffer)))
 
+				# Draws the image associated with the menu option
 				if menu_element.get_image():
 					surface.blit(menu_element.get_image(), (self.get_position()["x"]+UIConstant.MENU_IMAGE_LEFT_BUFFER,
 						self.get_position()["y"]+(menu_list_counter*self.longest_text_rendered.get_height()*self.y_spacing_multiplier)+(UIConstant.MENU_IMAGE_TOP_BUFFER+self.additional_top_buffer)))
