@@ -352,7 +352,7 @@ class WhomUseMenu(Menu):
 		whomuse_elements = []
 		for party_member in party.get_members():
 			whomuse_elements.append(BasicMenuItem(party_member.get_name()))
-		super(WhomUseMenu, self).__init__(330, UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, 1, len(whomuse_elements), whomuse_elements)
+		super(WhomUseMenu, self).__init__(362, UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, 1, len(whomuse_elements), whomuse_elements)
 
 	def get_item(self):
 		return self.item
@@ -364,7 +364,7 @@ class WhomSpellMenu(Menu):
 		whomspell_elements = []
 		for party_member in party.get_members():
 			whomspell_elements.append(BasicMenuItem(party_member.get_name()))
-		super(WhomSpellMenu, self).__init__(330, UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, 1, len(whomspell_elements), whomspell_elements)
+		super(WhomSpellMenu, self).__init__(362, UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, 1, len(whomspell_elements), whomspell_elements)
 
 	def get_spell(self):
 		return self.spell
@@ -377,7 +377,7 @@ class WhomEquipMenu(Menu):
 		whomequip_elements = []
 		for party_member in party.get_members():
 			whomequip_elements.append(BasicMenuItem(party_member.get_name()))
-		super(WhomEquipMenu, self).__init__(330, UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, 1, len(whomequip_elements), whomequip_elements)
+		super(WhomEquipMenu, self).__init__(362, UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, 1, len(whomequip_elements), whomequip_elements)
 
 	def get_item(self):
 		return self.item
@@ -402,7 +402,7 @@ class UnequipMenu(Menu):
 		unequip_elements = []
 		for item in items:
 			unequip_elements.append(BasicMenuItem(item.get_name()))
-		super(UnequipMenu, self).__init__(111+240+32+16, UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, 1, len(unequip_elements), unequip_elements)
+		super(UnequipMenu, self).__init__(362, UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, 1, len(unequip_elements), unequip_elements)
 
 battle_elements = [
 	BasicMenuItem("Attack"),

@@ -465,13 +465,21 @@ class ModeratelySeafaringGame():
 
 								elif self.menus[-1].__class__ == Menu.WhomEquipMenu:
 									if self.party[self.menus[-1].get_selected_element_position()["x"]].get_weapon() and self.menus[-1].get_item().get_item_type() == "Weapon":
-										self.fragile_textboxes.append(Text.TextBox([self.party[self.menus[-1].get_selected_element_position()["x"]].get_name()+" already has a weapon equipped."], self.menus[-1].get_box_width()+UIConstant.MENU_SPACING+2*UIConstant.MENU_BORDER_WIDTH+self.menus[-1].get_position()["x"], self.menus[-1].get_position()["y"]))
+										self.fragile_textboxes.append(Text.TextBox([self.party[self.menus[-1].get_selected_element_position()["x"]].get_name()+" already has a weapon equipped."],
+											self.menus[-1].get_box_width()+UIConstant.MENU_SPACING+2*UIConstant.MENU_BORDER_WIDTH+self.menus[-1].get_position()["x"], self.menus[-1].get_position()["y"]))
+									
 									elif self.party[self.menus[-1].get_selected_element_position()["x"]].get_armour() and self.menus[-1].get_item().get_item_type() == "Armour":
-										self.fragile_textboxes.append(Text.TextBox([self.party[self.menus[-1].get_selected_element_position()["x"]].get_name()+" already has armour equipped."], self.menus[-1].get_box_width()+UIConstant.MENU_SPACING+2*UIConstant.MENU_BORDER_WIDTH+self.menus[-1].get_position()["x"], self.menus[-1].get_position()["y"]))
+										self.fragile_textboxes.append(Text.TextBox([self.party[self.menus[-1].get_selected_element_position()["x"]].get_name()+" already has armour equipped."],
+											self.menus[-1].get_box_width()+UIConstant.MENU_SPACING+2*UIConstant.MENU_BORDER_WIDTH+self.menus[-1].get_position()["x"], self.menus[-1].get_position()["y"]))
+									
 									elif self.party[self.menus[-1].get_selected_element_position()["x"]].get_shield() and self.menus[-1].get_item().get_item_type() == "Shield":
-										self.fragile_textboxes.append(Text.TextBox([self.party[self.menus[-1].get_selected_element_position()["x"]].get_name()+" already has a shield equipped."], self.menus[-1].get_box_width()+UIConstant.MENU_SPACING+2*UIConstant.MENU_BORDER_WIDTH+self.menus[-1].get_position()["x"], self.menus[-1].get_position()["y"]))
+										self.fragile_textboxes.append(Text.TextBox([self.party[self.menus[-1].get_selected_element_position()["x"]].get_name()+" already has a shield equipped."],
+											self.menus[-1].get_box_width()+UIConstant.MENU_SPACING+2*UIConstant.MENU_BORDER_WIDTH+self.menus[-1].get_position()["x"], self.menus[-1].get_position()["y"]))
+									
 									elif self.party[self.menus[-1].get_selected_element_position()["x"]].get_accessory() and self.menus[-1].get_item().get_item_type() == "Accessory":
-										self.fragile_textboxes.append(Text.TextBox([self.party[self.menus[-1].get_selected_element_position()["x"]].get_name()+" already has an accessory equipped."], self.menus[-1].get_box_width()+UIConstant.MENU_SPACING+2*UIConstant.MENU_BORDER_WIDTH+self.menus[-1].get_position()["x"], self.menus[-1].get_position()["y"]))
+										self.fragile_textboxes.append(Text.TextBox([self.party[self.menus[-1].get_selected_element_position()["x"]].get_name()+" already has an accessory equipped."],
+											self.menus[-1].get_box_width()+UIConstant.MENU_SPACING+2*UIConstant.MENU_BORDER_WIDTH+self.menus[-1].get_position()["x"], self.menus[-1].get_position()["y"]))
+									
 									else:
 										self.party[self.menus[-1].get_selected_element_position()["x"]].equip(self.menus[-1].get_item())
 										self.party.get_current_member().get_items().remove(self.menus[-1].get_item())
