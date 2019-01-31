@@ -708,12 +708,16 @@ def main():
 
 						if event.key == K_UP:
 							menus[-1].move_selection_up()
+							Sound.menu.play()
 						if event.key == K_DOWN:
 							menus[-1].move_selection_down()
+							Sound.menu.play()
 						if event.key == K_LEFT:
 							menus[-1].move_selection_left()
+							Sound.menu.play()
 						if  event.key == K_RIGHT:
 							menus[-1].move_selection_right()
+							Sound.menu.play()
 						if event.key == K_z:
 							Sound.back.play()
 							menus.remove(menus[-1])
@@ -1156,14 +1160,13 @@ def main():
 
 									#If your party is faster, you get away.
 									if party_speed > enemy_party_speed: 
-										battle_screen = False
-										main_screen = True
 										#Clears enemy party
 										enemy_party.set_members([])
 										menus = []
 										fragile_textboxes.append(Text.TextBox(["You ran away..."], (screen_size[0]-224+224)/2, screen_size[1]/2))
 										fragile_textboxes[-1].centre_x()
 										battle_over = True
+										Sound.play_overworld_music("escape")
 									else:
 										fragile_textboxes.append(Text.TextBox(["You couldn't get away!"], (screen_size[0]-224)/2, screen_size[1]/2))
 										fragile_textboxes[-1].centre_x()
@@ -1236,15 +1239,19 @@ def main():
 					elif battle_event.key == K_UP:
 						if len(menus) > 0:
 							menus[-1].move_selection_up()
+							Sound.menu.play()
 					elif battle_event.key == K_DOWN:
 						if len(menus) > 0:
 							menus[-1].move_selection_down()
+							Sound.menu.play()
 					elif battle_event.key == K_LEFT:
 						if len(menus) > 0:
 							menus[-1].move_selection_left()
+							Sound.menu.play()
 					elif  battle_event.key == K_RIGHT:
 						if len(menus) > 0:
 							menus[-1].move_selection_right()
+							Sound.menu.play()
 
 			#Battle logic below
 			for menu in menus:

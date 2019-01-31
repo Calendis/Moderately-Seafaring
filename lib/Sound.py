@@ -41,4 +41,6 @@ def play_overworld_music(area_name):
 		pygame.mixer.music.load("resources/aud/mus/I_See_the_Sea.wav")
 	elif area_name == "fanfare":
 		pygame.mixer.music.load("resources/aud/mus/Fanfare.wav")
+	elif area_name == "escape":
+		pygame.mixer.music.load("resources/aud/mus/Escape.wav")
 	pygame.mixer.music.play(-1)
