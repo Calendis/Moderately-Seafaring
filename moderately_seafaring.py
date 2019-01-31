@@ -1166,7 +1166,7 @@ def main():
 										fragile_textboxes.append(Text.TextBox(["You ran away..."], (screen_size[0]-224+224)/2, screen_size[1]/2))
 										fragile_textboxes[-1].centre_x()
 										battle_over = True
-										Sound.play_overworld_music("escape")
+										Sound.play_overworld_music("escape", 0)
 									else:
 										fragile_textboxes.append(Text.TextBox(["You couldn't get away!"], (screen_size[0]-224)/2, screen_size[1]/2))
 										fragile_textboxes[-1].centre_x()
