@@ -7,7 +7,7 @@ from lib import UIConstant
 from lib import Character
 from lib import Sound
 
-DEFAULT_COLOUR = UIConstant.FOREGROUND_COLOUR
+DEFAULT_COLOUR = UIConstant.FONT_COLOUR
 BACKGROUND_COLOUR = UIConstant.BACKGROUND_COLOUR
 SCREEN_SIZE = (900, 700)
 
@@ -120,7 +120,7 @@ class Menu(object):
 				# Draws the image associated with the menu option
 				if menu_element.get_image():
 					surface.blit(menu_element.get_image(), (self.get_position()["x"]+UIConstant.MENU_IMAGE_LEFT_BUFFER,
-						self.get_position()["y"]+(menu_list_counter*self.longest_text_rendered.get_height()*self.y_spacing_multiplier)+(UIConstant.MENU_IMAGE_TOP_BUFFER+self.additional_top_buffer)))
+						self.get_position()["y"]+(menu_list_counter*self.longest_text_rendered.get_height()*self.y_spacing_multiplier)+(UIConstant.MENU_IMAGE_TOP_BUFFER+self.additional_top_buffer+UIConstant.MENU_IMAGE_SHIFT)))
 
 		# Draws the menu borders
 		pygame.draw.rect(surface, UIConstant.MENU_UPPER_BORDER_COLOUR, ((self.get_position()["x"]-UIConstant.MENU_BORDER_WIDTH, self.get_position()["y"]-UIConstant.MENU_BORDER_WIDTH), (self.box_width+2*UIConstant.MENU_BORDER_WIDTH, UIConstant.MENU_BORDER_WIDTH)))

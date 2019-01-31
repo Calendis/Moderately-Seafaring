@@ -30,7 +30,7 @@ def get_text_height(text, size=UIConstant.FONT_SIZE):
 
 class TextBox():
 	"""docstring for TextBox"""
-	def __init__(self, text, x, y, width=False, height=False, text_colour=UIConstant.FOREGROUND_COLOUR, box_colour=UIConstant.BACKGROUND_COLOUR):
+	def __init__(self, text, x, y, width=False, height=False, text_colour=UIConstant.FONT_COLOUR, box_colour=UIConstant.BACKGROUND_COLOUR):
 		super(TextBox, self).__init__()
 		self.text = text
 		self.position = {"x": x, "y": y}
@@ -84,7 +84,7 @@ class TextBox():
 
 class DialogueBox(TextBox):
 	"""docstring for DialogueBox"""
-	def __init__(self, text, x, y, line_delays, text_colour=UIConstant.FOREGROUND_COLOUR, box_colour = UIConstant.BACKGROUND_COLOUR):
+	def __init__(self, text, x, y, line_delays, text_colour=UIConstant.FONT_COLOUR, box_colour = UIConstant.BACKGROUND_COLOUR):
 		super(DialogueBox, self).__init__(text, x, y, UIConstant.DIALOGUE_WIDTH, UIConstant.DIALOGUE_HEIGHT, text_colour, box_colour)
 		self.done_dialogue = False
 		self.dialogue_lines = self.text[0].split("\n")

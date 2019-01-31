@@ -175,7 +175,7 @@ class Healing_Potion_I(Medicine):
 		self.stat = Stat.HitPoints(self.value)
 		super(Healing_Potion_I, self).__init__(self.value, self.stat)
 		self.name = "Healing Potion I"
-		self.description = "A concentrated healing essence of low quality. "+self.description_ending
+		self.description = "A concentrated healing essence of low quality.\n"+self.description_ending
 		self.image = ItemImage.healing_potion_I
 
 	def reload_image(self):

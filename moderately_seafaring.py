@@ -151,7 +151,7 @@ def confirm_action(action, user, target=None, ability=None):
 			if "poison" in battle_action[1].get_statuses():
 				poison_damage = randint(1, 10)
 				battle_action[1].heal(-poison_damage, Stat.HitPoints(0))
-				floating_texts.append(Text.FloatingText(battle_action[1].get_battle_pos[0], battle_action[1].get_battle_pos[1]-16, str(poison_damage), 32, (128, 128, 0), UIConstant.FLOATING_TEXT_FRAMES))
+				floating_texts.append(Text.FloatingText(battle_action[1].get_battle_pos[0], battle_action[1].get_battle_pos[1]-16, str(poison_damage), UIConstant.LARGE_FONT_SIZE, (128, 128, 0), UIConstant.FLOATING_TEXT_FRAMES))
 			if "confused" in battle_action[1].get_statuses():
 				pass
 
@@ -179,13 +179,13 @@ def confirm_action(action, user, target=None, ability=None):
 						damage = 0
 
 					battle_action[3].heal(-damage, Stat.HitPoints(0))
-					floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, str(damage), 32, colour, UIConstant.FLOATING_TEXT_FRAMES))
+					floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, str(damage), UIConstant.LARGE_FONT_SIZE, colour, UIConstant.FLOATING_TEXT_FRAMES))
 					battle_action[1].attack_sound.play()
 
 				elif battle_action[0] == "Defend":
 					colour = (50, 50, 255)
 					battle_action[1].set_defending(True)
-					floating_texts.append(Text.FloatingText(battle_action[1].get_battle_pos()[0], battle_action[1].get_battle_pos()[1]-16, "Defending.", 32, colour, UIConstant.FLOATING_TEXT_FRAMES))
+					floating_texts.append(Text.FloatingText(battle_action[1].get_battle_pos()[0], battle_action[1].get_battle_pos()[1]-16, "Defending.", UIConstant.LARGE_FONT_SIZE, colour, UIConstant.FLOATING_TEXT_FRAMES))
 					Sound.buff.play()
 
 				elif battle_action[0] == "Item":
@@ -195,7 +195,7 @@ def confirm_action(action, user, target=None, ability=None):
 							colour = (10, 20, 255)
 						
 						battle_action[3].heal(battle_action[4].get_value(), battle_action[4].get_stat())
-						floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, str(battle_action[4].get_value()), 32, colour, UIConstant.FLOATING_TEXT_FRAMES))
+						floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, str(battle_action[4].get_value()), UIConstant.LARGE_FONT_SIZE, colour, UIConstant.FLOATING_TEXT_FRAMES))
 
 				elif battle_action[0] == "Spell":
 					jiggle_battle_sprite(battle_action[1])
@@ -214,13 +214,13 @@ def confirm_action(action, user, target=None, ability=None):
 
 
 						battle_action[3].heal(damage, Stat.HitPoints(0))
-						floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, str(damage), 32, colour, UIConstant.FLOATING_TEXT_FRAMES))
+						floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, str(damage), UIConstant.LARGE_FONT_SIZE, colour, UIConstant.FLOATING_TEXT_FRAMES))
 
 					elif battle_action[4].__class__.__bases__[0] == Spell.BuffSpell:
 						colour = (100, 100, 255)
 						buff_level = randint(floor(battle_action[4].get_stat_power()*0.9), floor(battle_action[4].get_stat_power()*1.35))
 						battle_action[3].buff(buff_level, battle_action[4].get_stat_target())
-						floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, battle_action[4].get_stat_target().upper()+" up!", 32, colour, UIConstant.FLOATING_TEXT_FRAMES))
+						floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, battle_action[4].get_stat_target().upper()+" up!", UIConstant.LARGE_FONT_SIZE, colour, UIConstant.FLOATING_TEXT_FRAMES))
 						Sound.buff.play()
 
 					elif battle_action[4].__class__.__bases__[0] == Spell.DamageSpell:
@@ -232,14 +232,14 @@ def confirm_action(action, user, target=None, ability=None):
 							damage -= randint(floor(battle_action[3].get_res()/2), battle_action[3].get_res())
 
 						battle_action[3].heal(-damage, Stat.HitPoints(0))
-						floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, str(damage), 32, colour, UIConstant.FLOATING_TEXT_FRAMES))
+						floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, str(damage), UIConstant.LARGE_FONT_SIZE, colour, UIConstant.FLOATING_TEXT_FRAMES))
 						battle_action[4].sound.play()
 
 					elif battle_action[4].__class__.__bases__[0] == Spell.NerfSpell:
 						colour = (255, 255, 0)
 						nerf_level = randint(floor(battle_action[4].get_stat_power()*0.9), floor(battle_action[4].get_stat_power()*1.35))
 						battle_action[3].buff(-nerf_level, battle_action[4].get_stat_target())
-						floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, battle_action[4].get_stat_target().upper()+" down.", 32, colour, UIConstant.FLOATING_TEXT_FRAMES))
+						floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, battle_action[4].get_stat_target().upper()+" down.", UIConstant.LARGE_FONT_SIZE, colour, UIConstant.FLOATING_TEXT_FRAMES))
 						Sound.nerf.play()
 
 					elif battle_action[4].__class__.__bases__[0] == Spell.StatusSpell:
@@ -248,14 +248,14 @@ def confirm_action(action, user, target=None, ability=None):
 							colour = (255, 255, 0)
 							if status_target not in battle_action[3].get_statuses():
 								battle_action[3].inflict_status(status_target)
-								floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, "+"+status_target.upper(), 32, colour, UIConstant.FLOATING_TEXT_FRAMES))
+								floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, "+"+status_target.upper(), UIConstant.LARGE_FONT_SIZE, colour, UIConstant.FLOATING_TEXT_FRAMES))
 								Sound.nerf.play()
 
 						else:
 							if status_target in battle_action[3].get_statuses():
 								colour = (0, 255, 255)
 								battle_action[3].cure_status(status_target)
-								floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, "-"+status_target.upper(), 32, colour, UIConstant.FLOATING_TEXT_FRAMES))
+								floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, "-"+status_target.upper(), UIConstant.LARGE_FONT_SIZE, colour, UIConstant.FLOATING_TEXT_FRAMES))
 								Sound.buff.play()
 
 								if status_target == "down":
@@ -854,6 +854,9 @@ def main():
 									else:
 										menus.remove(menus[-1])
 										menus.remove(menus[-1])
+
+								elif menus[-1].get_selected_name() == "Give":
+									print("TODO: Give")
 
 							elif menus[-1].__class__ == Menu.SpellUseMenu:
 								if menus[-1].get_selected_name() == "Use":

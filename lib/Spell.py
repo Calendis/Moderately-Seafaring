@@ -586,7 +586,7 @@ class Swig(BuffSpell):
 		self.stat_power = 50
 		super(Swig, self).__init__(self.stat_power)
 		self.name = "Swig"
-		self.description = "Down a tankard of magical rum."
+		self.description = "Down a bottle of magical rum."
 		self.stat_target = "atk"
 		self.mp_cost = 15
 		self.radius = 1
