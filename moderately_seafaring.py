@@ -1298,6 +1298,7 @@ class ModeratelySeafaringGame():
 def main():
 	game = ModeratelySeafaringGame()
 	game.begin_game()
+	print("Thank you for playing!")
 
 if __name__ == "__main__":
 	pygame.mixer.pre_init(44100, -16, 2, 512)
