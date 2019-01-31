@@ -1069,7 +1069,7 @@ class ModeratelySeafaringGame():
 						if battle_action[3] in self.enemy_party or battle_action[3] in self.party:
 							self.jiggle_battle_sprite(battle_action[1])
 							damage = randint(floor(battle_action[1].get_atk()*0.9), floor(battle_action[1].get_atk()*1.35)) # Damage formula
-							if damage == floor(battle_action[1].get_atk()*1.35): # If max damage was scored, you may get a crit!
+							if damage in range(floor(battle_action[1].get_atk()*1.2), floor(battle_action[1].get_atk()*1.35)): # If near max damage was scored, you may get a crit!
 								if randint(0, floor(battle_action[3].get_luk()*100/(battle_action[1].get_atk()*1.35 - battle_action[1].get_atk()*0.9))) < battle_action[1].get_luk():
 									crit = True
 									colour = (0, 255, 255)
