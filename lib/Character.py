@@ -125,10 +125,10 @@ class Character(pygame.sprite.Sprite):
 			self.exp = 0
 		self.exp_to_next = (self.lvl**2)*(100)
 
-		#Adjust spells
+		# Adjust spells
 		for spell_line in self.get_spell_lines():
 			for spell_master_level in spell_line.keys():
-				if self.get_lvl() >= spell_master_level and spell_line[spell_master_level] not in self.spells:
+				if self.get_lvl() >= spell_master_level and spell_line[spell_master_level].get_name() not in [s.get_name() for s in self.spells]:
 					self.spells.append(spell_line[spell_master_level])
 
 		# Adjust trait points
