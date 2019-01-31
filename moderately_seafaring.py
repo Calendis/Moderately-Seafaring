@@ -1245,8 +1245,8 @@ class ModeratelySeafaringGame():
 								''' END FADE-OUT EFFECT CODE '''
 
 							else:
-								# Enemy is already dead
-								pass
+								# Target is already dead, make sure the HP doesn't go negative
+								battle_action[3].heal(-battle_action[3].get_current_hp(), Stat.HitPoints(0))
 
 				else:
 					# Current actor is dead
