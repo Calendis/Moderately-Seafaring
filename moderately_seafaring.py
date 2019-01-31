@@ -960,6 +960,7 @@ class ModeratelySeafaringGame():
 		# Drawing within a battle
 		self.screen.fill((0, 0 ,0))
 		self.screen.blit(BackgroundImage.grass, (0, 0))
+		self.party_text_colour = UIConstant.PARTY_TEXT_COLOUR
 
 		for party_member in self.party:
 			self.screen.blit(party_member.get_battle_image(), party_member.get_battle_pos())
@@ -977,12 +978,14 @@ class ModeratelySeafaringGame():
 			else:
 				if self.party[i] == self.party[self.current_battle_member_index]:
 					self.party_text_colour = UIConstant.SELECTED_PARTY_TEXT_COLOUR
-				if self.party[i].get_current_hp() <= self.party[i].get_hp()/10:
+				else:
+					self.party_text_colour = UIConstant.PARTY_TEXT_COLOUR
+				if self.party[i].get_current_hp() <= self.party[i].get_hp()/3:
 					self.hp_text_colour = UIConstant.LOW_HP_TEXT_COLOUR
 				if self.party[i].get_current_hp() <= 0:
 					self.hp_text_colour = UIConstant.NO_HP_TEXT_COLOUR
 
-			Text.draw_text(self.screen, self.screen_size[0]-224+32, (i+1)*80 - 40, self.party[i].get_name(), UIConstant.LARGE_FONT_SIZE, self.party_text_colour)
+			Text.draw_text(self.screen, self.screen_size[0]-224+26, (i+1)*80 - 60, self.party[i].get_name(), UIConstant.LARGE_FONT_SIZE, self.party_text_colour)
 			Text.draw_text(self.screen, self.screen_size[0]-244+48, (i+1)*80 - 24, "HP: "+str(self.party[i].get_current_hp())+"/"+str(self.party[i].get_hp()), UIConstant.FONT_SIZE, self.hp_text_colour)
 			Text.draw_text(self.screen, self.screen_size[0]-244+48, (i+1)*80 - 14, "MP: "+str(self.party[i].get_current_mp())+"/"+str(self.party[i].get_mp()), UIConstant.FONT_SIZE, UIConstant.FONT_COLOUR)
 
@@ -1200,9 +1203,9 @@ class ModeratelySeafaringGame():
 									for i in range(len(self.party.get_members())):
 										self.party_text_colour = UIConstant.PARTY_TEXT_COLOUR
 
-										Text.draw_text(self.screen, self.screen_size[0]-224+32, (i+1)*80 - 40, self.party[i].get_name(), 24, self.party_text_colour)
-										Text.draw_text(self.screen, self.screen_size[0]-244+48, (i+1)*80 - 24, "HP: "+str(self.party[i].get_current_hp())+"/"+str(self.party[i].get_hp()), 20, self.hp_text_colour)
-										Text.draw_text(self.screen, self.screen_size[0]-244+48, (i+1)*80 - 14, "MP: "+str(self.party[i].get_current_mp())+"/"+str(self.party[i].get_mp()), 20, (255,255,255))
+										Text.draw_text(self.screen, self.screen_size[0]-224+26, (i+1)*80 - 60, self.party[i].get_name(), UIConstant.LARGE_FONT_SIZE, self.party_text_colour)
+										Text.draw_text(self.screen, self.screen_size[0]-244+48, (i+1)*80 - 24, "HP: "+str(self.party[i].get_current_hp())+"/"+str(self.party[i].get_hp()), UIConstant.FONT_SIZE, self.hp_text_colour)
+										Text.draw_text(self.screen, self.screen_size[0]-244+48, (i+1)*80 - 14, "MP: "+str(self.party[i].get_current_mp())+"/"+str(self.party[i].get_mp()), UIConstant.FONT_SIZE, UIConstant.FONT_COLOUR)
 
 									for floating_text in self.floating_texts:
 										#floating_text.update()
@@ -1220,9 +1223,9 @@ class ModeratelySeafaringGame():
 									for i in range(len(self.party.get_members())):
 										self.party_text_colour = UIConstant.PARTY_TEXT_COLOUR
 
-										Text.draw_text(transparent_surface, self.screen_size[0]-224+32, (i+1)*80 - 40, self.party[i].get_name(), 24, self.party_text_colour)
-										Text.draw_text(transparent_surface, self.screen_size[0]-244+48, (i+1)*80 - 24, "HP: "+str(self.party[i].get_current_hp())+"/"+str(self.party[i].get_hp()), 20, self.hp_text_colour)
-										Text.draw_text(transparent_surface, self.screen_size[0]-244+48, (i+1)*80 - 14, "MP: "+str(self.party[i].get_current_mp())+"/"+str(self.party[i].get_mp()), 20, (255,255,255))
+										Text.draw_text(transparent_surface, self.screen_size[0]-224+26, (i+1)*80 - 60, self.party[i].get_name(), UIConstant.LARGE_FONT_SIZE, self.party_text_colour)
+										Text.draw_text(transparent_surface, self.screen_size[0]-244+48, (i+1)*80 - 24, "HP: "+str(self.party[i].get_current_hp())+"/"+str(self.party[i].get_hp()), UIConstant.FONT_SIZE, self.hp_text_colour)
+										Text.draw_text(transparent_surface, self.screen_size[0]-244+48, (i+1)*80 - 14, "MP: "+str(self.party[i].get_current_mp())+"/"+str(self.party[i].get_mp()), UIConstant.FONT_SIZE, UIConstant.FONT_COLOUR)
 
 									for floating_text in self.floating_texts:
 										#floating_text.update()
