@@ -67,7 +67,7 @@ class TextBox():
 		
 		for line in self.text:
 			draw_text(surface, self.position["x"]+UIConstant.MENU_LEFT_BUFFER,
-				self.position["y"]*(self.text.index(line)+1)+UIConstant.MENU_TOP_BUFFER,
+				self.position["y"]+(self.text.index(line))*(self.longest_text_rendered.get_height())+UIConstant.MENU_TOP_BUFFER,
 				line, UIConstant.FONT_SIZE, self.text_colour)
 
 		pygame.draw.rect(surface, UIConstant.MENU_UPPER_BORDER_COLOUR, ((self.get_position()["x"]-UIConstant.MENU_BORDER_WIDTH, self.get_position()["y"]-UIConstant.MENU_BORDER_WIDTH), (self.get_width()+2*UIConstant.MENU_BORDER_WIDTH, UIConstant.MENU_BORDER_WIDTH)))
