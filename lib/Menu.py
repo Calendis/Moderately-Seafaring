@@ -261,7 +261,7 @@ class StartMenu(Menu):
 			BasicMenuItem("Items"),
 			BasicMenuItem("Party"),
 			BasicMenuItem("Spells"),
-			BasicMenuItem("Skills"),
+			BasicMenuItem("Traits"),
 			BasicMenuItem("Save"),
 			BasicMenuItem("Pause"),
 			BasicMenuItem("Quit")
