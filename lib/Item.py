@@ -210,7 +210,7 @@ class RedHerb(Ingredient):
 class Dagger(Weapon):
 	"""docstring for Dagger"""
 	def __init__(self):
-		self.atk_bonus = 10
+		self.atk_bonus = 7
 		super(Dagger, self).__init__(self.atk_bonus)
 		self.name = "Dagger"
 		self.description = "A cheap iron dagger. "+self.description_ending
@@ -231,4 +231,13 @@ class CrossRing(Accessory):
 
 	def reload_image(self):
 		self.image = ItemImage.cross_ring
-		
+
+class Shortsword(Weapon):
+	"""docstring for Shortsword"""
+	def __init__(self):
+		self.atk_bonus = 14
+		super(Shortsword, self).__init__(self.atk_bonus)
+		self.name = "Shortsword"
+		self.description = "A short iron sword."
+		self.image = ItemImage.shortsword
+		self.price = 55
