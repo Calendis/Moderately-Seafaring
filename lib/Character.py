@@ -41,6 +41,7 @@ class Character(pygame.sprite.Sprite):
 		self.exp = 0
 		self.exp_to_next = 0
 		self.death_exp = 0
+		self.trait_points = 0
 		
 		hp = Stat.HitPoints(0)
 		mp = Stat.ManaPoints(0)
@@ -103,7 +104,7 @@ class Character(pygame.sprite.Sprite):
 		self.feetrect = pygame.Rect(self.pos[0], self.pos[1]+16, 16, 32-16)
 
 	def level_up(self):
-		#Adjust stats
+		# Adjust stats
 		self.stats["hp"].shift_value(self.character_class.get_hp_bonus())
 		self.stats["mp"].shift_value(self.character_class.get_mp_bonus())
 		self.stats["atk"].shift_value(self.character_class.get_atk_bonus())
@@ -117,7 +118,7 @@ class Character(pygame.sprite.Sprite):
 			self.current_hp = self.stats["hp"].get_value()
 			self.current_mp = self.stats["mp"].get_value()
 
-		#Adjust level and experience points
+		# Adjust level and experience points
 		self.lvl += 1
 		self.exp = self.exp - self.exp_to_next
 		if self.exp < 0:
@@ -129,6 +130,17 @@ class Character(pygame.sprite.Sprite):
 			for spell_master_level in spell_line.keys():
 				if self.get_lvl() >= spell_master_level and spell_line[spell_master_level] not in self.spells:
 					self.spells.append(spell_line[spell_master_level])
+
+		# Adjust trait points
+		self.trait_points += 3
+		if self.lvl % 5 == 0:
+			self.trait_points += 5
+		if self.lvl % 10 == 0:
+			self.trait_points += 10
+		if self.lvl % 25 == 0:
+			self.trait_points += 10
+		if self.lvl % 50 == 0:
+			self.trait_points += 10
 
 	def move_back(self):
 		self.pos[0] -= self.velocity[0]
@@ -410,10 +422,8 @@ class Character(pygame.sprite.Sprite):
 		self.statuses.remove(status)
 
 	def shift_stats(self, equipment, positive=1):
-		print("Shifting stats!")
 		self.stats["hp"].shift_value(equipment.stats["hp"].get_value()*positive)
 		self.stats["mp"].shift_value(equipment.stats["mp"].get_value()*positive)
-		print(equipment.stats["atk"].get_value())
 		self.stats["atk"].shift_value(equipment.stats["atk"].get_value()*positive)
 		self.stats["dfn"].shift_value(equipment.stats["dfn"].get_value()*positive)
 		self.stats["mag"].shift_value(equipment.stats["mag"].get_value()*positive)

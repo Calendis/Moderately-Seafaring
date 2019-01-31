@@ -1,5 +1,6 @@
-#Spells and spell lines
-#Possible spell targets: 'friendly', 'enemy', 'self'
+# Spells and spell lines
+# Possible spell targets: 'friendly', 'enemy', 'self'
+
 from lib import SpellImage
 from lib import EleImage
 from lib import Sound

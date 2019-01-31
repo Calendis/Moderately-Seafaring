@@ -294,8 +294,8 @@ class ModeratelySeafaringGame():
 
 									elif self.menus[-1].get_selected_name() == "Quit":
 										self.done = True
-									elif self.menus[-1].get_selected_name() == "Skills":
-										print("TODO: Skills.")
+									elif self.menus[-1].get_selected_name() == "Traits":
+										print("TODO: Traits.")
 									else:
 										print("No item was selected. ERROR 00-0")
 										self.fragile_textboxes.append(Text.TextBox(["ERROR 00-0", "No item was selected."], 100, 100))
