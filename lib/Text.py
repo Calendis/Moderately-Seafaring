@@ -112,8 +112,8 @@ class DialogueBox(TextBox):
 
 					pygame.display.flip()
 					time.sleep(randint(UIConstant.LETTER_SCROLL_DELAY_MIN, UIConstant.LETTER_SCROLL_DELAY_MAX)/100)
+					pygame.event.clear()
 
-				print(self.line_delays[self.dialogue_lines.index(line)])
 				time.sleep(UIConstant.LINE_SCROLL_DELAY/100 * self.line_delays[self.dialogue_lines.index(line)])
 
 			self.done_dialogue = True
