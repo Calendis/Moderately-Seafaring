@@ -211,6 +211,9 @@ class Character(pygame.sprite.Sprite):
 
 		while self.exp >= self.exp_to_next:
 			self.level_up()
+			
+	def give_item(self, item):
+		self.items.append(item)
 
 	def equip(self, equipment):
 		if equipment.get_item_type() == "Weapon":
@@ -238,9 +241,7 @@ class Character(pygame.sprite.Sprite):
 
 	def advance_lines(self):
 		#Text to display, Options to give (if any), respectivedict keys to go to from options, items to give, auto T/F
-
 		self.current_line = self.lines[self.current_line][2]
-
 
 	def get_pos(self):
 		return self.pos

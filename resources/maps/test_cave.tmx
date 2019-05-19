@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.2" orientation="orthogonal" renderorder="right-down" width="10" height="15" tilewidth="16" tileheight="16" infinite="0" nextobjectid="40">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="10" height="15" tilewidth="16" tileheight="16" nextobjectid="40">
  <properties>
   <property name="name" value="test_cave"/>
+  <property name="npcs_by_id" value=""/>
+  <property name="respective_npc_x" value=""/>
+  <property name="respective_npc_y" value=""/>
  </properties>
  <tileset firstgid="1" source="../tilesets/cave_tileset_0.tsx"/>
  <layer name="0" width="10" height="15">

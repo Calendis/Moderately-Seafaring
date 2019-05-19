@@ -243,6 +243,11 @@ class ModeratelySeafaringGame():
 
 										self.fragile_textboxes[-1].centre_x()
 										self.current_colliding_object.advance_lines()
+								
+								if self.current_colliding_object.get_lines()[self.current_colliding_object.get_current_line()][3] != None:
+									# A gift item is associated with this dialogue
+									print(self.current_colliding_object.get_lines()[self.current_colliding_object.get_current_line()][3])
+									self.party.get_current_member().give_item(self.current_colliding_object.get_lines()[self.current_colliding_object.get_current_line()][3]())
 						else:
 							
 							try:
