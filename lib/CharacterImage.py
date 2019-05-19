@@ -7,7 +7,7 @@ default_right = pygame.image.load("resources/img/characters/greenman.png")
 rizzko_left = pygame.image.load("resources/img/characters/rizzko_left3.png")
 rizzko_right = pygame.image.load("resources/img/characters/rizzko_right3.png")
 
-googlyblob = pygame.image.load("resources/img/characters/glime.png")
+googlyblob = pygame.image.load("resources/img/characters/glime2.png")
 big_bird = pygame.image.load("resources/img/characters/monstrous_duck2.png")
 cocoon_man = pygame.image.load("resources/img/characters/cocoon_man.png")
 

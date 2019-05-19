@@ -36,6 +36,7 @@ from lib import BackgroundImage
 from lib import Selector
 from lib import EnemyPool
 from lib import NPCID
+from lib import Trait
 
 class ModeratelySeafaringGame():
 	""" Base class containing the entire game. """
@@ -295,7 +296,7 @@ class ModeratelySeafaringGame():
 									elif self.menus[-1].get_selected_name() == "Quit":
 										self.done = True
 									elif self.menus[-1].get_selected_name() == "Traits":
-										print("TODO: Traits.")
+										self.menus.append(Menu.TraitWhatMenu())
 									else:
 										print("No item was selected. ERROR 00-0")
 										self.fragile_textboxes.append(Text.TextBox(["ERROR 00-0", "No item was selected."], 100, 100))
@@ -393,7 +394,8 @@ class ModeratelySeafaringGame():
 											"Armour: "+selected_party_member.get_armour_name()+" (+"+str(selected_party_member.get_armour_power())+")",
 											"Shield: "+selected_party_member.get_shield_name()+" (+"+str(selected_party_member.get_shield_power())+")",
 											"Accessory: "+selected_party_member.get_accessory_name()+" (+"+str(selected_party_member.get_accessory_power())+")",
-											"EXP: "+str(selected_party_member.get_exp())+"/"+str(selected_party_member.get_exp_to_next())],
+											"EXP: "+str(selected_party_member.get_exp())+"/"+str(selected_party_member.get_exp_to_next()),
+											"TP: "+str(selected_party_member.get_tp())],
 
 											self.menus[-1].get_position()["x"]+self.menus[-1].get_box_width()+UIConstant.MENU_SPACING+2*UIConstant.MENU_BORDER_WIDTH, self.menus[-1].get_position()["y"]))
 
@@ -491,6 +493,33 @@ class ModeratelySeafaringGame():
 									self.party[self.menus[1].get_selected_element_position()["x"]].get_items().append(equipped_items[self.menus[-1].get_selected_element_position()["x"]])
 									self.party[self.menus[1].get_selected_element_position()["x"]].unequip(equipped_items[self.menus[-1].get_selected_element_position()["x"]])
 									self.menus.remove(self.menus[-1])
+
+								elif self.menus[-1].__class__ == Menu.TraitWhatMenu:
+									if self.menus[-1].get_selected_name() == "New":
+										try:
+											self.menus.append(Menu.TraitMenu(self.party.get_current_member()))
+										except ValueError:
+											self.fragile_textboxes.append(Text.TextBox([self.party.get_current_member().get_name()+" has no traits to buy!"],
+												self.menus[-1].get_box_width()+UIConstant.MENU_SPACING+2*UIConstant.MENU_BORDER_WIDTH+self.menus[-1].get_position()["x"], self.menus[-1].get_position()["y"]))
+									elif self.menus[-1].get_selected_name() == "Owned":
+										pass
+
+								elif self.menus[-1].__class__ == Menu.TraitMenu:
+									self.menus.append(Menu.BuyTraitWhatMenu())
+
+								elif self.menus[-1].__class__ == Menu.BuyTraitWhatMenu:
+									if self.menus[-1].get_selected_name() == "Description":
+										self.fragile_textboxes.append(Text.TextBox(self.menus[-2].get_traits()[self.menus[-2].get_selected_element_position()["x"]].get_description(),
+											self.menus[-1].get_box_width()+UIConstant.MENU_SPACING+2*UIConstant.MENU_BORDER_WIDTH+self.menus[-1].get_position()["x"], self.menus[-1].get_position()["y"]))
+									elif self.menus[-1].get_selected_name() == "Buy":
+										# Give the trait to the character!
+										if self.party.get_current_member().get_tp() < self.menus[-2].get_traits()[self.menus[-2].get_selected_element_position()["x"]].get_cost():
+											self.fragile_textboxes.append(Text.TextBox("Not enough TP.",
+												self.menus[-1].get_box_width()+UIConstant.MENU_SPACING+2*UIConstant.MENU_BORDER_WIDTH+self.menus[-1].get_position()["x"], self.menus[-1].get_position()["y"]))
+										else:
+											self.party.get_current_member().add_trait(self.menus[-2].get_traits()[self.menus[-2].get_selected_element_position()["x"]])
+											self.menus.remove(self.menus[-1])
+											self.menus.remove(self.menus[-1])
 
 					if event.type == pygame.KEYUP:
 						if event.key == K_q:
@@ -796,7 +825,7 @@ class ModeratelySeafaringGame():
 
 		self.menus = [Menu.BattleMenu(self.party[self.current_battle_member_index])]
 
-		Battle.position_for_battle(self.party, self.screen_size[1]-128)
+		Battle.position_for_battle(self.party, self.screen_size[1]-140)
 		Battle.position_for_battle(self.enemy_party, 64)
 
 		Sound.play_battle_music()
@@ -1032,6 +1061,67 @@ class ModeratelySeafaringGame():
 
 		pygame.display.flip() #Now you can see the effects
 
+	def fade_out(self, character):
+		copy_battle_image = character.get_battle_image()
+		transparent_surface = pygame.Surface((self.screen_size[0], self.screen_size[1]))
+		''' START FADE-OUT EFFECT CODE '''
+		for i in range(0, 16):
+			transparent_surface.set_alpha(255-i*16)
+			
+			self.screen.fill((0, 0 ,0))
+			self.screen.blit(BackgroundImage.grass, (0, 0))
+			for party_member in self.party:
+				self.screen.blit(party_member.get_battle_image(), party_member.get_battle_pos())
+			
+			for enemy_party_member in self.enemy_party:
+				if enemy_party_member != character:
+					self.screen.blit(enemy_party_member.get_battle_image(), enemy_party_member.get_battle_pos())
+
+			pygame.draw.rect(self.screen, UIConstant.BACKGROUND_COLOUR, (self.screen_size[0]-224, 0, 224, self.screen_size[1]))
+			for i in range(len(self.party.get_members())):
+				self.party_text_colour = UIConstant.PARTY_TEXT_COLOUR
+
+				Text.draw_text(self.screen, self.screen_size[0]-224+26, (i+1)*80 - 60, self.party[i].get_name(), UIConstant.LARGE_FONT_SIZE, self.party_text_colour)
+				Text.draw_text(self.screen, self.screen_size[0]-244+48, (i+1)*80 - 24, "HP: "+str(self.party[i].get_current_hp())+"/"+str(self.party[i].get_hp()), UIConstant.FONT_SIZE, self.hp_text_colour)
+				Text.draw_text(self.screen, self.screen_size[0]-244+48, (i+1)*80 - 14, "MP: "+str(self.party[i].get_current_mp())+"/"+str(self.party[i].get_mp()), UIConstant.FONT_SIZE, UIConstant.FONT_COLOUR)
+
+			for floating_text in self.floating_texts:
+				#floating_text.update()
+				floating_text.draw(self.screen)
+
+			transparent_surface.fill((0,0,0))
+			transparent_surface.blit(BackgroundImage.grass, (0, 0))
+			for party_member in self.party:
+				transparent_surface.blit(party_member.get_battle_image(), party_member.get_battle_pos())
+			for enemy_party_member in self.enemy_party:
+				if enemy_party_member != character: # If the enemy isn't the one killed, draw it
+					transparent_surface.blit(enemy_party_member.get_battle_image(), enemy_party_member.get_battle_pos())
+
+			pygame.draw.rect(transparent_surface, UIConstant.BACKGROUND_COLOUR, (self.screen_size[0]-224, 0, 224, self.screen_size[1]))
+			for i in range(len(self.party.get_members())):
+				self.party_text_colour = UIConstant.PARTY_TEXT_COLOUR
+
+				Text.draw_text(transparent_surface, self.screen_size[0]-224+26, (i+1)*80 - 60, self.party[i].get_name(), UIConstant.LARGE_FONT_SIZE, self.party_text_colour)
+				Text.draw_text(transparent_surface, self.screen_size[0]-244+48, (i+1)*80 - 24, "HP: "+str(self.party[i].get_current_hp())+"/"+str(self.party[i].get_hp()), UIConstant.FONT_SIZE, self.hp_text_colour)
+				Text.draw_text(transparent_surface, self.screen_size[0]-244+48, (i+1)*80 - 14, "MP: "+str(self.party[i].get_current_mp())+"/"+str(self.party[i].get_mp()), UIConstant.FONT_SIZE, UIConstant.FONT_COLOUR)
+
+			for floating_text in self.floating_texts:
+				#floating_text.update()
+				floating_text.draw(transparent_surface)
+			
+			transparent_surface.blit(copy_battle_image, character.get_battle_pos())
+			self.screen.blit(transparent_surface, (0, 0))
+			
+			pygame.display.flip()
+			self.clock.tick(60)
+		
+		del(transparent_surface)
+
+		self.enemy_party.remove_member(character)
+		self.experience_pool += character.get_death_exp()
+
+		''' END FADE-OUT EFFECT CODE '''
+	
 	def confirm_action(self, action, user, target=None, ability=None):
 		self.battle_actions.append([action, user, user.get_spd(), target, ability])
 		
@@ -1062,19 +1152,23 @@ class ModeratelySeafaringGame():
 				battle_action[1].set_defending(False) # Undefend the current actor incase they defended last turn
 				
 				# Do effects of status conditions
-				if "down" in battle_action[1].get_statuses():
-					pass
-
 				if "paralyzed" in battle_action[1].get_statuses():
-					pass
+					if randint(0, 1):
+						battle_action[0] = "Nothing"
+						self.floating_texts.append(Text.FloatingText(battle_action[1].get_battle_pos()[0], battle_action[1].get_battle_pos()[1]-16, "Paralyzed", UIConstant.LARGE_FONT_SIZE, (200, 200, 0), UIConstant.FLOATING_TEXT_FRAMES))
 
-				if "poison" in battle_action[1].get_statuses():
+				if "poisoned" in battle_action[1].get_statuses():
 					poison_damage = randint(1, 10)
 					battle_action[1].heal(-poison_damage, Stat.HitPoints(0))
-					self.floating_texts.append(Text.FloatingText(battle_action[1].get_battle_pos[0], battle_action[1].get_battle_pos[1]-16, str(poison_damage), UIConstant.LARGE_FONT_SIZE, (128, 128, 0), UIConstant.FLOATING_TEXT_FRAMES))
+					self.floating_texts.append(Text.FloatingText(battle_action[1].get_battle_pos()[0], battle_action[1].get_battle_pos()[1]-16, str(poison_damage), UIConstant.LARGE_FONT_SIZE, (200, 0, 200), UIConstant.FLOATING_TEXT_FRAMES))
 				
 				if "confused" in battle_action[1].get_statuses():
 					print("TODO: Confusion.")
+
+				if "hesitant" in battle_action[1].get_statuses():
+					if not randint(0, 2):
+						battle_action[0] = "Nothing"
+						self.floating_texts.append(Text.FloatingText(battle_action[1].get_battle_pos()[0], battle_action[1].get_battle_pos()[1]-16, "Hesitant", UIConstant.LARGE_FONT_SIZE, (20, 20, 200), UIConstant.FLOATING_TEXT_FRAMES))
 
 				if battle_action[1].get_current_hp() > 0:				
 
@@ -1085,7 +1179,7 @@ class ModeratelySeafaringGame():
 						if battle_action[3] in self.enemy_party or battle_action[3] in self.party:
 							self.jiggle_battle_sprite(battle_action[1])
 							damage = randint(floor(battle_action[1].get_atk()*0.9), floor(battle_action[1].get_atk()*1.35)) # Damage formula
-							if damage in range(floor(battle_action[1].get_atk()*1.2), floor(battle_action[1].get_atk()*1.35)): # If near max damage was scored, you may get a crit!
+							if damage in range(floor(battle_action[1].get_atk()*1.25), floor(battle_action[1].get_atk()*1.35)): # If near max damage was scored, you may get a crit!
 								if randint(0, floor(battle_action[3].get_luk()*100/(battle_action[1].get_atk()*1.35 - battle_action[1].get_atk()*0.9))) < battle_action[1].get_luk():
 									crit = True
 									colour = (0, 255, 255)
@@ -1125,73 +1219,79 @@ class ModeratelySeafaringGame():
 							self.floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, str(battle_action[4].get_value()), UIConstant.LARGE_FONT_SIZE, colour, UIConstant.FLOATING_TEXT_FRAMES))
 
 					elif battle_action[0] == "Spell":
-						self.jiggle_battle_sprite(battle_action[1])
-						battle_action[1].shift_current_mp(-battle_action[4].get_mp_cost())
-
-						if battle_action[4].__class__.__bases__[0] == Spell.HealingSpell:
-							colour = (0, 255, 0)
-							damage = randint(floor(battle_action[4].get_power()*0.9), floor(battle_action[4].get_power()*1.35))
-							
-							if "down" in battle_action[3].get_statuses():
-								damage = 0
-								Sound.back.play()
-								colour = (250, 255, 0)
-							else:
-								Sound.health.play()
-
-							battle_action[3].heal(damage, Stat.HitPoints(0))
-							floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, str(damage), UIConstant.LARGE_FONT_SIZE, colour, UIConstant.FLOATING_TEXT_FRAMES))
-
-						elif battle_action[4].__class__.__bases__[0] == Spell.BuffSpell:
-							colour = (100, 100, 255)
-							buff_level = randint(floor(battle_action[4].get_stat_power()*0.9), floor(battle_action[4].get_stat_power()*1.35)) # Buff formula
-							battle_action[3].buff(buff_level, battle_action[4].get_stat_target())
-							self.floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, battle_action[4].get_stat_target().upper()+" up!", UIConstant.LARGE_FONT_SIZE, colour, UIConstant.FLOATING_TEXT_FRAMES))
-							Sound.buff.play()
-
-						elif battle_action[4].__class__.__bases__[0] == Spell.DamageSpell:
-							colour = (255, 0, 0)
-							mag_and_pow = battle_action[1].get_mag() + battle_action[4].get_power() # Magic damage formula
-							damage = randint(floor(mag_and_pow*0.9), floor(mag_and_pow*1.35))
-							damage -= randint(floor(battle_action[3].get_res()/2), battle_action[3].get_res())
-							if battle_action[3].get_defending():
+						if battle_action[3] in self.party or battle_action[3] in self.enemy_party:
+							self.jiggle_battle_sprite(battle_action[1])
+							battle_action[1].shift_current_mp(-battle_action[4].get_mp_cost())
+	
+							if battle_action[4].__class__.__bases__[0] == Spell.HealingSpell:
+								colour = (0, 255, 0)
+								damage = randint(floor(battle_action[4].get_power()*0.9), floor(battle_action[4].get_power()*1.35))
+								
+								if "down" in battle_action[3].get_statuses():
+									damage = 0
+									Sound.back.play()
+									colour = (250, 255, 0)
+								else:
+									Sound.health.play()
+	
+								battle_action[3].heal(damage, Stat.HitPoints(0))
+								self.floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, str(damage), UIConstant.LARGE_FONT_SIZE, colour, UIConstant.FLOATING_TEXT_FRAMES))
+	
+							elif battle_action[4].__class__.__bases__[0] == Spell.BuffSpell:
+								colour = (100, 100, 255)
+								buff_level = randint(floor(battle_action[4].get_stat_power()*0.9), floor(battle_action[4].get_stat_power()*1.35)) # Buff formula
+								battle_action[3].buff(buff_level, battle_action[4].get_stat_target())
+								self.floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, battle_action[4].get_stat_target().upper()+" up!", UIConstant.LARGE_FONT_SIZE, colour, UIConstant.FLOATING_TEXT_FRAMES))
+								Sound.buff.play()
+	
+							elif battle_action[4].__class__.__bases__[0] == Spell.DamageSpell:
+								colour = (255, 0, 0)
+								mag_and_pow = battle_action[1].get_mag() + battle_action[4].get_power() # Magic damage formula
+								damage = randint(floor(mag_and_pow*0.9), floor(mag_and_pow*1.35))
 								damage -= randint(floor(battle_action[3].get_res()/2), battle_action[3].get_res())
-
-							battle_action[3].heal(-damage, Stat.HitPoints(0))
-							self.floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, str(damage), UIConstant.LARGE_FONT_SIZE, colour, UIConstant.FLOATING_TEXT_FRAMES))
-							battle_action[4].sound.play()
-
-						elif battle_action[4].__class__.__bases__[0] == Spell.NerfSpell:
-							colour = (255, 255, 0)
-							nerf_level = randint(floor(battle_action[4].get_stat_power()*0.9), floor(battle_action[4].get_stat_power()*1.35)) # Nerf formula
-							battle_action[3].buff(-nerf_level, battle_action[4].get_stat_target())
-							self.floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, battle_action[4].get_stat_target().upper()+" down.", UIConstant.LARGE_FONT_SIZE, colour, UIConstant.FLOATING_TEXT_FRAMES))
-							Sound.nerf.play()
-
-						elif battle_action[4].__class__.__bases__[0] == Spell.StatusSpell:
-							status_target = battle_action[4].get_status_target()
-							if battle_action[4].get_inflict():
+								if battle_action[3].get_defending():
+									damage -= randint(floor(battle_action[3].get_res()/2), battle_action[3].get_res())
+	
+								battle_action[3].heal(-damage, Stat.HitPoints(0))
+								self.floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, str(damage), UIConstant.LARGE_FONT_SIZE, colour, UIConstant.FLOATING_TEXT_FRAMES))
+								battle_action[4].sound.play()
+	
+							elif battle_action[4].__class__.__bases__[0] == Spell.NerfSpell:
 								colour = (255, 255, 0)
-								if status_target not in battle_action[3].get_statuses():
-									battle_action[3].inflict_status(status_target)
-									self.floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, "+"+status_target.upper(), UIConstant.LARGE_FONT_SIZE, colour, UIConstant.FLOATING_TEXT_FRAMES))
-									Sound.nerf.play()
-
-							else:
-								if status_target in battle_action[3].get_statuses():
-									colour = (0, 255, 255)
-									battle_action[3].cure_status(status_target)
-									self.floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, "-"+status_target.upper(), UIConstant.LARGE_FONT_SIZE, colour, UIConstant.FLOATING_TEXT_FRAMES))
-									Sound.buff.play()
-
-									if status_target == "down":
-										battle_action[3].heal(1, Stat.HitPoints(0))
-
+								nerf_level = randint(floor(battle_action[4].get_stat_power()*0.9), floor(battle_action[4].get_stat_power()*1.35)) # Nerf formula
+								battle_action[3].buff(-nerf_level, battle_action[4].get_stat_target())
+								self.floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, battle_action[4].get_stat_target().upper()+" down.", UIConstant.LARGE_FONT_SIZE, colour, UIConstant.FLOATING_TEXT_FRAMES))
+								Sound.nerf.play()
+	
+							elif battle_action[4].__class__.__bases__[0] == Spell.StatusSpell:
+								status_target = battle_action[4].get_status_target()
+								if battle_action[4].get_inflict():
+									colour = (255, 255, 0)
+									if status_target not in battle_action[3].get_statuses():
+										battle_action[3].inflict_status(status_target)
+										self.floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, "+"+status_target.upper(), UIConstant.LARGE_FONT_SIZE, colour, UIConstant.FLOATING_TEXT_FRAMES))
+										Sound.nerf.play()
+	
+								else:
+									if status_target in battle_action[3].get_statuses():
+										colour = (0, 255, 255)
+										battle_action[3].cure_status(status_target)
+										self.floating_texts.append(Text.FloatingText(battle_action[3].get_battle_pos()[0], battle_action[3].get_battle_pos()[1]-16, "-"+status_target.upper(), UIConstant.LARGE_FONT_SIZE, colour, UIConstant.FLOATING_TEXT_FRAMES))
+										Sound.buff.play()
+	
+										if status_target == "down":
+											battle_action[3].heal(1, Stat.HitPoints(0))
+						else:
+							# Target is dead, defend instead
+							colour = (50, 50, 255)
+							battle_action[1].set_defending(True)
+							self.floating_texts.append(Text.FloatingText(battle_action[1].get_battle_pos()[0], battle_action[1].get_battle_pos()[1]-16, "Defending.", UIConstant.LARGE_FONT_SIZE, colour, UIConstant.FLOATING_TEXT_FRAMES))
+							Sound.buff.play()
 
 					else:
 						print(battle_action[1].get_name()+" has selected an unknown action. This is probably a bug! ERROR 30-0")
 						self.fragile_textboxes.append(Text.TextBox(["ERROR 30-0", battle_action[1].get_name()+" has selected an unknown action."], 100, 100))
-
+					
 					try:
 						battle_action[3].get_current_hp() # Make sure there is a target with hp
 					except:
@@ -1200,65 +1300,7 @@ class ModeratelySeafaringGame():
 						if battle_action[3].get_current_hp() <= 0:
 							if battle_action[3] in self.enemy_party:
 								# Dead enemy
-								copy_battle_image = battle_action[3].get_battle_image()
-								transparent_surface = pygame.Surface((self.screen_size[0], self.screen_size[1]))
-								''' START FADE-OUT EFFECT CODE '''
-								for i in range(0, 16):
-									transparent_surface.set_alpha(255-i*16)
-									
-									self.screen.fill((0, 0 ,0))
-									self.screen.blit(BackgroundImage.grass, (0, 0))
-									for party_member in self.party:
-										self.screen.blit(party_member.get_battle_image(), party_member.get_battle_pos())
-									
-									for enemy_party_member in self.enemy_party:
-										if enemy_party_member != battle_action[3]:
-											self.screen.blit(enemy_party_member.get_battle_image(), enemy_party_member.get_battle_pos())
-
-									pygame.draw.rect(self.screen, UIConstant.BACKGROUND_COLOUR, (self.screen_size[0]-224, 0, 224, self.screen_size[1]))
-									for i in range(len(self.party.get_members())):
-										self.party_text_colour = UIConstant.PARTY_TEXT_COLOUR
-
-										Text.draw_text(self.screen, self.screen_size[0]-224+26, (i+1)*80 - 60, self.party[i].get_name(), UIConstant.LARGE_FONT_SIZE, self.party_text_colour)
-										Text.draw_text(self.screen, self.screen_size[0]-244+48, (i+1)*80 - 24, "HP: "+str(self.party[i].get_current_hp())+"/"+str(self.party[i].get_hp()), UIConstant.FONT_SIZE, self.hp_text_colour)
-										Text.draw_text(self.screen, self.screen_size[0]-244+48, (i+1)*80 - 14, "MP: "+str(self.party[i].get_current_mp())+"/"+str(self.party[i].get_mp()), UIConstant.FONT_SIZE, UIConstant.FONT_COLOUR)
-
-									for floating_text in self.floating_texts:
-										#floating_text.update()
-										floating_text.draw(self.screen)
-
-									transparent_surface.fill((0,0,0))
-									transparent_surface.blit(BackgroundImage.grass, (0, 0))
-									for party_member in self.party:
-										transparent_surface.blit(party_member.get_battle_image(), party_member.get_battle_pos())
-									for enemy_party_member in self.enemy_party:
-										if enemy_party_member != battle_action[3]: # If the enemy isn't the one killed, draw it
-											transparent_surface.blit(enemy_party_member.get_battle_image(), enemy_party_member.get_battle_pos())
-
-									pygame.draw.rect(transparent_surface, UIConstant.BACKGROUND_COLOUR, (self.screen_size[0]-224, 0, 224, self.screen_size[1]))
-									for i in range(len(self.party.get_members())):
-										self.party_text_colour = UIConstant.PARTY_TEXT_COLOUR
-
-										Text.draw_text(transparent_surface, self.screen_size[0]-224+26, (i+1)*80 - 60, self.party[i].get_name(), UIConstant.LARGE_FONT_SIZE, self.party_text_colour)
-										Text.draw_text(transparent_surface, self.screen_size[0]-244+48, (i+1)*80 - 24, "HP: "+str(self.party[i].get_current_hp())+"/"+str(self.party[i].get_hp()), UIConstant.FONT_SIZE, self.hp_text_colour)
-										Text.draw_text(transparent_surface, self.screen_size[0]-244+48, (i+1)*80 - 14, "MP: "+str(self.party[i].get_current_mp())+"/"+str(self.party[i].get_mp()), UIConstant.FONT_SIZE, UIConstant.FONT_COLOUR)
-
-									for floating_text in self.floating_texts:
-										#floating_text.update()
-										floating_text.draw(transparent_surface)
-									
-									transparent_surface.blit(copy_battle_image, battle_action[3].get_battle_pos())
-									self.screen.blit(transparent_surface, (0, 0))
-									
-									pygame.display.flip()
-									self.clock.tick(60)
-								
-								del(transparent_surface)
-
-								self.enemy_party.remove_member(battle_action[3])
-								self.experience_pool += battle_action[3].get_death_exp()
-
-								''' END FADE-OUT EFFECT CODE '''
+								self.fade_out(battle_action[3])
 
 							else:
 								# Target is already dead, make sure the HP doesn't go negative
@@ -1283,6 +1325,12 @@ class ModeratelySeafaringGame():
 				else:
 					time.sleep(0.6)
 
+			for enemy_party_member in self.enemy_party:
+				# We need to iterate through the enemy party in case an enemy died,
+				# but wasn't the target of any action, eg. died to poison damage
+				if enemy_party_member.get_current_hp() <= 0:
+					self.fade_out(enemy_party_member)
+			
 			self.current_battle_member_index = 0
 			self.battle_actions = []
 			self.menus = [Menu.BattleMenu(self.party[self.current_battle_member_index])]

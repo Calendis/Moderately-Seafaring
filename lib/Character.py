@@ -56,6 +56,8 @@ class Character(pygame.sprite.Sprite):
 
 		self.buffstats = {"atk": Stat.Attack(0), "dfn": Stat.Defence(0), "mag": Stat.MagicalAttack(0), "res": Stat.MagicalResistance(0), "spd": Stat.Speed(0), "luk": Stat.Luck(0)}
 
+		self.traits = []
+
 		self.ele = []
 		self.ele_weak = []
 		self.ele_strong = []
@@ -300,8 +302,17 @@ class Character(pygame.sprite.Sprite):
 	def get_luk(self):
 		return self.stats["luk"].get_value() + self.buffstats["luk"].get_value()
 
+	def get_stats(self):
+		return self.stats
+
 	def get_exp(self):
 		return self.exp
+
+	def get_tp(self):
+		return self.trait_points
+
+	def get_traits(self):
+		return self.traits
 
 	def get_exp_to_next(self):
 		return self.exp_to_next
@@ -415,6 +426,9 @@ class Character(pygame.sprite.Sprite):
 	def set_layer(self, new_layer):
 		self.layer = new_layer
 
+	def set_stats(self, new_stats):
+		self.stats = new_stats
+
 	def inflict_status(self, status):
 		self.statuses.append(status)
 
@@ -436,6 +450,12 @@ class Character(pygame.sprite.Sprite):
 				self.ele.append(el)
 			else:
 				self.ele.remove(el)
+
+	def add_trait(self, new_trait):
+		self.traits.append(new_trait)
+		# Apply the stat buffs from the trait
+		for key in self.get_stats().keys():
+			self.get_stats()[key].shift_value(new_trait.get_stat_buffs()[key])
 
 	def reload_gear_images(self):
 		if self.weapon:

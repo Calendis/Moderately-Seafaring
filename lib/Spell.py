@@ -99,6 +99,9 @@ class Spell():
 	def get_sleep_time(self):
 		return self.sleep_time
 
+	def get_ele(self):
+		return self.ele
+
 class HealingSpell(Spell):
 	"""docstring for HealingSpell"""
 	def __init__(self, power):
@@ -613,6 +616,15 @@ class Lime(StatusSpell):
 	def reload_image(self):
 		self.image = SpellImage.lime
 
+class HelterShelter(BuffSpell):
+	"""docstring for HelterShelter"""
+	def __init__(self, arg):
+		self.stat_power = 10
+		super(HelterShelter, self).__init__()
+		self.name = "Helter-Shelter"
+		self.description = "Quickly throw together a protective barrier."
+		
+
 class Revive(StatusSpell):
 	"""docstring for Revive"""
 	def __init__(self):
@@ -629,11 +641,103 @@ class Revive(StatusSpell):
 
 	def reload_image(self):
 		self.image = SpellImage.revive
+
+class WildJab(DamageSpell):
+	"""docstring for WildJab"""
+	def __init__(self):
+		super(WildJab, self).__init__()
+		self.name = "Wild Jab"
+		self.description = "Strike with the fury of the wilderness!"
+		self.power = 22
+		self.mp_cost = 4
+		self.ele = ["Neptune", "Jupiter", "Earth", "Mars"]
+		self.radius = 1
+
+	def get_ele(self):
+		return self.ele[randint(0, 3)]
+
+class Snare(NerfSpell):
+	"""docstring for Snare"""
+	def __init__(self):
+		super(Snare, self).__init__()
+		self.stat_power = 3
+		self.mp_cost = 0
+		self.name = "Snare"
+		self.description = "Ensare a foe with branches."
+		self.radius = 1
+		self.stat_target = "spd"
+
+class Wilderfruit(HealingSpell):
+	"""docstring for Wilderfruit"""
+	def __init__(self):
+		self.power = [-15, 75]
+		super(Wilderfruit, self).__init__(self.power)
+		self.name = "Wilderfruit"
+		self.description = "Provide aid with a mysterious fruit."
+		self.mp_cost = 8
+		self.targeting = "friendly"
+
+	def get_power():
+		return randint(self.power[0], self.power[1])
+
+class Scold(NerfSpell):
+	"""docstring for Scold"""
+	def __init__(self):
+		super(Scold, self).__init__()
+		self.stat_power = 18
+		self.mp_cost = 3
+		self.name = "Scold"
+		self.description = "Berate a decidedly foolish opponent."
+		self.radius = 1
+		self.stat_target = "atk"
+
+	def reload_image(self):
+		self.image = SpellImage.scold
+
+class Bribe(StatusSpell):
+	"""docstring for Bribe"""
+	def __init__(self):
+		super(Bribe, self).__init__()
+		self.name = "Bribe"
+		self.description = "Attempt to bribe a foe into not attacking."
+		self.status_target = "hesitant"
+		self.inflict = True
+		self.mp_cost = 10
+		self.radius = 1
+		self.targeting = "enemy"
+		self.image = SpellImage.bribe
+
+	def reload_image(self):
+		self.image = SpellImage.bribe
 		
+class Poison(StatusSpell):
+	"""docstring for StatusSpell"""
+	def __init__(self):
+		super(Poison, self).__init__()
+		self.name = "Poison"
+		self.description = "Poison a foe with a heinous cloud."
+		self.status_target = "poisoned"
+		self.inflict = True
+		self.mp_cost = 10
+		self.radius = 1
+		self.targeting = "enemy"
+		self.image = SpellImage.poison
+	
+	def reload_image(self):
+		self.image = SpellImage.poison
+
+class DiseasedBite(object):
+	"""docstring for DiseasedBite"""
+	def __init__(self, arg):
+		super(DiseasedBite, self).__init__()
+		self.arg = arg
+		
+
 basic_healer_line = {1: Mend(), 5: Heal(), 10: Cure(), 30: Revive()}
-test_line = {1: Mire(), 2: Icicle(), 3: IceSpire(), 4: Bestow(), 5: Revive()}
+test_line = {1: Mire(), 2: Icicle(), 3: IceSpire(), 4: Bestow(), 5: Revive(), 5: Poison(), 6: Bribe()}
 neptune_line = {2: Aquablast(), 3: Drizzle(), 3: Mist(), 5: Swell(), 9: Rainstorm(), 14: LargeSwell(), 20: Hail(), 30: RogueWave(), 33: Deluge(), 42: Tsunami(), 58: SuperSleet()}
 wrath_o_the_sea_line = {1: Swab(), 3: Swell(), 6: Lime(), 11: Squall(), 15: Batten(), 21: Swig(), 60: Waterspout()}
 weak_slime_line = {15: Heal(), 15: Mist(), 17: Aquablast()}
 weak_flying_line = {20: Breeze()}
 servant_line = {1: Mend(), 2: Heal(), 4: Cure(), 10: Breeze()}
+ranger_line = {1: Snare(), 12: WildJab(), 15: Wilderfruit()}

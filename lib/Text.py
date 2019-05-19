@@ -39,13 +39,16 @@ class TextBox():
 		self.text_colour = text_colour
 		self.box_colour = box_colour
 
-		#Remove None type from the text lines.
-		#None will be passed as part of spell descriptions for spells that do not restore any hp
+		if type(self.text) != list:
+			self.text = self.text.split("\n")
+
+		# Remove None type from the text lines.
+		# None will be passed as part of spell descriptions for spells that do not restore any hp
 		for item in self.text:
 			if item == None:
 				self.text.remove(item)
 
-		self.longest_text_rendered = sized_font(UIConstant.FONT_SIZE).render(text[text.index(max(text, key=len))], 1, (0, 0, 0))
+		self.longest_text_rendered = sized_font(UIConstant.FONT_SIZE).render(self.text[self.text.index(max(self.text, key=len))], 1, (0, 0, 0))
 
 		if not self.width:
 			self.width = self.longest_text_rendered.get_width()+UIConstant.MENU_LEFT_BUFFER*2

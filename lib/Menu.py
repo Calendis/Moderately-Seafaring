@@ -1,4 +1,4 @@
-#Code for menus
+# Code for menus
 import pygame
 screen = pygame.display.set_mode()
 
@@ -6,6 +6,7 @@ from lib import Text
 from lib import UIConstant
 from lib import Character
 from lib import Sound
+from lib import Trait
 
 DEFAULT_COLOUR = UIConstant.FONT_COLOUR
 BACKGROUND_COLOUR = UIConstant.BACKGROUND_COLOUR
@@ -177,6 +178,9 @@ class Menu(object):
 
 	def get_box_width(self):
 		return self.box_width
+
+	def get_elements(self):
+		return self.elements
 
 	def shift_position(self, rel_x, rel_y):
 		self.position["x"] += rel_x
@@ -438,4 +442,35 @@ class BattleTargetMenu(Menu):
 		return self.friendly
 
 	def get_spell(self):
-		return self.spell		
+		return self.spell
+
+class TraitMenu(Menu):
+	"""docstring for TraitMenu"""
+	def __init__(self, user):
+		all_traits = Trait.trait_list
+		self.traits_elements = []
+		self.traits = []
+		for trait in all_traits:
+			if user.get_lvl() >= trait().get_prereq_lvl() and [i for i in user.get_traits() if i in trait().get_prereq_traits()] == trait().get_prereq_traits():
+				self.traits.append(trait())
+				self.traits_elements.append(BasicMenuItem(trait().get_name()))
+		super(TraitMenu, self).__init__(88, UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, 1, len(self.traits_elements), self.traits_elements, 200)
+
+	def get_traits(self):
+		return self.traits
+
+
+traitwhat_elements = [BasicMenuItem("New"), BasicMenuItem("Owned")]
+class TraitWhatMenu(Menu):
+	"""docstring for TraitWhatMenu"""
+	def __init__(self):
+		self.elements = traitwhat_elements
+		super(TraitWhatMenu, self).__init__(UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, 1, len(self.elements), self.elements)
+
+buytraitwhat_elements = [BasicMenuItem("Description"), BasicMenuItem("Buy")]
+class BuyTraitWhatMenu(Menu):
+	"""docstring for BuyTraitWhatMenu"""
+	def __init__(self):
+		self.elements = buytraitwhat_elements
+		super(BuyTraitWhatMenu, self).__init__(308, UIConstant.MENU_SPACING+UIConstant.MENU_BORDER_WIDTH, 1, len(self.elements), self.elements)
+		

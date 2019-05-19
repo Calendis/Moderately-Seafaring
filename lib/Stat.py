@@ -24,7 +24,7 @@ class Stat(object):
 		self.value = new_value
 
 class HitPoints(Stat):
-	"""docstring for HitPoints"""
+	"""When these reach zero, you're done."""
 	def __init__(self, value):
 		super(HitPoints, self).__init__()
 		self.name = "Hit Points"
@@ -33,7 +33,7 @@ class HitPoints(Stat):
 		
 
 class ManaPoints(Stat):
-	"""docstring for ManaPoints"""
+	"""Costs these to use magic."""
 	def __init__(self, value):
 		super(ManaPoints, self).__init__()
 		self.name = "Mana Points"
@@ -42,7 +42,7 @@ class ManaPoints(Stat):
 		
 
 class Attack(Stat):
-	"""docstring for Attack"""
+	"""Determines how much non-magical damage you can inflict."""
 	def __init__(self, value):
 		super(Attack, self).__init__()
 		self.name = "Attack"
@@ -50,7 +50,7 @@ class Attack(Stat):
 		self.value = value
 
 class Defence(Stat):
-		"""docstring for Defence"""
+		"""Reduces non-magical damage dealt to you."""
 		def __init__(self, value):
 			super(Defence, self).__init__()
 			self.name = "Defence"
@@ -58,7 +58,7 @@ class Defence(Stat):
 			self.value = value
 
 class MagicalAttack(Stat):
-	"""docstring for MagicalAttack"""
+	"""Determines how much magical damage you can inflict."""
 	def __init__(self, value):
 		super(MagicalAttack, self).__init__()
 		self.name = "Magical Attack"
@@ -66,7 +66,7 @@ class MagicalAttack(Stat):
 		self.value = value
 
 class MagicalResistance(Stat):
-	"""docstring for MagicalResistance"""
+	"""Reduces magical damage done to you."""
 	def __init__(self, value):
 		super(MagicalResistance, self).__init__()
 		self.name = "Magical Resistance"
@@ -74,7 +74,7 @@ class MagicalResistance(Stat):
 		self.value = value
 
 class Speed(Stat):
-	"""docstring for Speed"""
+	"""Determines who goes first and how easy it is to escape."""
 	def __init__(self, value):
 		super(Speed, self).__init__()
 		self.name = "Speed"
@@ -82,7 +82,7 @@ class Speed(Stat):
 		self.value = value
 		
 class Luck(Stat):
-	"""docstring for Luck"""
+	"""Determines crit rate, and acts as attack/defence against status effects."""
 	def __init__(self, value):
 		super(Luck, self).__init__()
 		self.name = "Luck"
