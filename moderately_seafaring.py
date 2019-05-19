@@ -294,7 +294,7 @@ class ModeratelySeafaringGame():
 									elif self.menus[-1].get_selected_name() == "Spells":
 										if len(self.party.get_current_member().get_spells()) > 0:
 											self.menus.append(Menu.SpellMenu(self.party.get_current_member().get_spells()))
-										else: #Don't open the spell menu if the selected character has no spells.
+										else: # Don't open the spell menu if the selected character has no spells.
 											self.fragile_textboxes.append(Text.TextBox(["You have no spells!"], self.screen_size[0]/2, self.screen_size[1]/2))
 											self.fragile_textboxes[-1].centre_x()
 

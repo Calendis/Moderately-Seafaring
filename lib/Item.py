@@ -241,3 +241,6 @@ class Shortsword(Weapon):
 		self.description = "A short iron sword."
 		self.image = ItemImage.shortsword
 		self.price = 55
+	
+	def reload_image(self):
+		self.image = ItemImage.shortsword
