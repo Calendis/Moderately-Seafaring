@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="10" height="16" tilewidth="16" tileheight="16" nextobjectid="11">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="10" height="16" tilewidth="16" tileheight="16" nextobjectid="15">
  <properties>
   <property name="name" value="test_house"/>
   <property name="npcs_by_id" value=""/>
@@ -43,8 +43,8 @@
 0,0,321,322,322,322,322,323,0,0,
 0,0,361,362,362,362,362,363,0,0,
 0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0
+489,489,489,489,0,0,489,489,489,489,
+529,529,529,529,0,0,529,529,529,529
 </data>
  </layer>
  <layer name="Tile Layer 3" width="10" height="16">
@@ -94,6 +94,16 @@
    </properties>
   </object>
   <object id="9" type="wall" x="96" y="256" width="64" height="16">
+   <properties>
+    <property name="layer" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="11" type="wall" x="0" y="240" width="64" height="16">
+   <properties>
+    <property name="layer" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="14" type="wall" x="96" y="240" width="64" height="16">
    <properties>
     <property name="layer" type="int" value="0"/>
    </properties>
