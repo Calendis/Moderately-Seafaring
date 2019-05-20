@@ -365,7 +365,7 @@ class ModeratelySeafaringGame():
 											self.menus.remove(self.menus[-1])
 
 									elif self.menus[-1].get_selected_name() == "Give":
-										print("TODO: Give")
+										self.menus.append(Menu.WhomGiveMenu(self.menus[-1].get_item(), self.party))
 
 								elif self.menus[-1].__class__ == Menu.SpellUseMenu:
 									if self.menus[-1].get_selected_name() == "Use":
@@ -496,9 +496,15 @@ class ModeratelySeafaringGame():
 									else:
 										self.party[self.menus[-1].get_selected_element_position()["x"]].equip(self.menus[-1].get_item())
 										self.party.get_current_member().get_items().remove(self.menus[-1].get_item())
-										self.menus[1] = Menu.ItemMenu(self.party.get_current_member().get_items())
-										self.menus.remove(self.menus[-1])
-										self.menus.remove(self.menus[-1])
+										
+										if len(self.party.get_current_member().get_items()) > 0:
+											self.menus[1] = Menu.ItemMenu(self.party.get_current_member().get_items())
+											self.menus.remove(self.menus[-1])
+											self.menus.remove(self.menus[-1])
+										else:
+											self.menus.remove(self.menus[-1])
+											self.menus.remove(self.menus[-1])
+											self.menus.remove(self.menus[-1])
 
 								elif self.menus[-1].__class__ == Menu.UnequipMenu:
 									self.party[self.menus[1].get_selected_element_position()["x"]].get_items().append(equipped_items[self.menus[-1].get_selected_element_position()["x"]])
@@ -513,7 +519,7 @@ class ModeratelySeafaringGame():
 											self.fragile_textboxes.append(Text.TextBox([self.party.get_current_member().get_name()+" has no traits to buy!"],
 												self.menus[-1].get_box_width()+UIConstant.MENU_SPACING+2*UIConstant.MENU_BORDER_WIDTH+self.menus[-1].get_position()["x"], self.menus[-1].get_position()["y"]))
 									elif self.menus[-1].get_selected_name() == "Owned":
-										pass
+										print("TODO: display owned traits.")
 
 								elif self.menus[-1].__class__ == Menu.TraitMenu:
 									self.menus.append(Menu.BuyTraitWhatMenu())
@@ -531,7 +537,20 @@ class ModeratelySeafaringGame():
 											self.party.get_current_member().add_trait(self.menus[-2].get_traits()[self.menus[-2].get_selected_element_position()["x"]])
 											self.menus.remove(self.menus[-1])
 											self.menus.remove(self.menus[-1])
-
+								
+								elif self.menus[-1].__class__ == Menu.WhomGiveMenu:
+									self.party[self.menus[-1].get_selected_element_position()["x"]].give_item(self.menus[-1].get_item())
+									self.party.get_current_member().remove_item(self.menus[-1].get_item())
+									
+									if len(self.party.get_current_member().get_items()) > 0:
+										self.menus[1] = Menu.ItemMenu(self.party.get_current_member().get_items())
+										self.menus.remove(self.menus[-1])
+										self.menus.remove(self.menus[-1])
+									else:
+										self.menus.remove(self.menus[-1])
+										self.menus.remove(self.menus[-1])
+										self.menus.remove(self.menus[-1])
+					
 					if event.type == pygame.KEYUP:
 						if event.key == K_q:
 							self.map_layer.zoom = 2

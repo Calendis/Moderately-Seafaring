@@ -214,6 +214,9 @@ class Character(pygame.sprite.Sprite):
 			
 	def give_item(self, item):
 		self.items.append(item)
+	
+	def remove_item(self, item):
+		self.items.remove(item)
 
 	def equip(self, equipment):
 		if equipment.get_item_type() == "Weapon":
