@@ -729,7 +729,7 @@ class Avik(Character):
 			0:["If you leave us Arbot, I'll whoop yer ass!\nDon't you have any respect for your elders?", None, 1, None, False],
 			1:["Oh... I'm sorry for that little outburst.\nI was the same way when I was your age... \nAlways wanted adventure.. so energetic.\nIf anything, I was even more energetic!\nToday's youth are so lazy!", None, 2, None, False],
 			2:["Oh, apologies for calling you lazy.\nThanks for stopping by to chat\nbefore you go, young'un.\nRemember me, Arbot.\n\nI hope you end up more successful than\nI did.", None, 3, Item.CrossRing, False],
-			3:["Go on, get out of here!\n\nYou don't have to hang around any longer...", None, 3, 3, False]
+			3:["Go on, get out of here!\n\nYou don't have to hang around any longer...", None, 3, None, False]
 		}
 
 		self.line_delays = [1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0]
